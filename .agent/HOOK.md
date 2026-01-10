@@ -15,16 +15,11 @@
 
 ## Molecules
 
-### M1: Quick Actions Dropdown — CURRENT 🔴
+### M1: Quick Actions Dropdown — DONE ✅
 **Scope:** `index.html`, `styles.css`, `app.js`
-**Steps:**
-- [ ] Добавить dropdown HTML у Refresh button
-- [ ] CSS для dropdown menu
-- [ ] JS для toggle и actions
-**Commit:** `feat(dashboard): add quick actions dropdown`
-**Verification:** Клик на Refresh → появляется dropdown
+**Commit:** `d42bf7f` — feat(dashboard): add quick actions dropdown
 
-### M2: Active HOOK Details Modal — PENDING ⚪
+### M2: Active HOOK Details Modal — CURRENT 🔴
 **Scope:** `index.html`, `styles.css`, `app.js`
 **Steps:**
 - [ ] Добавить modal HTML

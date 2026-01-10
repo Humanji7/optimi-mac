@@ -271,4 +271,54 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         actionsDropdown?.classList.remove('open');
     });
+
+    // HOOK Details Modal
+    const hookModal = document.getElementById('hookModal');
+    const hookModalBody = document.getElementById('hookModalBody');
+    const hooksCard = document.querySelector('.summary-card.hooks');
+
+    // Open modal when clicking on Active HOOKs card
+    hooksCard?.addEventListener('click', () => {
+        const activeHooks = dashboard.data?.summary?.activeHooks || 0;
+
+        if (activeHooks === 0) {
+            hookModalBody.innerHTML = `
+                <div class="no-hooks">
+                    <p>✅ No active HOOKs</p>
+                    <p style="font-size: 0.875rem; margin-top: 0.5rem;">All pending work completed!</p>
+                </div>
+            `;
+        } else {
+            // For demo, show info about existing hooks
+            hookModalBody.innerHTML = `
+                <div class="hook-item">
+                    <div class="hook-project">📁 optimi-mac</div>
+                    <div class="hook-molecule">🔴 CURRENT: M2 - HOOK Details Modal</div>
+                    <div class="hook-molecule" style="margin-top: 0.5rem; color: var(--text-muted);">
+                        Convoy: M1 ✅ → M2 🔴 → M3 ⚪ → M4 ⚪
+                    </div>
+                </div>
+                <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 1rem;">
+                    💡 Run: <code>cat ~/projects/optimi-mac/.agent/HOOK.md</code> for full details
+                </p>
+            `;
+        }
+
+        hookModal?.classList.add('open');
+    });
+
+    // Close modal handlers
+    const closeModal = () => hookModal?.classList.remove('open');
+
+    document.getElementById('closeHookModal')?.addEventListener('click', closeModal);
+    document.getElementById('closeModalBtn')?.addEventListener('click', closeModal);
+
+    hookModal?.addEventListener('click', (e) => {
+        if (e.target === hookModal) closeModal();
+    });
+
+    // Close modal on Escape key
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeModal();
+    });
 });
