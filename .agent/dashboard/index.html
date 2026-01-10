@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏥 Projects Health Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="dashboard">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1>🏥 Projects Health Dashboard</h1>
+                <div class="last-updated" id="lastUpdated">
+                    <span class="pulse"></span>
+                    <span>Last scan: Loading...</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Summary Cards -->
+        <section class="summary-section">
+            <div class="summary-grid">
+                <div class="summary-card total">
+                    <div class="card-icon">📁</div>
+                    <div class="card-content">
+                        <span class="card-value" id="totalProjects">--</span>
+                        <span class="card-label">Total Projects</span>
+                    </div>
+                </div>
+                
+                <div class="summary-card healthy">
+                    <div class="card-icon">✅</div>
+                    <div class="card-content">
+                        <span class="card-value" id="healthyProjects">--</span>
+                        <span class="card-label">Healthy</span>
+                    </div>
+                    <div class="card-progress">
+                        <div class="progress-bar" id="healthyBar"></div>
+                    </div>
+                </div>
+                
+                <div class="summary-card agent">
+                    <div class="card-icon">🤖</div>
+                    <div class="card-content">
+                        <span class="card-value" id="withAgent">--</span>
+                        <span class="card-label">With .agent/</span>
+                    </div>
+                    <div class="card-progress">
+                        <div class="progress-bar" id="agentBar"></div>
+                    </div>
+                </div>
+                
+                <div class="summary-card hooks">
+                    <div class="card-icon">🪝</div>
+                    <div class="card-content">
+                        <span class="card-value" id="activeHooks">--</span>
+                        <span class="card-label">Active HOOKs</span>
+                    </div>
+                </div>
+                
+                <div class="summary-card warning">
+                    <div class="card-icon">⚠️</div>
+                    <div class="card-content">
+                        <span class="card-value" id="uncommitted">--</span>
+                        <span class="card-label">Uncommitted</span>
+                    </div>
+                </div>
+                
+                <div class="summary-card attention">
+                    <div class="card-icon">🚨</div>
+                    <div class="card-content">
+                        <span class="card-value" id="needsAttention">--</span>
+                        <span class="card-label">Need Attention</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Projects Tables -->
+        <section class="projects-section">
+            <!-- Healthy Projects -->
+            <div class="table-container healthy-table">
+                <h2>✅ Healthy Projects</h2>
+                <table id="healthyTable">
+                    <thead>
+                        <tr>
+                            <th>Project</th>
+                            <th>.agent/</th>
+                            <th>HOOK</th>
+                            <th>Git Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Dynamic content -->
+                    </tbody>
+                </table>
+                <div class="empty-state" id="healthyEmpty">
+                    <span>No healthy projects found</span>
+                </div>
+            </div>
+
+            <!-- Attention Projects -->
+            <div class="table-container attention-table">
+                <h2>⚠️ Projects Needing Attention</h2>
+                <table id="attentionTable">
+                    <thead>
+                        <tr>
+                            <th>Project</th>
+                            <th>Issues</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Dynamic content -->
+                    </tbody>
+                </table>
+                <div class="empty-state" id="attentionEmpty">
+                    <span>All projects are healthy! 🎉</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Recommendations -->
+        <section class="recommendations-section">
+            <h2>💡 Recommendations</h2>
+            <ul id="recommendationsList" class="recommendations-list">
+                <!-- Dynamic content -->
+            </ul>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>Generated by <code>projects-health-check.sh</code></p>
+            <button class="refresh-btn" onclick="location.reload()">
+                🔄 Refresh
+            </button>
+        </footer>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
