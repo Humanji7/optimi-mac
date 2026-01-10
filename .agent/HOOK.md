@@ -19,13 +19,17 @@
 **Scope:** `index.html`, `styles.css`, `app.js`
 **Commit:** `d42bf7f` — feat(dashboard): add quick actions dropdown
 
-### M2: Active HOOK Details Modal — CURRENT 🔴
+### M2: Active HOOK Details Modal — DONE ✅
 **Scope:** `index.html`, `styles.css`, `app.js`
+**Commit:** `3abab17` — feat(dashboard): add HOOK details modal
+
+### M3: Auto-Refresh Toggle — CURRENT 🔴
+**Scope:** `index.html`, `app.js`
 **Steps:**
-- [ ] Добавить modal HTML
-- [ ] CSS для modal с glassmorphism
-- [ ] JS для открытия по клику на HOOKs карточку
-**Commit:** `feat(dashboard): add HOOK details modal`
+- [ ] Checkbox в header
+- [ ] JS interval для auto-reload
+- [ ] Countdown display
+**Commit:** `feat(dashboard): add auto-refresh toggle`
 
 ### M3: Auto-Refresh Toggle — PENDING ⚪
 **Scope:** `index.html`, `app.js`

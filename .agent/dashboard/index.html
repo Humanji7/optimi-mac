@@ -15,9 +15,16 @@
         <header class="header">
             <div class="header-content">
                 <h1>🏥 Projects Health Dashboard</h1>
-                <div class="last-updated" id="lastUpdated">
-                    <span class="pulse"></span>
-                    <span>Last scan: Loading...</span>
+                <div class="header-actions">
+                    <label class="auto-refresh-toggle">
+                        <input type="checkbox" id="autoRefreshToggle">
+                        <span class="toggle-label">Auto-refresh</span>
+                        <span class="countdown" id="countdown"></span>
+                    </label>
+                    <div class="last-updated" id="lastUpdated">
+                        <span class="pulse"></span>
+                        <span>Last scan: Loading...</span>
+                    </div>
                 </div>
             </div>
         </header>

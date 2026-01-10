@@ -147,6 +147,67 @@ body::before {
     }
 }
 
+/* Header Actions */
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-lg);
+}
+
+/* Auto-Refresh Toggle */
+.auto-refresh-toggle {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    cursor: pointer;
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
+
+.auto-refresh-toggle input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 40px;
+    height: 22px;
+    background: var(--bg-tertiary);
+    border-radius: 11px;
+    position: relative;
+    cursor: pointer;
+    transition: background var(--transition-fast);
+}
+
+.auto-refresh-toggle input[type="checkbox"]::before {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 18px;
+    height: 18px;
+    background: var(--text-muted);
+    border-radius: 50%;
+    transition: all var(--transition-fast);
+}
+
+.auto-refresh-toggle input[type="checkbox"]:checked {
+    background: var(--accent-purple);
+}
+
+.auto-refresh-toggle input[type="checkbox"]:checked::before {
+    left: 20px;
+    background: white;
+}
+
+.toggle-label {
+    user-select: none;
+}
+
+.countdown {
+    font-size: 0.75rem;
+    color: var(--accent-purple);
+    font-weight: 500;
+    min-width: 30px;
+}
+
 /* ============================================================================
    Summary Cards
    ============================================================================ */

@@ -321,4 +321,41 @@ document.addEventListener('DOMContentLoaded', () => {
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') closeModal();
     });
+
+    // Auto-Refresh Toggle
+    const autoRefreshToggle = document.getElementById('autoRefreshToggle');
+    const countdownEl = document.getElementById('countdown');
+    let refreshInterval = null;
+    let countdownInterval = null;
+    let secondsLeft = 30;
+    const REFRESH_INTERVAL = 30; // seconds
+
+    autoRefreshToggle?.addEventListener('change', (e) => {
+        if (e.target.checked) {
+            // Start auto-refresh
+            secondsLeft = REFRESH_INTERVAL;
+            updateCountdown();
+
+            countdownInterval = setInterval(() => {
+                secondsLeft--;
+                updateCountdown();
+
+                if (secondsLeft <= 0) {
+                    secondsLeft = REFRESH_INTERVAL;
+                    dashboard.loadData().then(() => dashboard.render());
+                }
+            }, 1000);
+        } else {
+            // Stop auto-refresh
+            clearInterval(countdownInterval);
+            countdownInterval = null;
+            countdownEl.textContent = '';
+        }
+    });
+
+    function updateCountdown() {
+        if (countdownEl) {
+            countdownEl.textContent = `${secondsLeft}s`;
+        }
+    }
 });
