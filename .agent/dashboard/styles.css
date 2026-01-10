@@ -426,6 +426,17 @@ td {
     font-size: 0.875rem;
 }
 
+/* Project Link */
+.project-link {
+    cursor: pointer;
+    transition: color var(--transition-fast);
+}
+
+.project-link:hover {
+    color: var(--accent-purple);
+    text-decoration: underline;
+}
+
 /* Status Badges */
 .badge {
     display: inline-flex;

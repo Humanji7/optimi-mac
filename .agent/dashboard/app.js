@@ -150,7 +150,7 @@ class HealthDashboard {
 
         tbody.innerHTML = this.data.healthyProjects.map((project, index) => `
             <tr style="animation: fadeInUp 0.3s ease ${0.1 * index}s forwards; opacity: 0;">
-                <td><strong>${project.name}</strong></td>
+                <td><strong class="project-link" data-project="${project.name}">${project.name}</strong></td>
                 <td><span class="badge healthy">✅</span></td>
                 <td>${project.hook ? `<span class="badge active">🔴 ACTIVE</span>` : '<span style="color: var(--text-muted)">—</span>'}</td>
                 <td><span class="badge healthy">✅ clean</span></td>
@@ -173,7 +173,7 @@ class HealthDashboard {
 
         tbody.innerHTML = this.data.attentionProjects.map((project, index) => `
             <tr style="animation: fadeInUp 0.3s ease ${0.05 * index}s forwards; opacity: 0;">
-                <td><strong>${project.name}</strong></td>
+                <td><strong class="project-link" data-project="${project.name}">${project.name}</strong></td>
                 <td>
                     ${project.issues.map(issue => {
             const isUrgent = issue.includes('Uncommitted') || issue.includes('No git');
@@ -358,4 +358,18 @@ document.addEventListener('DOMContentLoaded', () => {
             countdownEl.textContent = `${secondsLeft}s`;
         }
     }
+
+    // M4: Click-to-Open Project
+    document.addEventListener('click', (e) => {
+        if (e.target.classList.contains('project-link')) {
+            const projectName = e.target.dataset.project;
+            const cmd = `cd ~/projects/${projectName}`;
+
+            navigator.clipboard.writeText(cmd).then(() => {
+                alert(`📋 Copied to clipboard:\n\n${cmd}\n\nPaste in terminal to open project.`);
+            }).catch(() => {
+                alert(`Open project:\n\n${cmd}`);
+            });
+        }
+    });
 });
