@@ -216,5 +216,59 @@ class HealthDashboard {
 
 // Initialize dashboard when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
-    new HealthDashboard();
+    const dashboard = new HealthDashboard();
+
+    // Quick Actions Dropdown
+    const actionsToggle = document.getElementById('actionsToggle');
+    const actionsDropdown = document.getElementById('actionsDropdown');
+    const refreshBtn = document.getElementById('refreshBtn');
+
+    // Toggle dropdown
+    actionsToggle?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        actionsDropdown.classList.toggle('open');
+    });
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', () => {
+        actionsDropdown?.classList.remove('open');
+    });
+
+    // Refresh button
+    refreshBtn?.addEventListener('click', () => {
+        location.reload();
+    });
+
+    // Action: Run Health Check
+    document.getElementById('runHealthCheck')?.addEventListener('click', () => {
+        const cmd = 'bash ~/projects/optimi-mac/.agent/scripts/projects-health-check.sh';
+        navigator.clipboard.writeText(cmd).then(() => {
+            alert(`📋 Copied to clipboard:\n\n${cmd}\n\nPaste in terminal and run, then refresh this page.`);
+        }).catch(() => {
+            alert(`Run this command:\n\n${cmd}`);
+        });
+        actionsDropdown?.classList.remove('open');
+    });
+
+    // Action: Copy Report Path
+    document.getElementById('copyReport')?.addEventListener('click', () => {
+        const path = '~/.agent/health-report.md';
+        navigator.clipboard.writeText(path).then(() => {
+            alert(`📋 Report path copied:\n\n${path}`);
+        }).catch(() => {
+            alert(`Report path:\n\n${path}`);
+        });
+        actionsDropdown?.classList.remove('open');
+    });
+
+    // Action: Open Terminal Command
+    document.getElementById('openTerminal')?.addEventListener('click', () => {
+        const cmd = 'cd ~/projects/optimi-mac && npx http-server .agent/dashboard -p 8889 -o';
+        navigator.clipboard.writeText(cmd).then(() => {
+            alert(`📋 Terminal command copied:\n\n${cmd}`);
+        }).catch(() => {
+            alert(`Terminal command:\n\n${cmd}`);
+        });
+        actionsDropdown?.classList.remove('open');
+    });
 });

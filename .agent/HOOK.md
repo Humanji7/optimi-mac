@@ -1,40 +1,63 @@
-# 🪝 HOOK: Visual Health Dashboard
+# 🪝 HOOK: Improve Health Dashboard
 
-## GUPP Status: COMPLETED ✅
-
----
+## GUPP Status: ACTIVE 🔴
+> Если ты читаешь это — ТЫ ОБЯЗАН выполнить CURRENT molecule.
 
 ## Original Request
-Декомпозиция: добавь visual dashboard для health-check.
+Декомпозиция: улучшить dashboard (реальная задача optimi-mac)
 
 ## Complexity: MEDIUM
-- Files: 5
-- Lines: ~500
-- Dependencies: some (HTML → CSS → JS)
+- Files: 4 (index.html, styles.css, app.js, data.json)
+- Lines: ~200
+- Dependencies: HTML → CSS → JS
 
 ---
 
 ## Molecules
 
-### M1: Base HTML Structure — DONE ✅
-### M2: CSS Styling — DONE ✅
-### M3: JavaScript Data Integration — DONE ✅
-### M4: Script Integration — DONE ✅
-### M5: Polish & Animations — DONE ✅
+### M1: Quick Actions Dropdown — CURRENT 🔴
+**Scope:** `index.html`, `styles.css`, `app.js`
+**Steps:**
+- [ ] Добавить dropdown HTML у Refresh button
+- [ ] CSS для dropdown menu
+- [ ] JS для toggle и actions
+**Commit:** `feat(dashboard): add quick actions dropdown`
+**Verification:** Клик на Refresh → появляется dropdown
+
+### M2: Active HOOK Details Modal — PENDING ⚪
+**Scope:** `index.html`, `styles.css`, `app.js`
+**Steps:**
+- [ ] Добавить modal HTML
+- [ ] CSS для modal с glassmorphism
+- [ ] JS для открытия по клику на HOOKs карточку
+**Commit:** `feat(dashboard): add HOOK details modal`
+
+### M3: Auto-Refresh Toggle — PENDING ⚪
+**Scope:** `index.html`, `app.js`
+**Steps:**
+- [ ] Checkbox в header
+- [ ] JS interval для auto-reload
+- [ ] Countdown display
+**Commit:** `feat(dashboard): add auto-refresh toggle`
+
+### M4: Click-to-Open Project — PENDING ⚪
+**Scope:** `app.js`
+**Steps:**
+- [ ] Event listener на project names
+- [ ] Alert с командой cd
+**Commit:** `feat(dashboard): add click-to-open project`
 
 ---
 
 ## Convoy Progress
-- [x] M1 — HTML skeleton with cards, tables, recommendations
-- [x] M2 — Dark glassmorphism theme with purple palette
-- [x] M3 — Animated counters, dynamic rendering from JSON
-- [x] M4 — Extended bash script to generate data.json
-- [x] M5 — fadeInUp animations, progress bars, hover effects
-- [x] VERIFICATION — Opened in browser, all data renders correctly
-- [ ] CLEANUP — Archive to hooks/
+- [ ] M1 ← HERE
+- [ ] M2
+- [ ] M3
+- [ ] M4
+- [ ] VERIFICATION
+- [ ] CLEANUP
 
 ## Handoff History
 | Timestamp | Agent | Completed | Notes |
 |-----------|-------|-----------|-------|
-| 2026-01-10 21:32 | antigravity | - | Created Hook |
-| 2026-01-10 21:37 | antigravity | M1-M5, VERIFICATION | All molecules completed in single session |
+| 2026-01-10 22:15 | antigravity | - | Created HOOK, plan approved |
