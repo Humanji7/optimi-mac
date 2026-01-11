@@ -24,6 +24,7 @@ no_git=0
 
 # Arrays for categorized projects
 declare -a healthy_projects=()
+declare -a working_projects=()
 declare -a attention_projects=()
 
 # ============================================================================
@@ -76,9 +77,17 @@ for project_path in "$PROJECTS_DIR"/*/; do
         issues+=("No git")
     fi
     
-    # Categorize
-    if [[ ${#issues[@]} -eq 0 ]]; then
-        healthy_projects+=("| $project_name | $has_agent | $has_hook | $git_status |")
+    # Categorize (3-tier model)
+    # Healthy: has .agent/ + clean git
+    # Working: has .agent/ + uncommitted changes  
+    # Attention: no .agent/ OR no git
+    if [[ -d "${project_path}.agent" && -d "${project_path}.git" ]]; then
+        if [[ "$git_status" == "✅ clean" ]]; then
+            healthy_projects+=("| $project_name | $has_agent | $has_hook | $git_status |")
+        else
+            # Has agent + git but uncommitted = Working
+            working_projects+=("| $project_name | $has_hook | $git_status |")
+        fi
     else
         issues_str=$(IFS=', '; echo "${issues[*]}")
         attention_projects+=("| $project_name | $issues_str |")
@@ -116,6 +125,20 @@ cat > "$REPORT_FILE" << EOF
 EOF
 
 for line in "${healthy_projects[@]}"; do
+    echo "$line" >> "$REPORT_FILE"
+done
+
+cat >> "$REPORT_FILE" << EOF
+
+---
+
+## 🔨 Working Projects (${#working_projects[@]})
+
+| Project | HOOK | Git Status |
+|---------|------|------------|
+EOF
+
+for line in "${working_projects[@]}"; do
     echo "$line" >> "$REPORT_FILE"
 done
 
@@ -188,7 +211,29 @@ if [[ -d "$DASHBOARD_DIR" ]]; then
     done
     healthy_json+="]"
 
-    # Build attention projects JSON array
+    # Build working projects JSON array (has .agent/ but uncommitted changes)
+    working_json="["
+    first=true
+    for project_path in "$PROJECTS_DIR"/*/; do
+        [[ ! -d "$project_path" ]] && continue
+        project_name=$(basename "$project_path")
+        
+        if [[ -d "${project_path}.agent" && -d "${project_path}.git" ]]; then
+            cd "$project_path"
+            if [[ -n $(git status --porcelain 2>/dev/null) ]]; then
+                has_hook="false"
+                [[ -f "${project_path}.agent/HOOK.md" ]] && has_hook="true"
+                
+                $first || working_json+=","
+                first=false
+                working_json+="{\"name\":\"$project_name\",\"agent\":true,\"hook\":$has_hook,\"gitStatus\":\"uncommitted\"}"
+            fi
+            cd - > /dev/null
+        fi
+    done
+    working_json+="]"
+
+    # Build attention projects JSON array (no .agent/ OR no .git/)
     attention_json="["
     first=true
     for project_path in "$PROJECTS_DIR"/*/; do
@@ -205,10 +250,6 @@ if [[ -d "$DASHBOARD_DIR" ]]; then
         if [[ ! -d "${project_path}.git" ]]; then
             $has_issues && issues+=","
             issues+="\"No git\""
-            has_issues=true
-        elif [[ -n $(cd "$project_path" && git status --porcelain 2>/dev/null) ]]; then
-            $has_issues && issues+=","
-            issues+="\"Uncommitted changes\""
             has_issues=true
         fi
         
@@ -253,6 +294,7 @@ if [[ -d "$DASHBOARD_DIR" ]]; then
         "noGit": $no_git
     },
     "healthyProjects": $healthy_json,
+    "workingProjects": $working_json,
     "attentionProjects": $attention_json,
     "recommendations": $recs_json
 }

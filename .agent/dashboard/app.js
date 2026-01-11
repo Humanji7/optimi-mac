@@ -69,6 +69,7 @@ class HealthDashboard {
         this.renderLastUpdated();
         this.renderSummaryCards();
         this.renderHealthyTable();
+        this.renderWorkingTable();
         this.renderAttentionTable();
         this.renderRecommendations();
     }
@@ -158,20 +159,54 @@ class HealthDashboard {
         `).join('');
     }
 
+    renderWorkingTable() {
+        const tbody = document.querySelector('#workingTable tbody');
+        const emptyState = document.getElementById('workingEmpty');
+        const workingProjects = this.data.workingProjects || [];
+
+        if (!tbody) return;
+
+        if (workingProjects.length === 0) {
+            emptyState?.classList.add('visible');
+            tbody.innerHTML = '';
+            return;
+        }
+
+        emptyState?.classList.remove('visible');
+
+        tbody.innerHTML = workingProjects.map((project, index) => `
+            <tr style="animation: fadeInUp 0.3s ease ${0.05 * index}s forwards; opacity: 0;">
+                <td><strong class="project-link" data-project="${project.name}">${project.name}</strong></td>
+                <td>${project.hook ? `<span class="badge active">🔴 ACTIVE</span>` : '<span style="color: var(--text-muted)">—</span>'}</td>
+                <td><span class="badge working">⚠️ uncommitted</span></td>
+                <td class="actions-cell">
+                    <button class="action-btn triage-btn" data-project="${project.name}" title="Generate surgical prompt">🧠 Triage</button>
+                </td>
+            </tr>
+        `).join('');
+    }
+
     renderAttentionTable() {
         const tbody = document.querySelector('#attentionTable tbody');
         const emptyState = document.getElementById('attentionEmpty');
 
         if (!tbody) return;
 
-        if (this.data.attentionProjects.length === 0) {
+        // Filter out archived projects
+        const archivedProjects = this.getArchivedProjects();
+        const visibleProjects = this.data.attentionProjects.filter(
+            p => !archivedProjects.includes(p.name)
+        );
+
+        if (visibleProjects.length === 0) {
             emptyState?.classList.add('visible');
+            tbody.innerHTML = '';
             return;
         }
 
         emptyState?.classList.remove('visible');
 
-        tbody.innerHTML = this.data.attentionProjects.map((project, index) => `
+        tbody.innerHTML = visibleProjects.map((project, index) => `
             <tr style="animation: fadeInUp 0.3s ease ${0.05 * index}s forwards; opacity: 0;">
                 <td><strong class="project-link" data-project="${project.name}">${project.name}</strong></td>
                 <td>
@@ -180,13 +215,69 @@ class HealthDashboard {
             return `<span class="issue-tag ${isUrgent ? 'urgent' : ''}">${issue}</span>`;
         }).join('')}
                 </td>
-                <td>
-                    ${project.issues.includes('No .agent/')
-                ? `<button class="action-btn" onclick="alert('Run /setup-ai-pipeline in ${project.name}')">Setup</button>`
-                : ''}
+                <td class="actions-cell">
+                    <button class="action-btn triage-btn" data-project="${project.name}" title="Generate surgical prompt">🧠 Triage</button>
+                    <button class="action-btn archive-btn" data-project="${project.name}" title="Hide from list">📦</button>
                 </td>
             </tr>
         `).join('');
+
+        // Render archived section if any
+        this.renderArchivedSection();
+    }
+
+    getArchivedProjects() {
+        try {
+            return JSON.parse(localStorage.getItem('archivedProjects') || '[]');
+        } catch {
+            return [];
+        }
+    }
+
+    archiveProject(name) {
+        const archived = this.getArchivedProjects();
+        if (!archived.includes(name)) {
+            archived.push(name);
+            localStorage.setItem('archivedProjects', JSON.stringify(archived));
+        }
+        this.renderAttentionTable();
+    }
+
+    restoreProject(name) {
+        const archived = this.getArchivedProjects().filter(p => p !== name);
+        localStorage.setItem('archivedProjects', JSON.stringify(archived));
+        this.renderAttentionTable();
+    }
+
+    renderArchivedSection() {
+        const archived = this.getArchivedProjects();
+        let section = document.getElementById('archivedSection');
+
+        if (archived.length === 0) {
+            section?.remove();
+            return;
+        }
+
+        if (!section) {
+            section = document.createElement('div');
+            section.id = 'archivedSection';
+            section.className = 'archived-section';
+            document.querySelector('.attention-table')?.appendChild(section);
+        }
+
+        section.innerHTML = `
+            <details>
+                <summary>📦 Archived (${archived.length})</summary>
+                <div class="archived-list">
+                    ${archived.map(name => `
+                        <div class="archived-item">
+                            <span>${name}</span>
+                            <button class="restore-btn" data-project="${name}">Restore</button>
+                        </div>
+                    `).join('')}
+                </div>
+            </details>
+        `;
     }
 
     renderRecommendations() {
@@ -268,6 +359,49 @@ document.addEventListener('DOMContentLoaded', () => {
             alert(`📋 Terminal command copied:\n\n${cmd}`);
         }).catch(() => {
             alert(`Terminal command:\n\n${cmd}`);
+        });
+        actionsDropdown?.classList.remove('open');
+    });
+
+    // 🌙 Night Watch Button
+    document.getElementById('nightWatchBtn')?.addEventListener('click', () => {
+        const workingCount = dashboard.data?.workingProjects?.length || 0;
+
+        if (workingCount === 0) {
+            alert('✅ No working projects to refactor.\n\nNight Watch runs on projects with uncommitted changes.');
+            return;
+        }
+
+        const confirm = window.confirm(
+            `🌙 Night Watch\n\n` +
+            `This will run code-simplifier on ${workingCount} working project(s):\n` +
+            `${(dashboard.data?.workingProjects || []).map(p => `  • ${p.name}`).join('\n')}\n\n` +
+            `⚠️ All changes go to separate branches (safe)\n\n` +
+            `Continue?`
+        );
+
+        if (confirm) {
+            const cmd = 'bash ~/projects/optimi-mac/.agent/scripts/night-watch.sh';
+            navigator.clipboard.writeText(cmd).then(() => {
+                alert(
+                    `🌙 Night Watch command copied!\n\n` +
+                    `Paste in terminal to start:\n${cmd}\n\n` +
+                    `Tomorrow morning, review with:\n` +
+                    `git log refactor/night-watch-$(date +%Y%m%d) --oneline`
+                );
+            }).catch(() => {
+                alert(`Run this command:\n\n${cmd}`);
+            });
+        }
+    });
+
+    // Night Watch Dry Run
+    document.getElementById('nightWatchDryRun')?.addEventListener('click', () => {
+        const cmd = 'bash ~/projects/optimi-mac/.agent/scripts/night-watch.sh --dry-run';
+        navigator.clipboard.writeText(cmd).then(() => {
+            alert(`🔍 Dry Run command copied!\n\n${cmd}\n\nThis shows what would be refactored without making changes.`);
+        }).catch(() => {
+            alert(`Run this command:\n\n${cmd}`);
         });
         actionsDropdown?.classList.remove('open');
     });
@@ -370,6 +504,42 @@ document.addEventListener('DOMContentLoaded', () => {
             }).catch(() => {
                 alert(`Open project:\n\n${cmd}`);
             });
+        }
+
+        // Triage button - copy bash script command
+        if (e.target.classList.contains('triage-btn')) {
+            const projectName = e.target.dataset.project;
+            const cmd = `bash ~/projects/optimi-mac/.agent/scripts/generate-triage-prompt.sh ${projectName}`;
+
+            navigator.clipboard.writeText(cmd).then(() => {
+                // Show brief toast instead of alert
+                const toast = document.createElement('div');
+                toast.className = 'toast';
+                toast.textContent = '🧠 Triage command copied! Paste in terminal.';
+                document.body.appendChild(toast);
+                setTimeout(() => toast.remove(), 3000);
+            }).catch(() => {
+                alert(`Run in terminal:\n\n${cmd}`);
+            });
+        }
+
+        // Archive button
+        if (e.target.classList.contains('archive-btn')) {
+            const projectName = e.target.dataset.project;
+            dashboard.archiveProject(projectName);
+
+            // Brief toast
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = `📦 ${projectName} archived`;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 2000);
+        }
+
+        // Restore button
+        if (e.target.classList.contains('restore-btn')) {
+            const projectName = e.target.dataset.project;
+            dashboard.restoreProject(projectName);
         }
     });
 });

@@ -77,3 +77,45 @@ Dashboard теперь автоматически получает свежие 
 ---
 
 *Updated: 2026-01-11 13:19*
+
+---
+
+## ✅ COMPLETED (2026-01-11 14:38) — Triage + Archive
+
+### Implemented Features
+
+1. **🧠 AI Triage Prompt Generator**
+   - Bash script: `.agent/scripts/generate-triage-prompt.sh`
+   - Deep analysis: git status, HOOK.md, .agent/ structure
+   - Dashboard button → copies command to clipboard
+   - Toast notifications
+
+2. **📦 Project Archive**
+   - Hide projects from dashboard
+   - localStorage storage
+   - Collapsed "📦 Archived (N)" section with Restore
+
+### Files Changed
+- `generate-triage-prompt.sh` (NEW)
+- `dashboard/app.js` (modified)
+- `dashboard/styles.css` (modified)
+
+### ⚠️ Known Issue: Projects Not Moving to Healthy
+
+**Причина:** Health-check требует **чистый git** (no uncommitted changes).
+
+**Решение:** После исправлений AI — нужен коммит:
+```bash
+cd ~/projects/<project>
+git add . && git commit -m "fix: <message>"
+bash ~/projects/optimi-mac/.agent/scripts/projects-health-check.sh
+```
+
+### Verification Needed
+- [ ] Manual browser testing of UI
+- [ ] Test full workflow: Triage → AI fix → commit → move to Healthy
+
+### Docs
+- Walkthrough: `/Users/admin/.gemini/antigravity/brain/1323f3b9-76df-4cdb-993d-29d96cc75c00/walkthrough.md`
+
+---

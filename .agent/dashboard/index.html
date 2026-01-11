@@ -111,6 +111,27 @@
                 </div>
             </div>
 
+            <!-- Working Projects -->
+            <div class="table-container working-table">
+                <h2>🔨 Working Projects</h2>
+                <table id="workingTable">
+                    <thead>
+                        <tr>
+                            <th>Project</th>
+                            <th>HOOK</th>
+                            <th>Git Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Dynamic content -->
+                    </tbody>
+                </table>
+                <div class="empty-state" id="workingEmpty">
+                    <span>No projects in progress</span>
+                </div>
+            </div>
+
             <!-- Attention Projects -->
             <div class="table-container attention-table">
                 <h2>⚠️ Projects Needing Attention</h2>
@@ -147,6 +168,10 @@
                 <button class="refresh-btn" id="refreshBtn">
                     🔄 Refresh
                 </button>
+                <button class="night-watch-btn" id="nightWatchBtn"
+                    title="Run overnight refactoring on Working projects">
+                    🌙 Night Watch
+                </button>
                 <div class="dropdown" id="actionsDropdown">
                     <button class="dropdown-toggle" id="actionsToggle">
                         ⚡ Actions ▾
@@ -160,6 +185,9 @@
                         </button>
                         <button class="dropdown-item" id="openTerminal">
                             💻 Open Terminal Command
+                        </button>
+                        <button class="dropdown-item" id="nightWatchDryRun">
+                            🔍 Night Watch (Dry Run)
                         </button>
                     </div>
                 </div>
