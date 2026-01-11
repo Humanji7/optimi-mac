@@ -1,0 +1,30 @@
+# Dependencies
+node_modules/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Dashboard data (contains personal project info)
+.agent/dashboard/data.json
+
+# Internal handoff docs (contain hardcoded paths)
+.agent/HANDOFF_*.md
+.agent/hooks/
+
+# Logs
+*.log
+.agent/logs/
+
+# Playwright screenshots (local testing)
+.playwright-mcp/
+
+# Temporary
+*.tmp
+*.bak
