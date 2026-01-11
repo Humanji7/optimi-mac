@@ -1,14 +1,14 @@
 {
-    "generated": "2026-01-10 21:36",
+    "generated": "2026-01-11 12:46",
     "scannedPath": "/Users/admin/projects",
     "summary": {
         "total": 11,
         "withAgent": 6,
-        "activeHooks": 1,
-        "uncommitted": 4,
-        "noGit": 3
+        "activeHooks": 0,
+        "uncommitted": 7,
+        "noGit": 2
     },
-    "healthyProjects": [{"name":"personal-site","agent":true,"hook":false,"gitStatus":"clean"},{"name":"pointg","agent":true,"hook":false,"gitStatus":"clean"},{"name":"reels-bot","agent":true,"hook":false,"gitStatus":"clean"}],
-    "attentionProjects": [{"name":"Parsertang","issues":["No .agent/","Uncommitted changes"]},{"name":"bip-buddy","issues":["Uncommitted changes"]},{"name":"extra-vibe","issues":["No .agent/","No git"]},{"name":"optimi-mac","issues":["No git"]},{"name":"reelstudio","issues":["No .agent/","Uncommitted changes"]},{"name":"sphere-777","issues":["No .agent/"]},{"name":"tg-tr-7","issues":["No git"]},{"name":"vob","issues":["No .agent/","Uncommitted changes"]}],
-    "recommendations": [{"text":"Add .agent/ infrastructure to 5 projects","command":"/setup-ai-pipeline"},{"text":"Commit or stash changes in 4 projects","command":null},{"text":"1 active HOOK(s) — continue pending work with GUPP","command":null}]
+    "healthyProjects": [{"name":"reels-bot","agent":true,"hook":false,"gitStatus":"clean"}],
+    "attentionProjects": [{"name":"Parsertang","issues":["No .agent/","Uncommitted changes"]},{"name":"bip-buddy","issues":["Uncommitted changes"]},{"name":"extra-vibe","issues":["No .agent/","No git"]},{"name":"optimi-mac","issues":["Uncommitted changes"]},{"name":"personal-site","issues":["Uncommitted changes"]},{"name":"pointg","issues":["Uncommitted changes"]},{"name":"reelstudio","issues":["No .agent/","Uncommitted changes"]},{"name":"sphere-777","issues":["No .agent/"]},{"name":"tg-tr-7","issues":["No git"]},{"name":"vob","issues":["No .agent/","Uncommitted changes"]}],
+    "recommendations": [{"text":"Add .agent/ infrastructure to 5 projects","command":"/setup-ai-pipeline"},{"text":"Commit or stash changes in 7 projects","command":null}]
 }

@@ -1,3 +1,5 @@
+> 🚨 **Read ~/.agent/GUPP.md FIRST** — mandatory startup gate
+
 # Agent Context
 
 ## 🚨🚨🚨 MANDATORY STARTUP GATE 🚨🚨🚨
