@@ -172,9 +172,11 @@
                     title="Run overnight refactoring on Working projects">
                     🌙 Night Watch
                 </button>
-                <button class="statusline-btn" id="statusLineBtn"
-                    title="Install Smart StatusLine for Claude Code">
+                <button class="statusline-btn" id="statusLineBtn" title="Install Smart StatusLine for Claude Code">
                     📊 StatusLine
+                </button>
+                <button class="setup-ai-btn" id="setupAIBtn" title="Setup unified AI infrastructure">
+                    🏗️ Setup AI
                 </button>
                 <div class="dropdown" id="actionsDropdown">
                     <button class="dropdown-toggle" id="actionsToggle">
@@ -264,13 +266,63 @@
                 <div class="install-steps">
                     <p><strong>One-click install:</strong></p>
                     <div class="command-box" id="statusLineCommand">
-curl -fsSL https://raw.githubusercontent.com/Humanji7/optimi-mac/main/.agent/scripts/install-statusline.sh | bash
+                        curl -fsSL
+                        https://raw.githubusercontent.com/Humanji7/optimi-mac/main/.agent/scripts/install-statusline.sh
+                        | bash
                     </div>
                 </div>
             </div>
             <div class="modal-footer">
                 <button class="modal-btn secondary" id="copyStatusLineCmd">📋 Copy Command</button>
                 <button class="modal-btn primary" id="installStatusLine">⚡ Install Now</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Setup AI Infrastructure Modal -->
+    <div class="modal-overlay" id="setupAIModal">
+        <div class="modal setup-ai-modal">
+            <div class="modal-header">
+                <h3>🏗️ AI Infrastructure Setup</h3>
+                <button class="modal-close" id="closeSetupAIModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p class="setup-ai-intro">
+                    Create unified AI agent config with <strong>Single Source of Truth</strong> in
+                    <code>.agent/MAIN.md</code>
+                </p>
+                <div class="setup-ai-benefits">
+                    <div class="benefit-item">✅ No more duplication (CLAUDE.md, AGENTS.md, .cursorrules)</div>
+                    <div class="benefit-item">✅ GUPP protocol for persistent state</div>
+                    <div class="benefit-item">✅ Works with Claude Code, Codex, Cursor</div>
+                </div>
+                <div class="setup-ai-structure">
+                    <p><strong>Creates:</strong></p>
+                    <pre class="structure-preview">.agent/
+├── MAIN.md           # Single Source of Truth
+├── docs/             # Architecture, conventions
+├── workflows/        # /command workflows
+└── scripts/          # Automation
+
+CLAUDE.md             # → Redirect to .agent/MAIN.md
+AGENTS.md             # → Redirect to .agent/MAIN.md
+.cursorrules          # → Redirect to .agent/MAIN.md</pre>
+                </div>
+                <div class="install-steps">
+                    <p><strong>For selected project:</strong></p>
+                    <div class="project-selector">
+                        <select id="setupAIProjectSelect">
+                            <!-- Dynamic options -->
+                        </select>
+                    </div>
+                    <div class="command-box" id="setupAICommand">
+                        bash ~/projects/optimi-mac/.agent/scripts/setup-ai-infrastructure.sh ~/projects/PROJECT
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn secondary" id="setupAIDryRun">🔍 Dry Run</button>
+                <button class="modal-btn primary" id="copySetupAICmd">📋 Copy Command</button>
             </div>
         </div>
     </div>

@@ -1,0 +1,282 @@
+#!/bin/bash
+
+# =============================================================================
+# 🏗️ setup-ai-infrastructure.sh
+# Sets up unified AI agent infrastructure with Single Source of Truth
+# =============================================================================
+
+set -e
+
+# Colors
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+RED='\033[0;31m'
+CYAN='\033[0;36m'
+NC='\033[0m'
+
+# Configuration
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+TEMPLATES_DIR="$(dirname "$SCRIPT_DIR")/templates"
+DATE=$(date +%Y-%m-%d)
+
+# Flags
+DRY_RUN=false
+FORCE=false
+TARGET_DIR=""
+
+# Parse arguments - handle flags and path in any order
+for arg in "$@"; do
+    case $arg in
+        --dry-run) DRY_RUN=true ;;
+        --force) FORCE=true ;;
+        --help|-h)
+            echo "Usage: setup-ai-infrastructure.sh [project-path] [--dry-run] [--force]"
+            echo ""
+            echo "Options:"
+            echo "  project-path   Target project directory (default: current)"
+            echo "  --dry-run      Preview changes without applying"
+            echo "  --force        Overwrite existing files"
+            exit 0
+            ;;
+        *)
+            # Not a flag, treat as path
+            if [ -z "$TARGET_DIR" ]; then
+                TARGET_DIR="$arg"
+            fi
+            ;;
+    esac
+done
+
+# Default to current directory if no path provided
+TARGET_DIR="${TARGET_DIR:-$(pwd)}"
+PROJECT_NAME=$(basename "$TARGET_DIR")
+
+echo -e "${CYAN}🏗️ AI Infrastructure Setup${NC}"
+echo -e "   Target: ${BLUE}$TARGET_DIR${NC}"
+echo ""
+
+# Verify target is a git repo
+if [ ! -d "$TARGET_DIR/.git" ]; then
+    echo -e "${RED}❌ Not a git repository: $TARGET_DIR${NC}"
+    echo "   Run: git init"
+    exit 1
+fi
+
+# Create directories
+create_dir() {
+    local dir="$1"
+    if $DRY_RUN; then
+        echo -e "  ${YELLOW}[DRY]${NC} mkdir -p $dir"
+    else
+        mkdir -p "$dir"
+        echo -e "  ${GREEN}✓${NC} Created: $dir"
+    fi
+}
+
+# Create file from template
+create_from_template() {
+    local template="$1"
+    local target="$2"
+    local force="${3:-false}"
+    
+    if [ -f "$target" ] && [ "$force" = "false" ]; then
+        echo -e "  ${YELLOW}⏭️${NC} Skipped (exists): $target"
+        return
+    fi
+    
+    if $DRY_RUN; then
+        echo -e "  ${YELLOW}[DRY]${NC} Create: $target"
+    else
+        if [ -f "$template" ]; then
+            sed -e "s/{{PROJECT_NAME}}/$PROJECT_NAME/g" \
+                -e "s/{{DATE}}/$DATE/g" \
+                -e "s/{{PROJECT_DESCRIPTION}}/TODO: Add one-liner description/g" \
+                -e "s/{{TECH_STACK}}/TODO: Add tech stack/g" \
+                "$template" > "$target"
+        else
+            cat > "$target"
+        fi
+        echo -e "  ${GREEN}✓${NC} Created: $target"
+    fi
+}
+
+# Create empty markdown with header
+create_empty_doc() {
+    local target="$1"
+    local title="$2"
+    
+    if [ -f "$target" ]; then
+        echo -e "  ${YELLOW}⏭️${NC} Skipped (exists): $target"
+        return
+    fi
+    
+    if $DRY_RUN; then
+        echo -e "  ${YELLOW}[DRY]${NC} Create: $target"
+    else
+        cat > "$target" << EOF
+# $title
+
+> TODO: Add content
+
+---
+
+*Last updated: $DATE*
+EOF
+        echo -e "  ${GREEN}✓${NC} Created: $target"
+    fi
+}
+
+echo -e "${BLUE}📁 Creating directory structure...${NC}"
+create_dir "$TARGET_DIR/.agent"
+create_dir "$TARGET_DIR/.agent/docs"
+create_dir "$TARGET_DIR/.agent/workflows"
+create_dir "$TARGET_DIR/.agent/scripts"
+create_dir "$TARGET_DIR/.agent/templates"
+create_dir "$TARGET_DIR/.agent/prompts"
+echo ""
+
+echo -e "${BLUE}📄 Creating main context file...${NC}"
+if [ -f "$TEMPLATES_DIR/MAIN.md.template" ]; then
+    create_from_template "$TEMPLATES_DIR/MAIN.md.template" "$TARGET_DIR/.agent/MAIN.md" $FORCE
+else
+    # Inline template if templates not available
+    if [ ! -f "$TARGET_DIR/.agent/MAIN.md" ] || [ "$FORCE" = "true" ]; then
+        if $DRY_RUN; then
+            echo -e "  ${YELLOW}[DRY]${NC} Create: $TARGET_DIR/.agent/MAIN.md"
+        else
+            cat > "$TARGET_DIR/.agent/MAIN.md" << 'MAINEOF'
+# PROJECT_NAME — AI Agent Context
+
+> Single Source of Truth for all AI agents
+
+## 🎯 Project Purpose
+
+**One-liner:** TODO: Add description
+
+**Tech Stack:** TODO: Add stack
+
+## 🪝 GUPP: Guaranteed Uninterrupted Progress
+
+### FIRST ACTION — Always:
+```bash
+cat .agent/HOOK.md 2>/dev/null | head -30
+```
+
+| Status | Action |
+|--------|--------|
+| **ACTIVE 🔴** | Execute CURRENT molecule. No new work. |
+| **IDLE ⚪** | Free to accept new tasks. |
+
+## 📏 Thresholds
+
+| Condition | Action |
+|-----------|--------|
+| Task > 3 files | `/decompose` first |
+| 10+ tool calls | Consider `/handoff` |
+| 5+ files changed | Commit immediately |
+
+## 🚫 Never
+
+- ❌ Ignore existing HOOK.md
+- ❌ Edit 5+ files without commit
+- ❌ Skip handoff when limit approaching
+
+---
+
+*Generated by setup-ai-infrastructure.sh*
+MAINEOF
+            sed -i '' "s/PROJECT_NAME/$PROJECT_NAME/g" "$TARGET_DIR/.agent/MAIN.md" 2>/dev/null || \
+            sed -i "s/PROJECT_NAME/$PROJECT_NAME/g" "$TARGET_DIR/.agent/MAIN.md"
+            echo -e "  ${GREEN}✓${NC} Created: $TARGET_DIR/.agent/MAIN.md"
+        fi
+    else
+        echo -e "  ${YELLOW}⏭️${NC} Skipped (exists): $TARGET_DIR/.agent/MAIN.md"
+    fi
+fi
+echo ""
+
+echo -e "${BLUE}🔗 Creating redirect files...${NC}"
+
+# CLAUDE.md redirect
+if [ ! -f "$TARGET_DIR/CLAUDE.md" ] || [ "$FORCE" = "true" ]; then
+    if $DRY_RUN; then
+        echo -e "  ${YELLOW}[DRY]${NC} Create: $TARGET_DIR/CLAUDE.md"
+    else
+        cat > "$TARGET_DIR/CLAUDE.md" << 'EOF'
+# CLAUDE.md → .agent/MAIN.md
+
+> **Redirect.** The actual agent context lives in `.agent/MAIN.md`.
+
+```bash
+cat .agent/MAIN.md
+```
+
+See [.agent/MAIN.md](.agent/MAIN.md) for full context.
+EOF
+        echo -e "  ${GREEN}✓${NC} Created: $TARGET_DIR/CLAUDE.md (redirect)"
+    fi
+else
+    echo -e "  ${YELLOW}⏭️${NC} Skipped (exists): $TARGET_DIR/CLAUDE.md"
+fi
+
+# AGENTS.md redirect (for Codex)
+if [ ! -f "$TARGET_DIR/AGENTS.md" ] || [ "$FORCE" = "true" ]; then
+    if $DRY_RUN; then
+        echo -e "  ${YELLOW}[DRY]${NC} Create: $TARGET_DIR/AGENTS.md"
+    else
+        cat > "$TARGET_DIR/AGENTS.md" << 'EOF'
+# AGENTS.md → .agent/MAIN.md
+
+> **Redirect for Codex.** See `.agent/MAIN.md` for context.
+
+```bash
+cat .agent/MAIN.md
+```
+EOF
+        echo -e "  ${GREEN}✓${NC} Created: $TARGET_DIR/AGENTS.md (redirect)"
+    fi
+else
+    echo -e "  ${YELLOW}⏭️${NC} Skipped (exists): $TARGET_DIR/AGENTS.md"
+fi
+
+# .cursorrules redirect (for Cursor)
+if [ ! -f "$TARGET_DIR/.cursorrules" ] || [ "$FORCE" = "true" ]; then
+    if $DRY_RUN; then
+        echo -e "  ${YELLOW}[DRY]${NC} Create: $TARGET_DIR/.cursorrules"
+    else
+        cat > "$TARGET_DIR/.cursorrules" << 'EOF'
+# .cursorrules → .agent/MAIN.md
+
+Read .agent/MAIN.md for full project context.
+EOF
+        echo -e "  ${GREEN}✓${NC} Created: $TARGET_DIR/.cursorrules (redirect)"
+    fi
+else
+    echo -e "  ${YELLOW}⏭️${NC} Skipped (exists): $TARGET_DIR/.cursorrules"
+fi
+echo ""
+
+echo -e "${BLUE}📚 Creating docs stubs...${NC}"
+create_empty_doc "$TARGET_DIR/.agent/docs/architecture.md" "Architecture"
+create_empty_doc "$TARGET_DIR/.agent/docs/conventions.md" "Conventions"
+create_empty_doc "$TARGET_DIR/.agent/docs/stack.md" "Tech Stack"
+echo ""
+
+echo -e "${BLUE}📋 Summary${NC}"
+echo -e "  ${GREEN}✓${NC} .agent/ infrastructure created"
+echo -e "  ${GREEN}✓${NC} MAIN.md — Single Source of Truth"
+echo -e "  ${GREEN}✓${NC} Redirects: CLAUDE.md, AGENTS.md, .cursorrules"
+echo ""
+
+if $DRY_RUN; then
+    echo -e "${YELLOW}⚠️  Dry run — no files were created${NC}"
+    echo -e "   Remove --dry-run to apply changes"
+else
+    echo -e "${GREEN}✅ AI Infrastructure Ready!${NC}"
+    echo ""
+    echo -e "Next steps:"
+    echo -e "  1. Edit ${CYAN}.agent/MAIN.md${NC} — add project description"
+    echo -e "  2. Edit ${CYAN}.agent/docs/stack.md${NC} — document tech stack"
+    echo -e "  3. Commit: ${CYAN}git add .agent/ CLAUDE.md AGENTS.md .cursorrules && git commit -m 'Add AI infrastructure'${NC}"
+fi

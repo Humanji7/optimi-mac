@@ -535,6 +535,100 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // 🏗️ Setup AI Infrastructure Modal
+    const setupAIModal = document.getElementById('setupAIModal');
+    const setupAIBtn = document.getElementById('setupAIBtn');
+    const closeSetupAIModal = document.getElementById('closeSetupAIModal');
+    const setupAIProjectSelect = document.getElementById('setupAIProjectSelect');
+    const setupAICommand = document.getElementById('setupAICommand');
+    const copySetupAICmd = document.getElementById('copySetupAICmd');
+    const setupAIDryRun = document.getElementById('setupAIDryRun');
+
+    // Get projects needing setup (attention projects without .agent/)
+    function getProjectsNeedingSetup() {
+        const attentionProjects = dashboard.data?.attentionProjects || [];
+        return attentionProjects.filter(p =>
+            p.issues && p.issues.some(issue => issue.includes('No .agent/'))
+        );
+    }
+
+    // Update command based on selected project
+    function updateSetupAICommand() {
+        const selected = setupAIProjectSelect?.value || 'PROJECT';
+        const cmd = `bash ~/projects/optimi-mac/.agent/scripts/setup-ai-infrastructure.sh ~/projects/${selected}`;
+        if (setupAICommand) {
+            setupAICommand.textContent = cmd;
+        }
+        return cmd;
+    }
+
+    // Open Setup AI Modal
+    setupAIBtn?.addEventListener('click', () => {
+        const needsSetup = getProjectsNeedingSetup();
+
+        if (needsSetup.length === 0) {
+            alert('✅ All projects already have .agent/ infrastructure!\n\nNo setup needed.');
+            return;
+        }
+
+        // Populate project dropdown
+        setupAIProjectSelect.innerHTML = needsSetup.map(p =>
+            `<option value="${p.name}">${p.name}</option>`
+        ).join('');
+
+        updateSetupAICommand();
+        setupAIModal?.classList.add('open');
+    });
+
+    // Update command when project selection changes
+    setupAIProjectSelect?.addEventListener('change', updateSetupAICommand);
+
+    // Close Setup AI Modal
+    closeSetupAIModal?.addEventListener('click', () => {
+        setupAIModal?.classList.remove('open');
+    });
+
+    setupAIModal?.addEventListener('click', (e) => {
+        if (e.target === setupAIModal) {
+            setupAIModal.classList.remove('open');
+        }
+    });
+
+    // Copy Setup AI Command
+    copySetupAICmd?.addEventListener('click', () => {
+        const cmd = updateSetupAICommand();
+        navigator.clipboard.writeText(cmd).then(() => {
+            setupAIModal?.classList.remove('open');
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = '📋 Setup command copied! Paste in terminal.';
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        });
+    });
+
+    // Click on command box to copy
+    setupAICommand?.addEventListener('click', () => {
+        const cmd = updateSetupAICommand();
+        navigator.clipboard.writeText(cmd).then(() => {
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = '📋 Command copied!';
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        });
+    });
+
+    // Dry Run button
+    setupAIDryRun?.addEventListener('click', () => {
+        const selected = setupAIProjectSelect?.value || 'PROJECT';
+        const cmd = `bash ~/projects/optimi-mac/.agent/scripts/setup-ai-infrastructure.sh ~/projects/${selected} --dry-run`;
+        navigator.clipboard.writeText(cmd).then(() => {
+            setupAIModal?.classList.remove('open');
+            alert(`🔍 Dry Run command copied!\n\n${cmd}\n\nThis shows what would be created without making changes.`);
+        });
+    });
+
     // HOOK Details Modal
     const hookModal = document.getElementById('hookModal');
     const hookModalBody = document.getElementById('hookModalBody');

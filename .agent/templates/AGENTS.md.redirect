@@ -1,0 +1,24 @@
+# AGENTS.md → .agent/MAIN.md
+
+> **Redirect for Codex and other agents.** The actual context lives in `.agent/MAIN.md`.
+
+## Quick Start
+
+```bash
+cat .agent/MAIN.md
+```
+
+## Single Source of Truth
+
+All AI agents now share unified configuration in `.agent/MAIN.md`:
+
+- **GUPP Protocol** — Guaranteed Uninterrupted Progress
+- **HOOK.md** — Persistent state across sessions
+- **Thresholds** — Commit, decompose, handoff rules
+- **Workflows** — /commands for common tasks
+
+See [.agent/MAIN.md](.agent/MAIN.md) for full context.
+
+---
+
+*This redirect created by setup-ai-infrastructure.sh*

@@ -1,0 +1,27 @@
+# CLAUDE.md → .agent/MAIN.md
+
+> **This is a redirect file.** The actual agent context lives in `.agent/MAIN.md`.
+
+```bash
+# Read the main context:
+cat .agent/MAIN.md
+```
+
+## Why?
+
+All AI agents (Claude Code, Codex, Cursor, etc.) now share a **Single Source of Truth** in `.agent/MAIN.md`.
+
+This eliminates:
+- Duplication between CLAUDE.md, AGENTS.md, .cursorrules
+- Configuration drift
+- Inconsistent agent behavior
+
+## Quick Access
+
+- **Main Context:** [.agent/MAIN.md](.agent/MAIN.md)
+- **Workflows:** [.agent/workflows/](.agent/workflows/)
+- **Extended Docs:** [.agent/docs/](.agent/docs/)
+
+---
+
+*This redirect created by setup-ai-infrastructure.sh*
