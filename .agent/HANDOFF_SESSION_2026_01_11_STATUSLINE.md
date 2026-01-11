@@ -133,31 +133,31 @@ bash ~/projects/optimi-mac/.agent/scripts/setup-ai-infrastructure.sh --force ~/p
 
 ---
 
-## 🔄 Latest Update (00:10)
+## 🔄 Latest Update (00:15)
 
-**README.md Created (eb25050):**
-- Hero section + tagline
-- Quick Start — curl install + dashboard
-- Features grid (6 фич с emoji)
-- Installation options (full clone / StatusLine only)
-- Usage examples с реальными командами
-- Scripts + Workflows reference
-- Contributing guide
+**Hardcoded Paths Removed (e272e7a):**
+- Добавлена `OPTIMI_PATH` константа в начало `app.js`
+- Заменены 9 hardcoded `~/projects/optimi-mac` на `${OPTIMI_PATH}`
+- Dashboard теперь портативный — клонируй куда угодно
 
-**Live:** https://github.com/Humanji7/optimi-mac
-
----
-
-## 🔴 NEXT: Remove Hardcoded Paths
-
-**Цель:** Заменить все `/Users/admin/` на `~` или `$HOME` для портативности
-
-**Файлы для проверки:**
-- `.agent/scripts/*.sh`
-- `.agent/dashboard/app.js`
-- `README.md` (если есть)
+**Как использовать:**
+```javascript
+// app.js строка 7 — изменить при необходимости:
+const OPTIMI_PATH = '~/projects/optimi-mac';
+```
 
 ---
 
-*Handoff updated: 2026-01-12 00:10*
-*README ready, hardcoded paths cleanup in progress*
+## ✅ Готово для Public Release
+
+| Шаг | Статус |
+|-----|--------|
+| README.md | ✅ `eb25050` |
+| Configurable paths | ✅ `e272e7a` |
+| LICENSE | ⚪ (MIT assumed) |
+| Demo GIF | ⚪ |
+
+---
+
+*Handoff updated: 2026-01-12 00:15*
+*Ready for public release testing*
