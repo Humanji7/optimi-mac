@@ -133,15 +133,31 @@ bash ~/projects/optimi-mac/.agent/scripts/setup-ai-infrastructure.sh --force ~/p
 
 ---
 
-## 🔄 Latest Update (23:14)
+## 🔄 Latest Update (00:10)
 
-**Smart Setup AI Script:**
-- Добавлена интеллектуальная детекция конфликтов
-- Автоматический бэкап + merge при обнаружении реального контента
-- Больше не нужно вручную думать про перезапись файлов
-- Протестировано на dry-run с optimi-mac
+**README.md Created (eb25050):**
+- Hero section + tagline
+- Quick Start — curl install + dashboard
+- Features grid (6 фич с emoji)
+- Installation options (full clone / StatusLine only)
+- Usage examples с реальными командами
+- Scripts + Workflows reference
+- Contributing guide
+
+**Live:** https://github.com/Humanji7/optimi-mac
 
 ---
 
-*Handoff updated: 2026-01-11 23:14*
-*Smart conflict detection ready for production*
+## 🔴 NEXT: Remove Hardcoded Paths
+
+**Цель:** Заменить все `/Users/admin/` на `~` или `$HOME` для портативности
+
+**Файлы для проверки:**
+- `.agent/scripts/*.sh`
+- `.agent/dashboard/app.js`
+- `README.md` (если есть)
+
+---
+
+*Handoff updated: 2026-01-12 00:10*
+*README ready, hardcoded paths cleanup in progress*

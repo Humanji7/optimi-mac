@@ -3,6 +3,9 @@
  * Dynamic data rendering and interactions
  */
 
+// ⚙️ Configuration - change this if you cloned to a different location
+const OPTIMI_PATH = '~/projects/optimi-mac';
+
 class HealthDashboard {
     constructor() {
         this.data = null;
@@ -332,7 +335,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Action: Run Health Check
     document.getElementById('runHealthCheck')?.addEventListener('click', () => {
-        const cmd = 'bash ~/projects/optimi-mac/.agent/scripts/projects-health-check.sh';
+        const cmd = `bash ${OPTIMI_PATH}/.agent/scripts/projects-health-check.sh`;
         navigator.clipboard.writeText(cmd).then(() => {
             alert(`📋 Copied to clipboard:\n\n${cmd}\n\nPaste in terminal and run, then refresh this page.`);
         }).catch(() => {
@@ -354,7 +357,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Action: Open Terminal Command
     document.getElementById('openTerminal')?.addEventListener('click', () => {
-        const cmd = 'cd ~/projects/optimi-mac && npx http-server .agent/dashboard -p 8889 -o';
+        const cmd = `cd ${OPTIMI_PATH} && npx http-server .agent/dashboard -p 8889 -o`;
         navigator.clipboard.writeText(cmd).then(() => {
             alert(`📋 Terminal command copied:\n\n${cmd}`);
         }).catch(() => {
@@ -427,7 +430,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const projectsArg = selected.join(' ');
-        const cmd = `bash ~/projects/optimi-mac/.agent/scripts/night-watch.sh ${projectsArg}`;
+        const cmd = `bash ${OPTIMI_PATH}/.agent/scripts/night-watch.sh ${projectsArg}`;
 
         navigator.clipboard.writeText(cmd).then(() => {
             closeNightWatchModal();
@@ -451,7 +454,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const projectsArg = selected.join(' ');
-        const cmd = `bash ~/projects/optimi-mac/.agent/scripts/night-watch.sh --dry-run ${projectsArg}`;
+        const cmd = `bash ${OPTIMI_PATH}/.agent/scripts/night-watch.sh --dry-run ${projectsArg}`;
 
         navigator.clipboard.writeText(cmd).then(() => {
             closeNightWatchModal();
@@ -463,7 +466,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Night Watch Dry Run (from dropdown - all projects)
     document.getElementById('nightWatchDryRun')?.addEventListener('click', () => {
-        const cmd = 'bash ~/projects/optimi-mac/.agent/scripts/night-watch.sh --dry-run';
+        const cmd = `bash ${OPTIMI_PATH}/.agent/scripts/night-watch.sh --dry-run`;
         navigator.clipboard.writeText(cmd).then(() => {
             alert(`🔍 Dry Run command copied!\n\n${cmd}\n\nThis shows what would be refactored without making changes.`);
         }).catch(() => {
@@ -555,7 +558,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Update command based on selected project
     function updateSetupAICommand() {
         const selected = setupAIProjectSelect?.value || 'PROJECT';
-        const cmd = `bash ~/projects/optimi-mac/.agent/scripts/setup-ai-infrastructure.sh ~/projects/${selected}`;
+        const cmd = `bash ${OPTIMI_PATH}/.agent/scripts/setup-ai-infrastructure.sh ~/projects/${selected}`;
         if (setupAICommand) {
             setupAICommand.textContent = cmd;
         }
@@ -622,7 +625,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Dry Run button
     setupAIDryRun?.addEventListener('click', () => {
         const selected = setupAIProjectSelect?.value || 'PROJECT';
-        const cmd = `bash ~/projects/optimi-mac/.agent/scripts/setup-ai-infrastructure.sh ~/projects/${selected} --dry-run`;
+        const cmd = `bash ${OPTIMI_PATH}/.agent/scripts/setup-ai-infrastructure.sh ~/projects/${selected} --dry-run`;
         navigator.clipboard.writeText(cmd).then(() => {
             setupAIModal?.classList.remove('open');
             alert(`🔍 Dry Run command copied!\n\n${cmd}\n\nThis shows what would be created without making changes.`);
@@ -656,7 +659,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                 </div>
                 <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 1rem;">
-                    💡 Run: <code>cat ~/projects/optimi-mac/.agent/HOOK.md</code> for full details
+                    💡 Run: <code>cat ${OPTIMI_PATH}/.agent/HOOK.md</code> for full details
                 </p>
             `;
         }
@@ -732,7 +735,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Triage button - copy bash script command
         if (e.target.classList.contains('triage-btn')) {
             const projectName = e.target.dataset.project;
-            const cmd = `bash ~/projects/optimi-mac/.agent/scripts/generate-triage-prompt.sh ${projectName}`;
+            const cmd = `bash ${OPTIMI_PATH}/.agent/scripts/generate-triage-prompt.sh ${projectName}`;
 
             navigator.clipboard.writeText(cmd).then(() => {
                 // Show brief toast instead of alert
