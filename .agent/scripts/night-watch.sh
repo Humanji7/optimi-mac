@@ -87,11 +87,12 @@ for PROJECT in $WORKING_PROJECTS; do
     
     cd "$PROJECT_PATH"
     
-    # Get recent changes
-    CHANGED_FILES=$(git diff --name-only HEAD~5 2>/dev/null | head -n $MAX_FILES_PER_PROJECT)
+    # Get recent changes - ONLY code files (filter out images, docs, etc.)
+    CODE_EXTENSIONS="js|ts|tsx|jsx|py|rb|go|rs|java|c|cpp|h|hpp|css|scss|sass|less|vue|svelte|php|sh|bash|zsh"
+    CHANGED_FILES=$(git diff --name-only HEAD~5 2>/dev/null | grep -E "\.($CODE_EXTENSIONS)$" | head -n $MAX_FILES_PER_PROJECT)
     
     if [[ -z "$CHANGED_FILES" ]]; then
-        echo "   ℹ️ No recent file changes, skipping" | tee -a "$LOG_FILE"
+        echo "   ℹ️ No code files changed recently, skipping" | tee -a "$LOG_FILE"
         continue
     fi
     
