@@ -472,6 +472,69 @@ document.addEventListener('DOMContentLoaded', () => {
         actionsDropdown?.classList.remove('open');
     });
 
+    // 📊 StatusLine Modal
+    const statusLineModal = document.getElementById('statusLineModal');
+    const statusLineBtn = document.getElementById('statusLineBtn');
+    const closeStatusLineModal = document.getElementById('closeStatusLineModal');
+    const copyStatusLineCmd = document.getElementById('copyStatusLineCmd');
+    const installStatusLine = document.getElementById('installStatusLine');
+    const statusLineCommand = document.getElementById('statusLineCommand');
+
+    const installCmd = 'curl -fsSL https://raw.githubusercontent.com/Humanji7/optimi-mac/main/.agent/scripts/install-statusline.sh | bash';
+
+    // Open StatusLine Modal
+    statusLineBtn?.addEventListener('click', () => {
+        statusLineModal?.classList.add('open');
+    });
+
+    // Close StatusLine Modal
+    closeStatusLineModal?.addEventListener('click', () => {
+        statusLineModal?.classList.remove('open');
+    });
+
+    statusLineModal?.addEventListener('click', (e) => {
+        if (e.target === statusLineModal) {
+            statusLineModal.classList.remove('open');
+        }
+    });
+
+    // Copy command
+    copyStatusLineCmd?.addEventListener('click', () => {
+        navigator.clipboard.writeText(installCmd).then(() => {
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = '📋 Install command copied!';
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        });
+    });
+
+    // Click on command box to copy
+    statusLineCommand?.addEventListener('click', () => {
+        navigator.clipboard.writeText(installCmd).then(() => {
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = '📋 Command copied!';
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        });
+    });
+
+    // Install Now button - copy and show instructions
+    installStatusLine?.addEventListener('click', () => {
+        navigator.clipboard.writeText(installCmd).then(() => {
+            statusLineModal?.classList.remove('open');
+            alert(
+                '⚡ Install command copied!\n\n' +
+                '1. Open Terminal\n' +
+                '2. Paste the command (Cmd+V)\n' +
+                '3. Press Enter\n' +
+                '4. Restart Claude Code\n\n' +
+                'StatusLine will show context usage with color alerts!'
+            );
+        });
+    });
+
     // HOOK Details Modal
     const hookModal = document.getElementById('hookModal');
     const hookModalBody = document.getElementById('hookModalBody');

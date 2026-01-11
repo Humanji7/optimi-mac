@@ -657,6 +657,86 @@ td {
     box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
 }
 
+/* StatusLine Button */
+.statusline-btn {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-sm) var(--spacing-md);
+    background: linear-gradient(135deg, #064e3b 0%, #065f46 100%);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    border-radius: var(--radius-md);
+    color: #6ee7b7;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.statusline-btn:hover {
+    background: linear-gradient(135deg, #065f46 0%, #047857 100%);
+    border-color: rgba(52, 211, 153, 0.5);
+    color: white;
+    transform: scale(1.02);
+    box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+}
+
+/* StatusLine Modal */
+.statusline-modal {
+    max-width: 500px;
+}
+
+.statusline-intro {
+    color: var(--text-secondary);
+    margin-bottom: var(--spacing-md);
+}
+
+.statusline-preview {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+    background: var(--bg-darker);
+    padding: var(--spacing-md);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--spacing-md);
+    font-family: 'SF Mono', Monaco, monospace;
+    font-size: 0.8rem;
+}
+
+.preview-green {
+    color: #22c55e;
+}
+
+.preview-yellow {
+    color: #eab308;
+}
+
+.preview-red {
+    color: #ef4444;
+    background: rgba(239, 68, 68, 0.1);
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+.command-box {
+    background: var(--bg-darker);
+    padding: var(--spacing-md);
+    border-radius: var(--radius-md);
+    font-family: 'SF Mono', Monaco, monospace;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    overflow-x: auto;
+    white-space: pre;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: all var(--transition-fast);
+}
+
+.command-box:hover {
+    border-color: var(--accent-primary);
+    background: rgba(16, 185, 129, 0.05);
+}
+
 /* Actions Container & Dropdown */
 .actions-container {
     display: flex;

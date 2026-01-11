@@ -172,6 +172,10 @@
                     title="Run overnight refactoring on Working projects">
                     🌙 Night Watch
                 </button>
+                <button class="statusline-btn" id="statusLineBtn"
+                    title="Install Smart StatusLine for Claude Code">
+                    📊 StatusLine
+                </button>
                 <div class="dropdown" id="actionsDropdown">
                     <button class="dropdown-toggle" id="actionsToggle">
                         ⚡ Actions ▾
@@ -236,6 +240,37 @@
                     <button class="modal-btn secondary" id="nightWatchDryRunBtn">🔍 Dry Run</button>
                     <button class="modal-btn primary" id="nightWatchRunBtn">🌙 Start</button>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- StatusLine Install Modal -->
+    <div class="modal-overlay" id="statusLineModal">
+        <div class="modal statusline-modal">
+            <div class="modal-header">
+                <h3>📊 Smart StatusLine</h3>
+                <button class="modal-close" id="closeStatusLineModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p class="statusline-intro">
+                    Shows context usage with color-coded alerts.
+                    Warns at 90%+ with sound & notification.
+                </p>
+                <div class="statusline-preview">
+                    <code class="preview-green">✓ 45% [████░░░░░░] 90k/200k</code>
+                    <code class="preview-yellow">⚠️ 82% [████████░░] 165k/200k</code>
+                    <code class="preview-red">🚨 92% [█████████░] 185k/200k ROLLOVER!</code>
+                </div>
+                <div class="install-steps">
+                    <p><strong>One-click install:</strong></p>
+                    <div class="command-box" id="statusLineCommand">
+curl -fsSL https://raw.githubusercontent.com/Humanji7/optimi-mac/main/.agent/scripts/install-statusline.sh | bash
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn secondary" id="copyStatusLineCmd">📋 Copy Command</button>
+                <button class="modal-btn primary" id="installStatusLine">⚡ Install Now</button>
             </div>
         </div>
     </div>
