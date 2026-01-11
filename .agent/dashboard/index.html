@@ -178,6 +178,9 @@
                 <button class="setup-ai-btn" id="setupAIBtn" title="Setup unified AI infrastructure">
                     🏗️ Setup AI
                 </button>
+                <button class="settings-btn" id="settingsBtn" title="Dashboard settings">
+                    ⚙️
+                </button>
                 <div class="dropdown" id="actionsDropdown">
                     <button class="dropdown-toggle" id="actionsToggle">
                         ⚡ Actions ▾
@@ -323,6 +326,43 @@ AGENTS.md             # → Redirect to .agent/MAIN.md
             <div class="modal-footer">
                 <button class="modal-btn secondary" id="setupAIDryRun">🔍 Dry Run</button>
                 <button class="modal-btn primary" id="copySetupAICmd">📋 Copy Command</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div class="modal-overlay" id="settingsModal">
+        <div class="modal settings-modal">
+            <div class="modal-header">
+                <h3>⚙️ Settings</h3>
+                <button class="modal-close" id="closeSettingsModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="settings-field">
+                    <label for="settingsOptimiPath">
+                        optimi-mac path
+                        <span class="status-indicator" id="statusOptimiPath"></span>
+                    </label>
+                    <input type="text" id="settingsOptimiPath" class="settings-input"
+                        placeholder="~/projects/optimi-mac">
+                </div>
+                <div class="settings-field">
+                    <label for="settingsProjectsPath">
+                        Projects folder
+                        <span class="status-indicator" id="statusProjectsPath"></span>
+                    </label>
+                    <input type="text" id="settingsProjectsPath" class="settings-input" placeholder="~/projects">
+                </div>
+                <div class="settings-field">
+                    <label for="settingsGithubRepo">
+                        GitHub repo
+                    </label>
+                    <input type="text" id="settingsGithubRepo" class="settings-input" placeholder="Humanji7/optimi-mac">
+                </div>
+            </div>
+            <div class="modal-footer settings-footer">
+                <span class="auto-save-hint">Auto-saved</span>
+                <button class="reset-link" id="resetSettingsBtn">Reset to defaults ↺</button>
             </div>
         </div>
     </div>

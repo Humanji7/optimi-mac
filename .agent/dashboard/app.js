@@ -3,8 +3,88 @@
  * Dynamic data rendering and interactions
  */
 
-// ⚙️ Configuration - change this if you cloned to a different location
-const OPTIMI_PATH = '~/projects/optimi-mac';
+// ============================================================================
+// ⚙️ Configuration System
+// Config loaded from config.json, overrides stored in localStorage
+// ============================================================================
+
+let configDefault = null;
+let configOverrides = {};
+
+/**
+ * Load configuration from config.json and localStorage
+ */
+async function loadConfig() {
+    try {
+        // Load default config from file
+        const response = await fetch('config.json');
+        if (response.ok) {
+            configDefault = await response.json();
+        }
+    } catch (e) {
+        console.warn('Could not load config.json, using fallback');
+    }
+
+    // Fallback if config.json not found
+    if (!configDefault) {
+        configDefault = {
+            optimiPath: '~/projects/optimi-mac',
+            projectsPath: '~/projects',
+            githubRepo: 'Humanji7/optimi-mac'
+        };
+    }
+
+    // Load overrides from localStorage
+    try {
+        const stored = localStorage.getItem('dashboardConfigOverrides');
+        if (stored) {
+            configOverrides = JSON.parse(stored);
+        }
+    } catch (e) {
+        console.warn('Could not load config overrides from localStorage');
+    }
+}
+
+/**
+ * Get config value (override takes priority over default)
+ */
+function getConfig(key) {
+    if (key) {
+        return configOverrides[key] !== undefined ? configOverrides[key] : configDefault?.[key];
+    }
+    // Return merged config
+    return { ...configDefault, ...configOverrides };
+}
+
+/**
+ * Set config override (saved to localStorage)
+ */
+function setConfigOverride(key, value) {
+    configOverrides[key] = value;
+    localStorage.setItem('dashboardConfigOverrides', JSON.stringify(configOverrides));
+}
+
+/**
+ * Reset config to defaults (clear localStorage overrides)
+ */
+function resetConfig() {
+    configOverrides = {};
+    localStorage.removeItem('dashboardConfigOverrides');
+}
+
+/**
+ * Check if a path looks valid (basic heuristic)
+ */
+function isValidPath(path) {
+    if (!path || typeof path !== 'string') return false;
+    // Basic check: starts with ~/ or / and has reasonable length
+    return (path.startsWith('~/') || path.startsWith('/')) && path.length >= 3;
+}
+
+// Legacy compatibility: OPTIMI_PATH getter
+Object.defineProperty(window, 'OPTIMI_PATH', {
+    get: () => getConfig('optimiPath')
+});
 
 class HealthDashboard {
     constructor() {
@@ -14,6 +94,7 @@ class HealthDashboard {
 
     async init() {
         try {
+            await loadConfig(); // Load config first
             await this.loadData();
             this.render();
         } catch (error) {
@@ -767,5 +848,115 @@ document.addEventListener('DOMContentLoaded', () => {
             const projectName = e.target.dataset.project;
             dashboard.restoreProject(projectName);
         }
+    });
+
+    // ⚙️ Settings Modal
+    const settingsModal = document.getElementById('settingsModal');
+    const settingsBtn = document.getElementById('settingsBtn');
+    const closeSettingsModal = document.getElementById('closeSettingsModal');
+    const resetSettingsBtn = document.getElementById('resetSettingsBtn');
+
+    // Settings inputs
+    const settingsOptimiPath = document.getElementById('settingsOptimiPath');
+    const settingsProjectsPath = document.getElementById('settingsProjectsPath');
+    const settingsGithubRepo = document.getElementById('settingsGithubRepo');
+
+    // Status indicators
+    const statusOptimiPath = document.getElementById('statusOptimiPath');
+    const statusProjectsPath = document.getElementById('statusProjectsPath');
+
+    /**
+     * Update status indicator based on path validity
+     */
+    function updatePathStatus(input, statusEl) {
+        const value = input.value.trim();
+        if (!value) {
+            statusEl.className = 'status-indicator';
+            return;
+        }
+        if (isValidPath(value)) {
+            statusEl.className = 'status-indicator valid';
+        } else {
+            statusEl.className = 'status-indicator invalid';
+        }
+    }
+
+    /**
+     * Populate settings modal with current config values
+     */
+    function populateSettings() {
+        const config = getConfig();
+        settingsOptimiPath.value = config.optimiPath || '';
+        settingsProjectsPath.value = config.projectsPath || '';
+        settingsGithubRepo.value = config.githubRepo || '';
+
+        // Update status indicators
+        updatePathStatus(settingsOptimiPath, statusOptimiPath);
+        updatePathStatus(settingsProjectsPath, statusProjectsPath);
+    }
+
+    /**
+     * Save setting on blur (auto-save)
+     */
+    function saveSettingOnBlur(input, configKey, statusEl) {
+        input.addEventListener('blur', () => {
+            const value = input.value.trim();
+            const defaultValue = configDefault?.[configKey] || '';
+
+            // If value matches default, remove override
+            if (value === defaultValue) {
+                delete configOverrides[configKey];
+                localStorage.setItem('dashboardConfigOverrides', JSON.stringify(configOverrides));
+            } else if (value) {
+                setConfigOverride(configKey, value);
+            }
+
+            // Update status indicator if applicable
+            if (statusEl) {
+                updatePathStatus(input, statusEl);
+            }
+        });
+
+        // Also update status on input
+        if (statusEl) {
+            input.addEventListener('input', () => {
+                updatePathStatus(input, statusEl);
+            });
+        }
+    }
+
+    // Setup auto-save for each field
+    saveSettingOnBlur(settingsOptimiPath, 'optimiPath', statusOptimiPath);
+    saveSettingOnBlur(settingsProjectsPath, 'projectsPath', statusProjectsPath);
+    saveSettingOnBlur(settingsGithubRepo, 'githubRepo', null);
+
+    // Open Settings Modal
+    settingsBtn?.addEventListener('click', () => {
+        populateSettings();
+        settingsModal?.classList.add('open');
+    });
+
+    // Close Settings Modal
+    closeSettingsModal?.addEventListener('click', () => {
+        settingsModal?.classList.remove('open');
+    });
+
+    settingsModal?.addEventListener('click', (e) => {
+        if (e.target === settingsModal) {
+            settingsModal.classList.remove('open');
+        }
+    });
+
+    // Reset to defaults
+    resetSettingsBtn?.addEventListener('click', () => {
+        resetConfig();
+        populateSettings();
+
+        // Show toast
+        const toast = document.createElement('div');
+        toast.className = 'toast';
+        toast.textContent = '↺ Settings reset to defaults';
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 2000);
     });
 });
