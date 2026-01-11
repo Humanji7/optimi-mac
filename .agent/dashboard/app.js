@@ -363,39 +363,105 @@ document.addEventListener('DOMContentLoaded', () => {
         actionsDropdown?.classList.remove('open');
     });
 
-    // 🌙 Night Watch Button
-    document.getElementById('nightWatchBtn')?.addEventListener('click', () => {
-        const workingCount = dashboard.data?.workingProjects?.length || 0;
+    // 🌙 Night Watch Modal
+    const nightWatchModal = document.getElementById('nightWatchModal');
+    const projectChecklist = document.getElementById('projectChecklist');
+    const selectAllCheckbox = document.getElementById('selectAllProjects');
 
-        if (workingCount === 0) {
+    // Open Night Watch Modal
+    document.getElementById('nightWatchBtn')?.addEventListener('click', () => {
+        const workingProjects = dashboard.data?.workingProjects || [];
+
+        if (workingProjects.length === 0) {
             alert('✅ No working projects to refactor.\n\nNight Watch runs on projects with uncommitted changes.');
             return;
         }
 
-        const confirm = window.confirm(
-            `🌙 Night Watch\n\n` +
-            `This will run code-simplifier on ${workingCount} working project(s):\n` +
-            `${(dashboard.data?.workingProjects || []).map(p => `  • ${p.name}`).join('\n')}\n\n` +
-            `⚠️ All changes go to separate branches (safe)\n\n` +
-            `Continue?`
-        );
+        // Populate checkboxes
+        projectChecklist.innerHTML = workingProjects.map(project => `
+            <label class="project-checkbox">
+                <input type="checkbox" name="nightWatchProject" value="${project.name}" checked>
+                <span class="project-name">${project.name}</span>
+                ${project.hook ? '<span class="badge active">🔴 HOOK</span>' : ''}
+            </label>
+        `).join('');
 
-        if (confirm) {
-            const cmd = 'bash ~/projects/optimi-mac/.agent/scripts/night-watch.sh';
-            navigator.clipboard.writeText(cmd).then(() => {
-                alert(
-                    `🌙 Night Watch command copied!\n\n` +
-                    `Paste in terminal to start:\n${cmd}\n\n` +
-                    `Tomorrow morning, review with:\n` +
-                    `git log refactor/night-watch-$(date +%Y%m%d) --oneline`
-                );
-            }).catch(() => {
-                alert(`Run this command:\n\n${cmd}`);
-            });
-        }
+        selectAllCheckbox.checked = true;
+        nightWatchModal?.classList.add('open');
     });
 
-    // Night Watch Dry Run
+    // Select All toggle
+    selectAllCheckbox?.addEventListener('change', (e) => {
+        const checkboxes = projectChecklist.querySelectorAll('input[type="checkbox"]');
+        checkboxes.forEach(cb => cb.checked = e.target.checked);
+    });
+
+    // Update Select All when individual checkboxes change
+    projectChecklist?.addEventListener('change', () => {
+        const checkboxes = projectChecklist.querySelectorAll('input[type="checkbox"]');
+        const allChecked = [...checkboxes].every(cb => cb.checked);
+        const someChecked = [...checkboxes].some(cb => cb.checked);
+        selectAllCheckbox.checked = allChecked;
+        selectAllCheckbox.indeterminate = someChecked && !allChecked;
+    });
+
+    // Close Night Watch Modal
+    const closeNightWatchModal = () => nightWatchModal?.classList.remove('open');
+    document.getElementById('closeNightWatchModal')?.addEventListener('click', closeNightWatchModal);
+    nightWatchModal?.addEventListener('click', (e) => {
+        if (e.target === nightWatchModal) closeNightWatchModal();
+    });
+
+    // Get selected projects
+    function getSelectedProjects() {
+        const checkboxes = projectChecklist.querySelectorAll('input[type="checkbox"]:checked');
+        return [...checkboxes].map(cb => cb.value);
+    }
+
+    // Night Watch Run Button
+    document.getElementById('nightWatchRunBtn')?.addEventListener('click', () => {
+        const selected = getSelectedProjects();
+        if (selected.length === 0) {
+            alert('Please select at least one project.');
+            return;
+        }
+
+        const projectsArg = selected.join(' ');
+        const cmd = `bash ~/projects/optimi-mac/.agent/scripts/night-watch.sh ${projectsArg}`;
+
+        navigator.clipboard.writeText(cmd).then(() => {
+            closeNightWatchModal();
+            alert(
+                `🌙 Night Watch command copied!\n\n` +
+                `Selected: ${selected.length} project(s)\n\n` +
+                `Paste in terminal to start:\n${cmd}\n\n` +
+                `Review tomorrow:\ngit log refactor/night-watch-$(date +%Y%m%d) --oneline`
+            );
+        }).catch(() => {
+            alert(`Run this command:\n\n${cmd}`);
+        });
+    });
+
+    // Night Watch Dry Run Button (in modal)
+    document.getElementById('nightWatchDryRunBtn')?.addEventListener('click', () => {
+        const selected = getSelectedProjects();
+        if (selected.length === 0) {
+            alert('Please select at least one project.');
+            return;
+        }
+
+        const projectsArg = selected.join(' ');
+        const cmd = `bash ~/projects/optimi-mac/.agent/scripts/night-watch.sh --dry-run ${projectsArg}`;
+
+        navigator.clipboard.writeText(cmd).then(() => {
+            closeNightWatchModal();
+            alert(`🔍 Dry Run command copied!\n\n${cmd}\n\nThis shows what would be refactored.`);
+        }).catch(() => {
+            alert(`Run this command:\n\n${cmd}`);
+        });
+    });
+
+    // Night Watch Dry Run (from dropdown - all projects)
     document.getElementById('nightWatchDryRun')?.addEventListener('click', () => {
         const cmd = 'bash ~/projects/optimi-mac/.agent/scripts/night-watch.sh --dry-run';
         navigator.clipboard.writeText(cmd).then(() => {

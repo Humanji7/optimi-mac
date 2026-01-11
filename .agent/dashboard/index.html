@@ -211,6 +211,35 @@
         </div>
     </div>
 
+    <!-- Night Watch Modal -->
+    <div class="modal-overlay" id="nightWatchModal">
+        <div class="modal night-watch-modal">
+            <div class="modal-header">
+                <h3>🌙 Night Watch</h3>
+                <button class="modal-close" id="closeNightWatchModal">&times;</button>
+            </div>
+            <div class="modal-body" id="nightWatchModalBody">
+                <p class="night-watch-intro">Select projects for overnight refactoring:</p>
+                <div class="project-checklist" id="projectChecklist">
+                    <!-- Dynamic checkboxes -->
+                </div>
+                <div class="night-watch-info">
+                    <p>⚠️ All changes go to separate branches</p>
+                    <p>📁 Branch: <code>refactor/night-watch-YYYYMMDD</code></p>
+                </div>
+            </div>
+            <div class="modal-footer night-watch-footer">
+                <label class="select-all-label">
+                    <input type="checkbox" id="selectAllProjects"> Select all
+                </label>
+                <div class="modal-actions">
+                    <button class="modal-btn secondary" id="nightWatchDryRunBtn">🔍 Dry Run</button>
+                    <button class="modal-btn primary" id="nightWatchRunBtn">🌙 Start</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="app.js"></script>
 </body>
 

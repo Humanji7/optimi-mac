@@ -2,10 +2,13 @@
 #
 # 🌙 Night Watch — Safe Overnight Refactoring
 #
-# Runs code-simplifier subagent on all "Working" projects
+# Runs code-simplifier subagent on selected "Working" projects
 # All changes go to separate branches for morning review
 #
-# Usage: bash night-watch.sh [--dry-run]
+# Usage: 
+#   bash night-watch.sh [--dry-run] [project1 project2 ...]
+#   bash night-watch.sh pointg                    # Single project
+#   bash night-watch.sh --dry-run pointg sphere-777  # Dry run on specific projects
 #
 
 set -e
@@ -17,12 +20,22 @@ SIMPLIFIER_PROMPT="$HOME/.claude/commands/code-simplifier/simplify.md"
 LOG_FILE="$PROJECTS_DIR/optimi-mac/.agent/logs/night-watch-$(date +%Y%m%d).log"
 DRY_RUN=false
 MAX_FILES_PER_PROJECT=3  # Safety limit
+SELECTED_PROJECTS=()
 
 # Parse args
-if [[ "$1" == "--dry-run" ]]; then
-    DRY_RUN=true
-    echo "🔍 DRY RUN MODE — no actual changes will be made"
-fi
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        --dry-run)
+            DRY_RUN=true
+            echo "🔍 DRY RUN MODE — no actual changes will be made"
+            shift
+            ;;
+        *)
+            SELECTED_PROJECTS+=("$1")
+            shift
+            ;;
+    esac
+done
 
 # Create logs dir
 mkdir -p "$(dirname "$LOG_FILE")"
@@ -53,16 +66,25 @@ if [[ ! -f "$SIMPLIFIER_PROMPT" ]]; then
     exit 1
 fi
 
-# Get working projects from dashboard data
-WORKING_PROJECTS=$(jq -r '.workingProjects[]?.name // empty' "$DATA_JSON" 2>/dev/null)
+# Determine which projects to process
+if [[ ${#SELECTED_PROJECTS[@]} -gt 0 ]]; then
+    # Use provided project names
+    WORKING_PROJECTS="${SELECTED_PROJECTS[*]}"
+    echo "📋 Selected projects:" | tee -a "$LOG_FILE"
+else
+    # Get all working projects from dashboard data
+    WORKING_PROJECTS=$(jq -r '.workingProjects[]?.name // empty' "$DATA_JSON" 2>/dev/null)
+    echo "📋 Found working projects:" | tee -a "$LOG_FILE"
+fi
 
 if [[ -z "$WORKING_PROJECTS" ]]; then
-    echo "✅ No working projects found — nothing to refactor" | tee -a "$LOG_FILE"
+    echo "✅ No projects to process" | tee -a "$LOG_FILE"
     exit 0
 fi
 
-echo "📋 Found working projects:" | tee -a "$LOG_FILE"
-echo "$WORKING_PROJECTS" | while read -r name; do echo "   - $name"; done | tee -a "$LOG_FILE"
+echo "$WORKING_PROJECTS" | tr ' ' '\n' | while read -r name; do 
+    [[ -n "$name" ]] && echo "   - $name"
+done | tee -a "$LOG_FILE"
 echo "" | tee -a "$LOG_FILE"
 
 # Process each project
