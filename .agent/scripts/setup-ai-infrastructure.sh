@@ -198,8 +198,85 @@ echo ""
 
 echo -e "${BLUE}🔗 Creating redirect files...${NC}"
 
-# CLAUDE.md redirect
-if [ ! -f "$TARGET_DIR/CLAUDE.md" ] || [ "$FORCE" = "true" ]; then
+# =============================================================================
+# 🧠 SMART CONFLICT DETECTION
+# =============================================================================
+
+# Check if file has real content (not a redirect stub)
+has_real_content() {
+    local file="$1"
+    local min_lines=15  # Redirect stubs are ~5-10 lines
+    
+    if [ ! -f "$file" ]; then
+        echo "empty"
+        return
+    fi
+    
+    local line_count=$(wc -l < "$file" | tr -d ' ')
+    local has_redirect=$(grep -c "→ .agent/MAIN.md" "$file" 2>/dev/null || echo "0")
+    
+    if [ "$has_redirect" -gt 0 ]; then
+        echo "redirect"
+    elif [ "$line_count" -gt "$min_lines" ]; then
+        echo "content"
+    else
+        echo "minimal"
+    fi
+}
+
+# Smart backup and migrate content
+smart_migrate() {
+    local file="$1"
+    local backup_name="$2"
+    local backup_path="$TARGET_DIR/.agent/$backup_name"
+    
+    if $DRY_RUN; then
+        echo -e "  ${CYAN}[SMART]${NC} Would backup: $file → $backup_path"
+        echo -e "  ${CYAN}[SMART]${NC} Would merge content into .agent/MAIN.md"
+    else
+        cp "$file" "$backup_path"
+        echo -e "  ${GREEN}✓${NC} Backed up: $file → $backup_path"
+        
+        # Append content to MAIN.md if it exists
+        if [ -f "$TARGET_DIR/.agent/MAIN.md" ]; then
+            echo "" >> "$TARGET_DIR/.agent/MAIN.md"
+            echo "---" >> "$TARGET_DIR/.agent/MAIN.md"
+            echo "" >> "$TARGET_DIR/.agent/MAIN.md"
+            echo "## 📥 Migrated from $(basename $file)" >> "$TARGET_DIR/.agent/MAIN.md"
+            echo "" >> "$TARGET_DIR/.agent/MAIN.md"
+            cat "$file" >> "$TARGET_DIR/.agent/MAIN.md"
+            echo -e "  ${GREEN}✓${NC} Content merged into .agent/MAIN.md"
+        fi
+    fi
+}
+
+# CLAUDE.md - SMART handling
+CLAUDE_STATUS=$(has_real_content "$TARGET_DIR/CLAUDE.md")
+
+if [ "$CLAUDE_STATUS" = "content" ]; then
+    echo -e "  ${YELLOW}⚠️  Found CLAUDE.md with real content (${CLAUDE_STATUS})${NC}"
+    smart_migrate "$TARGET_DIR/CLAUDE.md" "CLAUDE_MIGRATED.md"
+    # Now create redirect
+    if ! $DRY_RUN; then
+        cat > "$TARGET_DIR/CLAUDE.md" << 'EOF'
+# CLAUDE.md → .agent/MAIN.md
+
+> **Redirect.** The actual agent context lives in `.agent/MAIN.md`.
+
+```bash
+cat .agent/MAIN.md
+```
+
+See [.agent/MAIN.md](.agent/MAIN.md) for full context.
+
+---
+*Original content migrated to .agent/CLAUDE_MIGRATED.md*
+EOF
+        echo -e "  ${GREEN}✓${NC} Created: $TARGET_DIR/CLAUDE.md (redirect + migration note)"
+    fi
+elif [ "$CLAUDE_STATUS" = "redirect" ]; then
+    echo -e "  ${GREEN}✓${NC} CLAUDE.md already a redirect — skipped"
+elif [ ! -f "$TARGET_DIR/CLAUDE.md" ] || [ "$FORCE" = "true" ]; then
     if $DRY_RUN; then
         echo -e "  ${YELLOW}[DRY]${NC} Create: $TARGET_DIR/CLAUDE.md"
     else
@@ -216,12 +293,32 @@ See [.agent/MAIN.md](.agent/MAIN.md) for full context.
 EOF
         echo -e "  ${GREEN}✓${NC} Created: $TARGET_DIR/CLAUDE.md (redirect)"
     fi
-else
-    echo -e "  ${YELLOW}⏭️${NC} Skipped (exists): $TARGET_DIR/CLAUDE.md"
 fi
 
-# AGENTS.md redirect (for Codex)
-if [ ! -f "$TARGET_DIR/AGENTS.md" ] || [ "$FORCE" = "true" ]; then
+# AGENTS.md - SMART handling
+AGENTS_STATUS=$(has_real_content "$TARGET_DIR/AGENTS.md")
+
+if [ "$AGENTS_STATUS" = "content" ]; then
+    echo -e "  ${YELLOW}⚠️  Found AGENTS.md with real content${NC}"
+    smart_migrate "$TARGET_DIR/AGENTS.md" "AGENTS_MIGRATED.md"
+    if ! $DRY_RUN; then
+        cat > "$TARGET_DIR/AGENTS.md" << 'EOF'
+# AGENTS.md → .agent/MAIN.md
+
+> **Redirect for Codex.** See `.agent/MAIN.md` for context.
+
+```bash
+cat .agent/MAIN.md
+```
+
+---
+*Original content migrated to .agent/AGENTS_MIGRATED.md*
+EOF
+        echo -e "  ${GREEN}✓${NC} Created: $TARGET_DIR/AGENTS.md (redirect + migration note)"
+    fi
+elif [ "$AGENTS_STATUS" = "redirect" ]; then
+    echo -e "  ${GREEN}✓${NC} AGENTS.md already a redirect — skipped"
+elif [ ! -f "$TARGET_DIR/AGENTS.md" ] || [ "$FORCE" = "true" ]; then
     if $DRY_RUN; then
         echo -e "  ${YELLOW}[DRY]${NC} Create: $TARGET_DIR/AGENTS.md"
     else
@@ -236,12 +333,28 @@ cat .agent/MAIN.md
 EOF
         echo -e "  ${GREEN}✓${NC} Created: $TARGET_DIR/AGENTS.md (redirect)"
     fi
-else
-    echo -e "  ${YELLOW}⏭️${NC} Skipped (exists): $TARGET_DIR/AGENTS.md"
 fi
 
-# .cursorrules redirect (for Cursor)
-if [ ! -f "$TARGET_DIR/.cursorrules" ] || [ "$FORCE" = "true" ]; then
+# .cursorrules - SMART handling
+CURSORRULES_STATUS=$(has_real_content "$TARGET_DIR/.cursorrules")
+
+if [ "$CURSORRULES_STATUS" = "content" ]; then
+    echo -e "  ${YELLOW}⚠️  Found .cursorrules with real content${NC}"
+    smart_migrate "$TARGET_DIR/.cursorrules" "cursorrules_MIGRATED.txt"
+    if ! $DRY_RUN; then
+        cat > "$TARGET_DIR/.cursorrules" << 'EOF'
+# .cursorrules → .agent/MAIN.md
+
+Read .agent/MAIN.md for full project context.
+
+---
+Original content migrated to .agent/cursorrules_MIGRATED.txt
+EOF
+        echo -e "  ${GREEN}✓${NC} Created: $TARGET_DIR/.cursorrules (redirect + migration note)"
+    fi
+elif [ "$CURSORRULES_STATUS" = "redirect" ]; then
+    echo -e "  ${GREEN}✓${NC} .cursorrules already a redirect — skipped"
+elif [ ! -f "$TARGET_DIR/.cursorrules" ] || [ "$FORCE" = "true" ]; then
     if $DRY_RUN; then
         echo -e "  ${YELLOW}[DRY]${NC} Create: $TARGET_DIR/.cursorrules"
     else
@@ -252,8 +365,6 @@ Read .agent/MAIN.md for full project context.
 EOF
         echo -e "  ${GREEN}✓${NC} Created: $TARGET_DIR/.cursorrules (redirect)"
     fi
-else
-    echo -e "  ${YELLOW}⏭️${NC} Skipped (exists): $TARGET_DIR/.cursorrules"
 fi
 echo ""
 
