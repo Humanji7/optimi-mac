@@ -36,6 +36,13 @@
 - Флаги: `--dry-run`, `--force`
 - Шаблоны: `MAIN.md.template`, `CLAUDE.md.redirect`, `AGENTS.md.redirect`
 
+**🧠 Smart Conflict Detection (NEW):**
+- Автоматически определяет реальный контент vs redirect stub
+- Если файл >15 строк → бэкапит в `.agent/FILENAME_MIGRATED.md`
+- Мержит контент в `.agent/MAIN.md` автоматически
+- Работает для: `CLAUDE.md`, `AGENTS.md`, `.cursorrules`
+- Показывает понятные статусы: `content`, `redirect`, `empty`
+
 **Dashboard кнопка:** 🏗️ Setup AI
 - Модалка с селектором проектов
 - Показывает только проекты без `.agent/`
@@ -126,5 +133,15 @@ bash ~/projects/optimi-mac/.agent/scripts/setup-ai-infrastructure.sh --force ~/p
 
 ---
 
-*Handoff updated: 2026-01-11 22:50*
-*All features tested and committed*
+## 🔄 Latest Update (23:14)
+
+**Smart Setup AI Script:**
+- Добавлена интеллектуальная детекция конфликтов
+- Автоматический бэкап + merge при обнаружении реального контента
+- Больше не нужно вручную думать про перезапись файлов
+- Протестировано на dry-run с optimi-mac
+
+---
+
+*Handoff updated: 2026-01-11 23:14*
+*Smart conflict detection ready for production*
