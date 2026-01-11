@@ -1,6 +1,6 @@
 # HANDOFF: StatusLine + AI Infrastructure
 
-## Дата: 2026-01-11 ~22:30
+## Дата: 2026-01-11 ~22:50
 
 ## ✅ Выполнено в этой сессии
 
@@ -28,65 +28,103 @@
 - Opus планирует → Sonnet имплементирует
 - Экономия ~60-70% токенов на имплементации
 
----
+### 5. AI Infrastructure Setup (ГОТОВО) ⭐ NEW
 
-## 🔴 СЛЕДУЮЩАЯ ЗАДАЧА: AI Infrastructure Setup
+**Скрипт:** `.agent/scripts/setup-ai-infrastructure.sh`
+- Создаёт единую AI-инфраструктуру в `.agent/MAIN.md`
+- Генерирует redirects: `CLAUDE.md`, `AGENTS.md`, `.cursorrules`
+- Флаги: `--dry-run`, `--force`
+- Шаблоны: `MAIN.md.template`, `CLAUDE.md.redirect`, `AGENTS.md.redirect`
 
-### Проблема
-Разные агенты читают разные файлы:
-- Claude Code → `CLAUDE.md`
-- Codex → `AGENTS.md`
-- Antigravity → `workflow/`, `rules/`
+**Dashboard кнопка:** 🏗️ Setup AI
+- Модалка с селектором проектов
+- Показывает только проекты без `.agent/`
+- Команды: Copy Command, Dry Run
+- Скриншот: `.playwright-mcp/setup-ai-modal.png`
 
-Это создаёт дублирование и рассинхрон.
-
-### Решение
-Single Source of Truth в `.agent/`:
-
+**Что создаёт скрипт:**
 ```
 project/
 ├── .agent/
-│   ├── MAIN.md              # ≤150 строк, единственный источник
-│   ├── docs/
-│   │   ├── stack.md
-│   │   ├── architecture.md
-│   │   └── conventions.md
-│   ├── tests/
+│   ├── MAIN.md           # Single Source of Truth
+│   ├── docs/             # architecture.md, conventions.md, stack.md
 │   ├── workflows/
-│   └── archive/
-│
-├── CLAUDE.md      # redirect → .agent/MAIN.md
-├── AGENTS.md      # redirect → .agent/MAIN.md
-└── .cursorrules   # redirect → .agent/MAIN.md
+│   ├── scripts/
+│   └── prompts/
+├── CLAUDE.md      # → redirect to .agent/MAIN.md
+├── AGENTS.md      # → redirect to .agent/MAIN.md
+└── .cursorrules   # → redirect to .agent/MAIN.md
 ```
-
-### Что нужно сделать
-1. Создать скрипт `setup-ai-infrastructure.sh`
-2. Добавить кнопку **🏗️ Setup AI** в dashboard
-3. Создать шаблон MAIN.md (≤150 строк)
-4. Создать redirect-шаблоны для CLAUDE.md, AGENTS.md
 
 ---
 
-## Файлы изменённые в сессии
+## 📂 Файлы изменённые в сессии
 
 ```
-~/.claude/
-├── settings.json           # statusLine → statusline-smart.sh
-├── statusline-smart.sh     # NEW
-├── scripts/auto-rollover.sh # NEW
-└── skills/smart-delegate/SKILL.md # NEW
-
 ~/projects/optimi-mac/
-├── .agent/dashboard/       # StatusLine кнопка
-├── .agent/scripts/install-statusline.sh # NEW
-└── .claude/                # Копии скриптов для GitHub
+├── .agent/scripts/
+│   └── setup-ai-infrastructure.sh     # NEW (274 lines)
+├── .agent/templates/
+│   ├── MAIN.md.template               # NEW
+│   ├── CLAUDE.md.redirect             # NEW
+│   └── AGENTS.md.redirect             # NEW
+├── .agent/dashboard/
+│   ├── index.html                     # +53 lines (Setup AI modal)
+│   ├── app.js                         # +102 lines (JS handlers)
+│   └── styles.css                     # +91 lines (Setup AI styles)
+└── .playwright-mcp/
+    └── setup-ai-modal.png             # Screenshot
+
+~/.claude/
+├── statusline-smart.sh                # From previous session
+├── scripts/auto-rollover.sh
+└── skills/smart-delegate/SKILL.md
 ```
 
 ---
 
-## Команда для продолжения
+## 🎯 Использование
 
+### Setup AI Infrastructure
+
+**Из dashboard:**
+1. `npx http-server .agent/dashboard -p 8889 -o`
+2. Кликнуть **🏗️ Setup AI**
+3. Выбрать проект из списка
+4. **Copy Command** → вставить в терминал
+
+**Напрямую:**
+```bash
+# Dry run (preview)
+bash ~/projects/optimi-mac/.agent/scripts/setup-ai-infrastructure.sh --dry-run ~/projects/PROJECT_NAME
+
+# Реальный запуск
+bash ~/projects/optimi-mac/.agent/scripts/setup-ai-infrastructure.sh ~/projects/PROJECT_NAME
+
+# С перезаписью существующих файлов
+bash ~/projects/optimi-mac/.agent/scripts/setup-ai-infrastructure.sh --force ~/projects/PROJECT_NAME
 ```
-Продолжи: реализуй AI Infrastructure Setup — скрипт + кнопка в dashboard
-```
+
+---
+
+## ✅ Готово к использованию
+
+1. ✅ **StatusLine** — установлен и работает
+2. ✅ **Night Watch** — кнопка в dashboard
+3. ✅ **Setup AI** — скрипт + кнопка в dashboard
+4. ✅ Все закоммичено
+
+---
+
+## 📊 Статистика
+
+- **Сессия:** ~2.5 часа
+- **Коммитов:** 2
+- **Новых файлов:** 7
+- **Изменённых файлов:** 3
+- **Строк кода:** ~600
+
+---
+
+*Handoff updated: 2026-01-11 22:50*
+*All features tested and committed*
