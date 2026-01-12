@@ -713,6 +713,121 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // 🧪 Sandbox Test Modal
+    const sandboxModal = document.getElementById('sandboxModal');
+    const sandboxBtn = document.getElementById('sandboxBtn');
+    const closeSandboxModal = document.getElementById('closeSandboxModal');
+    const sandboxProjectSelect = document.getElementById('sandboxProjectSelect');
+    const sandboxCommand = document.getElementById('sandboxCommand');
+    const copySandboxCmd = document.getElementById('copySandboxCmd');
+    const runSandboxTest = document.getElementById('runSandboxTest');
+
+    // Get all projects for sandbox testing
+    function getAllProjects() {
+        const healthy = dashboard.data?.healthyProjects || [];
+        const working = dashboard.data?.workingProjects || [];
+        const attention = dashboard.data?.attentionProjects || [];
+        const allProjects = [
+            ...healthy.map(p => p.name),
+            ...working.map(p => p.name),
+            ...attention.map(p => p.name)
+        ];
+        // Remove duplicates
+        return [...new Set(allProjects)].sort();
+    }
+
+    // Get selected sandbox mode
+    function getSandboxMode() {
+        const modeRadio = document.querySelector('input[name="sandboxMode"]:checked');
+        return modeRadio?.value || 'lint';
+    }
+
+    // Update sandbox command based on selected project and mode
+    function updateSandboxCommand() {
+        const selected = sandboxProjectSelect?.value || 'PROJECT';
+        const mode = getSandboxMode();
+        const smokeFlag = mode === 'smoke' ? ' --smoke' : '';
+        const cmd = `bash ${OPTIMI_PATH}/.agent/scripts/sandbox-test.sh ~/projects/${selected}${smokeFlag}`;
+        if (sandboxCommand) {
+            sandboxCommand.textContent = cmd;
+        }
+        return cmd;
+    }
+
+    // Open Sandbox Modal
+    sandboxBtn?.addEventListener('click', () => {
+        const projects = getAllProjects();
+
+        if (projects.length === 0) {
+            alert('❌ No projects found.\n\nRun health check first.');
+            return;
+        }
+
+        // Populate project dropdown
+        sandboxProjectSelect.innerHTML = projects.map(name =>
+            `<option value="${name}">${name}</option>`
+        ).join('');
+
+        updateSandboxCommand();
+        sandboxModal?.classList.add('open');
+    });
+
+    // Update command when project selection or mode changes
+    sandboxProjectSelect?.addEventListener('change', updateSandboxCommand);
+    document.querySelectorAll('input[name="sandboxMode"]').forEach(radio => {
+        radio.addEventListener('change', updateSandboxCommand);
+    });
+
+    // Close Sandbox Modal
+    closeSandboxModal?.addEventListener('click', () => {
+        sandboxModal?.classList.remove('open');
+    });
+
+    sandboxModal?.addEventListener('click', (e) => {
+        if (e.target === sandboxModal) {
+            sandboxModal.classList.remove('open');
+        }
+    });
+
+    // Copy Sandbox Command
+    copySandboxCmd?.addEventListener('click', () => {
+        const cmd = updateSandboxCommand();
+        navigator.clipboard.writeText(cmd).then(() => {
+            sandboxModal?.classList.remove('open');
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = '📋 Sandbox command copied!';
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        });
+    });
+
+    // Click on command box to copy
+    sandboxCommand?.addEventListener('click', () => {
+        const cmd = updateSandboxCommand();
+        navigator.clipboard.writeText(cmd).then(() => {
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = '📋 Command copied!';
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        });
+    });
+
+    // Run Sandbox Test button
+    runSandboxTest?.addEventListener('click', () => {
+        const cmd = updateSandboxCommand();
+        const mode = getSandboxMode();
+        navigator.clipboard.writeText(cmd).then(() => {
+            sandboxModal?.classList.remove('open');
+            alert(
+                `🧪 Sandbox Test command copied!\n\n` +
+                `Mode: ${mode === 'smoke' ? 'Lint + Smoke (Claude agent)' : 'Lint only (fast)'}\n\n` +
+                `Paste in terminal to run:\n${cmd}`
+            );
+        });
+    });
+
     // HOOK Details Modal
     const hookModal = document.getElementById('hookModal');
     const hookModalBody = document.getElementById('hookModalBody');

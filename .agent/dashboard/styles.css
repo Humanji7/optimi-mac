@@ -766,6 +766,105 @@ td {
     border-color: var(--accent-purple);
 }
 
+/* Sandbox Test Button */
+.sandbox-btn {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-sm) var(--spacing-md);
+    background: linear-gradient(135deg, #134e4a 0%, #0f766e 100%);
+    border: 1px solid rgba(20, 184, 166, 0.3);
+    border-radius: var(--radius-md);
+    color: #5eead4;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.sandbox-btn:hover {
+    background: linear-gradient(135deg, #0f766e 0%, #0d9488 100%);
+    border-color: rgba(45, 212, 191, 0.5);
+    color: white;
+    transform: scale(1.02);
+    box-shadow: 0 0 20px rgba(20, 184, 166, 0.3);
+}
+
+/* Sandbox Test Modal */
+.sandbox-modal {
+    max-width: 520px;
+}
+
+.sandbox-intro {
+    color: var(--text-secondary);
+    margin-bottom: var(--spacing-md);
+    line-height: 1.5;
+}
+
+.sandbox-mode-info {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-md);
+    padding: var(--spacing-sm);
+    background: rgba(20, 184, 166, 0.1);
+    border-radius: var(--radius-md);
+}
+
+.mode-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.mode-item .mode-icon {
+    font-size: 1.25rem;
+}
+
+.mode-item div {
+    display: flex;
+    flex-direction: column;
+}
+
+.mode-item strong {
+    font-size: 0.875rem;
+    color: var(--text-primary);
+}
+
+.mode-item span {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.sandbox-mode-selector {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+    margin-bottom: var(--spacing-sm);
+    padding: var(--spacing-sm);
+    background: var(--bg-tertiary);
+    border-radius: var(--radius-md);
+}
+
+.sandbox-mode-selector label {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-xs);
+    cursor: pointer;
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    transition: color var(--transition-fast);
+}
+
+.sandbox-mode-selector label:hover {
+    color: var(--text-primary);
+}
+
+.sandbox-mode-selector input[type="radio"] {
+    accent-color: var(--accent-purple);
+}
+
 /* StatusLine Modal */
 .statusline-modal {
     max-width: 500px;

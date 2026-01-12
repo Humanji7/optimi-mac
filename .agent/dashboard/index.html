@@ -178,6 +178,9 @@
                 <button class="setup-ai-btn" id="setupAIBtn" title="Setup unified AI infrastructure">
                     🏗️ Setup AI
                 </button>
+                <button class="sandbox-btn" id="sandboxBtn" title="Test AI infrastructure in sandbox">
+                    🧪 Sandbox
+                </button>
                 <button class="settings-btn" id="settingsBtn" title="Dashboard settings">
                     ⚙️
                 </button>
@@ -363,6 +366,62 @@ AGENTS.md             # → Redirect to .agent/MAIN.md
             <div class="modal-footer settings-footer">
                 <span class="auto-save-hint">Auto-saved</span>
                 <button class="reset-link" id="resetSettingsBtn">Reset to defaults ↺</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sandbox Test Modal -->
+    <div class="modal-overlay" id="sandboxModal">
+        <div class="modal sandbox-modal">
+            <div class="modal-header">
+                <h3>🧪 Sandbox Test</h3>
+                <button class="modal-close" id="closeSandboxModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p class="sandbox-intro">
+                    Test AI infrastructure in isolated sandbox environment.
+                </p>
+                <div class="sandbox-mode-info">
+                    <div class="mode-item">
+                        <span class="mode-icon">🔍</span>
+                        <div>
+                            <strong>Lint</strong>
+                            <span>Fast structure check, no agent calls</span>
+                        </div>
+                    </div>
+                    <div class="mode-item">
+                        <span class="mode-icon">🧪</span>
+                        <div>
+                            <strong>Smoke</strong>
+                            <span>Runs Claude agent in sandbox</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="install-steps">
+                    <p><strong>For selected project:</strong></p>
+                    <div class="project-selector">
+                        <select id="sandboxProjectSelect">
+                            <!-- Dynamic options -->
+                        </select>
+                    </div>
+                    <div class="sandbox-mode-selector">
+                        <label>
+                            <input type="radio" name="sandboxMode" value="lint" checked>
+                            🔍 Lint only (fast)
+                        </label>
+                        <label>
+                            <input type="radio" name="sandboxMode" value="smoke">
+                            🧪 Lint + Smoke (Claude agent)
+                        </label>
+                    </div>
+                    <div class="command-box" id="sandboxCommand">
+                        bash ~/projects/optimi-mac/.agent/scripts/sandbox-test.sh ~/projects/PROJECT
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn secondary" id="copySandboxCmd">📋 Copy</button>
+                <button class="modal-btn primary" id="runSandboxTest">▶️ Run</button>
             </div>
         </div>
     </div>
