@@ -23,7 +23,7 @@
 | [night-watch.sh](scripts/night-watch.sh) | Night Watch — Safe Overnight Refactoring | 2026-01-11 |
 | [projects-health-check.sh](scripts/projects-health-check.sh) | Projects Health Check | 2026-01-11 |
 | [sandbox-test.sh](scripts/sandbox-test.sh) | Sandbox Test — MVP валидация AI-инфраструктуры проекта | 2026-01-12 |
-| [setup-ai-infrastructure.sh](scripts/setup-ai-infrastructure.sh) | setup-ai-infrastructure.sh | 2026-01-11 |
+| [setup-ai-infrastructure.sh](scripts/setup-ai-infrastructure.sh) | setup-ai-infrastructure.sh | 2026-01-12 |
 
 ## Templates
 
@@ -45,4 +45,4 @@
 
 ---
 
-_Last generated: 2026-01-12 22:36_
+_Last generated: 2026-01-12 23:07_

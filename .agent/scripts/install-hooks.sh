@@ -1,11 +1,25 @@
 #!/bin/bash
 # install-hooks.sh — Install git hooks for .agent/ automation
+# Usage: install-hooks.sh [target-project-dir]
 
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-PROJECT_ROOT="$(dirname "$(dirname "$SCRIPT_DIR")")"
+
+# Accept target dir as argument, or derive from script location
+if [[ -n "${1:-}" ]]; then
+    PROJECT_ROOT="$1"
+else
+    PROJECT_ROOT="$(dirname "$(dirname "$SCRIPT_DIR")")"
+fi
+
 HOOKS_DIR="$PROJECT_ROOT/.git/hooks"
+
+# Verify .git exists
+if [[ ! -d "$PROJECT_ROOT/.git" ]]; then
+    echo "❌ Not a git repository: $PROJECT_ROOT"
+    exit 1
+fi
 
 echo "📦 Installing git hooks..."
 

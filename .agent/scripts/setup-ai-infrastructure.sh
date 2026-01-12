@@ -374,10 +374,23 @@ create_empty_doc "$TARGET_DIR/.agent/docs/conventions.md" "Conventions"
 create_empty_doc "$TARGET_DIR/.agent/docs/stack.md" "Tech Stack"
 echo ""
 
+echo -e "${BLUE}🪝 Installing git hooks...${NC}"
+if [ -f "$SCRIPT_DIR/install-hooks.sh" ]; then
+    if $DRY_RUN; then
+        echo -e "  ${YELLOW}[DRY]${NC} Would install git hooks"
+    else
+        bash "$SCRIPT_DIR/install-hooks.sh" "$TARGET_DIR"
+    fi
+else
+    echo -e "  ${YELLOW}⏭️${NC} install-hooks.sh not found, skipping"
+fi
+echo ""
+
 echo -e "${BLUE}📋 Summary${NC}"
 echo -e "  ${GREEN}✓${NC} .agent/ infrastructure created"
 echo -e "  ${GREEN}✓${NC} MAIN.md — Single Source of Truth"
 echo -e "  ${GREEN}✓${NC} Redirects: CLAUDE.md, AGENTS.md, .cursorrules"
+echo -e "  ${GREEN}✓${NC} Git hooks installed"
 echo ""
 
 if $DRY_RUN; then
