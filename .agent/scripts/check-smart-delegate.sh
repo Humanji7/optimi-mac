@@ -30,8 +30,8 @@ if [[ $PROMPT_LENGTH -gt 200 ]] && [[ "$MODEL" == "opus" ]]; then
     echo "⚠️ SMART DELEGATE: Task с длинным промптом ($PROMPT_LENGTH chars) использует Opus." >> "$LOG_FILE"
     echo "   Рекомендуется: model: \"sonnet\" для экономии токенов." >> "$LOG_FILE"
 
-    # Return JSON with reason (non-blocking warning)
-    echo '{"decision": "approve", "reason": "⚠️ Smart Delegate: Consider using model: sonnet for implementation tasks"}'
+    # Return JSON with reason (non-blocking warning) — Claude Code format
+    echo "{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"allow\",\"permissionDecisionReason\":\"⚠️ Smart Delegate: Consider using model: sonnet for implementation tasks (prompt: ${PROMPT_LENGTH} chars)\"}}"
     exit 0
 fi
 

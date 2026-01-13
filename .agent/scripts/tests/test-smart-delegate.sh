@@ -39,8 +39,9 @@ run_test() {
         fi
     fi
 
-    DECISION=$(echo "$RESULT" | jq -r '.decision // empty' 2>/dev/null || true)
-    REASON=$(echo "$RESULT" | jq -r '.reason // empty' 2>/dev/null || true)
+    # Support both old format (.decision) and new Claude Code format (.hookSpecificOutput.permissionDecision)
+    DECISION=$(echo "$RESULT" | jq -r '.hookSpecificOutput.permissionDecision // .decision // empty' 2>/dev/null || true)
+    REASON=$(echo "$RESULT" | jq -r '.hookSpecificOutput.permissionDecisionReason // .reason // empty' 2>/dev/null || true)
 
     if [[ "$DECISION" == "$expected_decision" ]]; then
         if [[ -n "$expected_reason_contains" && "$REASON" != *"$expected_reason_contains"* ]]; then
@@ -88,16 +89,16 @@ run_test "Short prompt with opus" \
     '{"tool_name": "Task", "tool_input": {"prompt": "Short task"}}' \
     "silent_approve"
 
-# Test 5: Long prompt with opus should warn but approve
+# Test 5: Long prompt with opus should warn but allow
 run_test "Long prompt with opus warns" \
     '{"tool_name": "Task", "tool_input": {"prompt": "This is a very long implementation prompt that exceeds 200 characters and should trigger the Smart Delegate warning because we are using the default Opus model instead of Sonnet which would be more cost-effective"}}' \
-    "approve" \
+    "allow" \
     "Smart Delegate"
 
 # Test 6: Long prompt with explicit opus should warn
 run_test "Explicit opus with long prompt warns" \
     '{"tool_name": "Task", "tool_input": {"model": "opus", "prompt": "This is another very long implementation prompt that exceeds 200 characters and explicitly uses opus model which should definitely trigger the Smart Delegate warning mechanism. Adding more text to ensure we pass the threshold limit for testing purposes and verify proper hook behavior."}}' \
-    "approve" \
+    "allow" \
     "Smart Delegate"
 
 # Test 7: Empty tool_input should not crash
