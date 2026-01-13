@@ -882,6 +882,52 @@ td {
     accent-color: var(--accent-purple);
 }
 
+/* Sandbox Footer with Result Buttons */
+.sandbox-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.sandbox-result-btns {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+}
+
+.result-label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.result-btn {
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-sm);
+    background: var(--bg-tertiary);
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    opacity: 0.6;
+}
+
+.result-btn:hover {
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+.result-btn.passed:hover {
+    background: rgba(20, 184, 166, 0.2);
+    border-color: #2dd4bf;
+}
+
+.result-btn.failed:hover {
+    background: rgba(239, 68, 68, 0.2);
+    border-color: var(--status-danger);
+}
+
 /* StatusLine Modal */
 .statusline-modal {
     max-width: 500px;

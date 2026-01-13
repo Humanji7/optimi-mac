@@ -884,6 +884,42 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // Mark Sandbox Result buttons
+    const markSandboxPassed = document.getElementById('markSandboxPassed');
+    const markSandboxFailed = document.getElementById('markSandboxFailed');
+
+    markSandboxPassed?.addEventListener('click', () => {
+        const selected = sandboxProjectSelect?.value;
+        const mode = getSandboxMode();
+        if (selected) {
+            saveSandboxResult(selected, 'passed', mode);
+            sandboxModal?.classList.remove('open');
+            dashboard.render(); // Refresh tables to show new status
+
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = `✅ ${selected} marked as passed (${mode})`;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+    });
+
+    markSandboxFailed?.addEventListener('click', () => {
+        const selected = sandboxProjectSelect?.value;
+        const mode = getSandboxMode();
+        if (selected) {
+            saveSandboxResult(selected, 'failed', mode);
+            sandboxModal?.classList.remove('open');
+            dashboard.render(); // Refresh tables to show new status
+
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = `❌ ${selected} marked as failed`;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+    });
+
     // HOOK Details Modal
     const hookModal = document.getElementById('hookModal');
     const hookModalBody = document.getElementById('hookModalBody');

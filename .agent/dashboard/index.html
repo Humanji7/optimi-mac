@@ -422,9 +422,16 @@ AGENTS.md             # → Redirect to .agent/MAIN.md
                     </div>
                 </div>
             </div>
-            <div class="modal-footer">
-                <button class="modal-btn secondary" id="copySandboxCmd">📋 Copy</button>
-                <button class="modal-btn primary" id="runSandboxTest">▶️ Run</button>
+            <div class="modal-footer sandbox-footer">
+                <div class="sandbox-result-btns">
+                    <span class="result-label">Result:</span>
+                    <button class="result-btn passed" id="markSandboxPassed" title="Mark test as passed">✅</button>
+                    <button class="result-btn failed" id="markSandboxFailed" title="Mark test as failed">❌</button>
+                </div>
+                <div class="modal-actions">
+                    <button class="modal-btn secondary" id="copySandboxCmd">📋 Copy</button>
+                    <button class="modal-btn primary" id="runSandboxTest">▶️ Run</button>
+                </div>
             </div>
         </div>
     </div>
