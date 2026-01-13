@@ -361,9 +361,15 @@ body::before {
 
 .projects-section {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    grid-template-columns: 1fr;
     gap: var(--spacing-lg);
     margin-bottom: var(--spacing-xl);
+}
+
+@media (min-width: 1200px) {
+    .projects-section {
+        grid-template-columns: 1fr 1fr;
+    }
 }
 
 .table-container {
@@ -376,6 +382,7 @@ body::before {
     box-shadow: var(--glass-shadow);
     animation: fadeInUp 0.5s ease 0.4s forwards;
     opacity: 0;
+    overflow-x: auto;
 }
 
 .table-container h2 {
@@ -1082,10 +1089,6 @@ td {
 
     .summary-grid {
         grid-template-columns: repeat(2, 1fr);
-    }
-
-    .projects-section {
-        grid-template-columns: 1fr;
     }
 
     .card-value {
