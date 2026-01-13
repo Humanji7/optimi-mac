@@ -6,17 +6,18 @@
 # ============================================================================
 
 set -e
+source "$(dirname "$0")/utils.sh"
 
 PROJECT_NAME="$1"
-PROJECT_PATH="$HOME/projects/$PROJECT_NAME"
+PROJECT_PATH="$PROJECTS_DIR/$PROJECT_NAME"
 
 if [[ -z "$PROJECT_NAME" ]]; then
-    echo "❌ Usage: $0 <project-name>"
+    log_fail "Usage: $0 <project-name>"
     exit 1
 fi
 
 if [[ ! -d "$PROJECT_PATH" ]]; then
-    echo "❌ Project not found: $PROJECT_PATH"
+    log_fail "Project not found: $PROJECT_PATH"
     exit 1
 fi
 
