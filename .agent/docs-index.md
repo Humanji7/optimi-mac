@@ -24,7 +24,7 @@
 | [night-watch.sh](scripts/night-watch.sh) | Night Watch — Safe Overnight Refactoring (Smart Delegate Edition) | 2026-01-13 |
 | [projects-health-check.sh](scripts/projects-health-check.sh) | Projects Health Check | 2026-01-11 |
 | [sandbox-test.sh](scripts/sandbox-test.sh) | Sandbox Test — MVP валидация AI-инфраструктуры проекта | 2026-01-13 |
-| [setup-ai-infrastructure.sh](scripts/setup-ai-infrastructure.sh) | setup-ai-infrastructure.sh | 2026-01-12 |
+| [setup-ai-infrastructure.sh](scripts/setup-ai-infrastructure.sh) | setup-ai-infrastructure.sh | 2026-01-13 |
 | [utils.sh](scripts/utils.sh) | Common utilities for .agent scripts | 2026-01-13 |
 
 ## Templates
@@ -47,4 +47,4 @@
 
 ---
 
-_Last generated: 2026-01-13 21:40_
+_Last generated: 2026-01-13 21:47_

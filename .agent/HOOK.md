@@ -40,14 +40,14 @@ validate_project "name"  # returns 0/1
 - [x] Использовать validate_project
 - [x] Тест: `.agent/scripts/sandbox-test.sh optimi-mac`
 
-### M2: setup-ai-infrastructure.sh (12KB) ⚪ PENDING
-- [ ] Добавить source utils.sh
-- [ ] Удалить локальные определения цветов
-- [ ] Заменить echo на log_* функции
-- [ ] Использовать validate_project
-- [ ] Тест: `.agent/scripts/setup-ai-infrastructure.sh --help`
+### M2: setup-ai-infrastructure.sh (12KB) ✅ DONE
+- [x] Добавить source utils.sh
+- [x] Удалить локальные определения цветов
+- [x] Заменить echo на log_* функции
+- [x] Использовать validate_project
+- [x] Тест: `.agent/scripts/setup-ai-infrastructure.sh --help`
 
-### M3: projects-health-check.sh (9KB) ⚪ PENDING
+### M3: projects-health-check.sh (9KB) 🔴 IN_PROGRESS
 - [ ] Добавить source utils.sh
 - [ ] Удалить локальные определения цветов
 - [ ] Заменить echo на log_* функции
@@ -60,11 +60,11 @@ validate_project "name"  # returns 0/1
 | Molecule | Status | Commit |
 |----------|--------|--------|
 | M1 | ✅ | b67fba1 |
-| M2 | ⚪ | - |
+| M2 | ✅ | pending |
 | M3 | ⚪ | - |
 
 ---
 
-_Next: M2 setup-ai-infrastructure.sh_
+_Next: M3 projects-health-check.sh_
 
 <!-- Global hooks enabled: 2026-01-13 -->

@@ -7,13 +7,8 @@
 
 set -e
 
-# Colors
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-BLUE='\033[0;34m'
-RED='\033[0;31m'
-CYAN='\033[0;36m'
-NC='\033[0m'
+# Source utilities
+source "$(dirname "$0")/utils.sh"
 
 # Configuration
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -58,7 +53,7 @@ echo ""
 
 # Verify target is a git repo
 if [ ! -d "$TARGET_DIR/.git" ]; then
-    echo -e "${RED}❌ Not a git repository: $TARGET_DIR${NC}"
+    log_fail "Not a git repository: $TARGET_DIR"
     echo "   Run: git init"
     exit 1
 fi
@@ -70,7 +65,7 @@ create_dir() {
         echo -e "  ${YELLOW}[DRY]${NC} mkdir -p $dir"
     else
         mkdir -p "$dir"
-        echo -e "  ${GREEN}✓${NC} Created: $dir"
+        log_pass "Created: $dir"
     fi
 }
 
@@ -81,7 +76,7 @@ create_from_template() {
     local force="${3:-false}"
     
     if [ -f "$target" ] && [ "$force" = "false" ]; then
-        echo -e "  ${YELLOW}⏭️${NC} Skipped (exists): $target"
+        log_warn "Skipped (exists): $target"
         return
     fi
     
@@ -97,7 +92,7 @@ create_from_template() {
         else
             cat > "$target"
         fi
-        echo -e "  ${GREEN}✓${NC} Created: $target"
+        log_pass "Created: $target"
     fi
 }
 
@@ -107,7 +102,7 @@ create_empty_doc() {
     local title="$2"
     
     if [ -f "$target" ]; then
-        echo -e "  ${YELLOW}⏭️${NC} Skipped (exists): $target"
+        log_warn "Skipped (exists): $target"
         return
     fi
     
@@ -123,11 +118,11 @@ create_empty_doc() {
 
 *Last updated: $DATE*
 EOF
-        echo -e "  ${GREEN}✓${NC} Created: $target"
+        log_pass "Created: $target"
     fi
 }
 
-echo -e "${BLUE}📁 Creating directory structure...${NC}"
+log_header "📁 Creating directory structure"
 create_dir "$TARGET_DIR/.agent"
 create_dir "$TARGET_DIR/.agent/docs"
 create_dir "$TARGET_DIR/.agent/workflows"
@@ -136,7 +131,7 @@ create_dir "$TARGET_DIR/.agent/templates"
 create_dir "$TARGET_DIR/.agent/prompts"
 echo ""
 
-echo -e "${BLUE}📄 Creating main context file...${NC}"
+log_header "📄 Creating main context file"
 if [ -f "$TEMPLATES_DIR/MAIN.md.template" ]; then
     create_from_template "$TEMPLATES_DIR/MAIN.md.template" "$TARGET_DIR/.agent/MAIN.md" $FORCE
 else
@@ -188,15 +183,15 @@ cat .agent/HOOK.md 2>/dev/null | head -30
 MAINEOF
             sed -i '' "s/PROJECT_NAME/$PROJECT_NAME/g" "$TARGET_DIR/.agent/MAIN.md" 2>/dev/null || \
             sed -i "s/PROJECT_NAME/$PROJECT_NAME/g" "$TARGET_DIR/.agent/MAIN.md"
-            echo -e "  ${GREEN}✓${NC} Created: $TARGET_DIR/.agent/MAIN.md"
+                log_pass "Created: $TARGET_DIR/.agent/MAIN.md"
         fi
     else
-        echo -e "  ${YELLOW}⏭️${NC} Skipped (exists): $TARGET_DIR/.agent/MAIN.md"
+        log_warn "Skipped (exists): $TARGET_DIR/.agent/MAIN.md"
     fi
 fi
 echo ""
 
-echo -e "${BLUE}🔗 Creating redirect files...${NC}"
+log_header "🔗 Creating redirect files"
 
 # =============================================================================
 # 🧠 SMART CONFLICT DETECTION
@@ -213,7 +208,7 @@ has_real_content() {
     fi
     
     local line_count=$(wc -l < "$file" | tr -d ' ')
-    local has_redirect=$(grep -c "→ .agent/MAIN.md" "$file" 2>/dev/null || echo "0")
+    local has_redirect=$(grep -c "→ .agent/MAIN.md" "$file" 2>/dev/null | tr -d ' \n' || echo "0")
     
     if [ "$has_redirect" -gt 0 ]; then
         echo "redirect"
@@ -235,7 +230,7 @@ smart_migrate() {
         echo -e "  ${CYAN}[SMART]${NC} Would merge content into .agent/MAIN.md"
     else
         cp "$file" "$backup_path"
-        echo -e "  ${GREEN}✓${NC} Backed up: $file → $backup_path"
+        log_pass "Backed up: $file → $backup_path"
         
         # Append content to MAIN.md if it exists
         if [ -f "$TARGET_DIR/.agent/MAIN.md" ]; then
@@ -245,7 +240,7 @@ smart_migrate() {
             echo "## 📥 Migrated from $(basename $file)" >> "$TARGET_DIR/.agent/MAIN.md"
             echo "" >> "$TARGET_DIR/.agent/MAIN.md"
             cat "$file" >> "$TARGET_DIR/.agent/MAIN.md"
-            echo -e "  ${GREEN}✓${NC} Content merged into .agent/MAIN.md"
+            log_pass "Content merged into .agent/MAIN.md"
         fi
     fi
 }
@@ -254,7 +249,7 @@ smart_migrate() {
 CLAUDE_STATUS=$(has_real_content "$TARGET_DIR/CLAUDE.md")
 
 if [ "$CLAUDE_STATUS" = "content" ]; then
-    echo -e "  ${YELLOW}⚠️  Found CLAUDE.md with real content (${CLAUDE_STATUS})${NC}"
+    log_warn "Found CLAUDE.md with real content (${CLAUDE_STATUS})"
     smart_migrate "$TARGET_DIR/CLAUDE.md" "CLAUDE_MIGRATED.md"
     # Now create redirect
     if ! $DRY_RUN; then
@@ -272,10 +267,10 @@ See [.agent/MAIN.md](.agent/MAIN.md) for full context.
 ---
 *Original content migrated to .agent/CLAUDE_MIGRATED.md*
 EOF
-        echo -e "  ${GREEN}✓${NC} Created: $TARGET_DIR/CLAUDE.md (redirect + migration note)"
+        log_pass "Created: $TARGET_DIR/CLAUDE.md (redirect + migration note)"
     fi
 elif [ "$CLAUDE_STATUS" = "redirect" ]; then
-    echo -e "  ${GREEN}✓${NC} CLAUDE.md already a redirect — skipped"
+    log_pass "CLAUDE.md already a redirect — skipped"
 elif [ ! -f "$TARGET_DIR/CLAUDE.md" ] || [ "$FORCE" = "true" ]; then
     if $DRY_RUN; then
         echo -e "  ${YELLOW}[DRY]${NC} Create: $TARGET_DIR/CLAUDE.md"
@@ -291,7 +286,7 @@ cat .agent/MAIN.md
 
 See [.agent/MAIN.md](.agent/MAIN.md) for full context.
 EOF
-        echo -e "  ${GREEN}✓${NC} Created: $TARGET_DIR/CLAUDE.md (redirect)"
+        log_pass "Created: $TARGET_DIR/CLAUDE.md (redirect)"
     fi
 fi
 
@@ -299,7 +294,7 @@ fi
 AGENTS_STATUS=$(has_real_content "$TARGET_DIR/AGENTS.md")
 
 if [ "$AGENTS_STATUS" = "content" ]; then
-    echo -e "  ${YELLOW}⚠️  Found AGENTS.md with real content${NC}"
+    log_warn "Found AGENTS.md with real content"
     smart_migrate "$TARGET_DIR/AGENTS.md" "AGENTS_MIGRATED.md"
     if ! $DRY_RUN; then
         cat > "$TARGET_DIR/AGENTS.md" << 'EOF'
@@ -314,10 +309,10 @@ cat .agent/MAIN.md
 ---
 *Original content migrated to .agent/AGENTS_MIGRATED.md*
 EOF
-        echo -e "  ${GREEN}✓${NC} Created: $TARGET_DIR/AGENTS.md (redirect + migration note)"
+        log_pass "Created: $TARGET_DIR/AGENTS.md (redirect + migration note)"
     fi
 elif [ "$AGENTS_STATUS" = "redirect" ]; then
-    echo -e "  ${GREEN}✓${NC} AGENTS.md already a redirect — skipped"
+    log_pass "AGENTS.md already a redirect — skipped"
 elif [ ! -f "$TARGET_DIR/AGENTS.md" ] || [ "$FORCE" = "true" ]; then
     if $DRY_RUN; then
         echo -e "  ${YELLOW}[DRY]${NC} Create: $TARGET_DIR/AGENTS.md"
@@ -331,7 +326,7 @@ elif [ ! -f "$TARGET_DIR/AGENTS.md" ] || [ "$FORCE" = "true" ]; then
 cat .agent/MAIN.md
 ```
 EOF
-        echo -e "  ${GREEN}✓${NC} Created: $TARGET_DIR/AGENTS.md (redirect)"
+        log_pass "Created: $TARGET_DIR/AGENTS.md (redirect)"
     fi
 fi
 
@@ -339,7 +334,7 @@ fi
 CURSORRULES_STATUS=$(has_real_content "$TARGET_DIR/.cursorrules")
 
 if [ "$CURSORRULES_STATUS" = "content" ]; then
-    echo -e "  ${YELLOW}⚠️  Found .cursorrules with real content${NC}"
+    log_warn "Found .cursorrules with real content"
     smart_migrate "$TARGET_DIR/.cursorrules" "cursorrules_MIGRATED.txt"
     if ! $DRY_RUN; then
         cat > "$TARGET_DIR/.cursorrules" << 'EOF'
@@ -350,10 +345,10 @@ Read .agent/MAIN.md for full project context.
 ---
 Original content migrated to .agent/cursorrules_MIGRATED.txt
 EOF
-        echo -e "  ${GREEN}✓${NC} Created: $TARGET_DIR/.cursorrules (redirect + migration note)"
+        log_pass "Created: $TARGET_DIR/.cursorrules (redirect + migration note)"
     fi
 elif [ "$CURSORRULES_STATUS" = "redirect" ]; then
-    echo -e "  ${GREEN}✓${NC} .cursorrules already a redirect — skipped"
+    log_pass ".cursorrules already a redirect — skipped"
 elif [ ! -f "$TARGET_DIR/.cursorrules" ] || [ "$FORCE" = "true" ]; then
     if $DRY_RUN; then
         echo -e "  ${YELLOW}[DRY]${NC} Create: $TARGET_DIR/.cursorrules"
@@ -363,18 +358,18 @@ elif [ ! -f "$TARGET_DIR/.cursorrules" ] || [ "$FORCE" = "true" ]; then
 
 Read .agent/MAIN.md for full project context.
 EOF
-        echo -e "  ${GREEN}✓${NC} Created: $TARGET_DIR/.cursorrules (redirect)"
+        log_pass "Created: $TARGET_DIR/.cursorrules (redirect)"
     fi
 fi
 echo ""
 
-echo -e "${BLUE}📚 Creating docs stubs...${NC}"
+log_header "📚 Creating docs stubs"
 create_empty_doc "$TARGET_DIR/.agent/docs/architecture.md" "Architecture"
 create_empty_doc "$TARGET_DIR/.agent/docs/conventions.md" "Conventions"
 create_empty_doc "$TARGET_DIR/.agent/docs/stack.md" "Tech Stack"
 echo ""
 
-echo -e "${BLUE}🪝 Installing git hooks...${NC}"
+log_header "🪝 Installing git hooks"
 if [ -f "$SCRIPT_DIR/install-hooks.sh" ]; then
     if $DRY_RUN; then
         echo -e "  ${YELLOW}[DRY]${NC} Would install git hooks"
@@ -382,15 +377,15 @@ if [ -f "$SCRIPT_DIR/install-hooks.sh" ]; then
         bash "$SCRIPT_DIR/install-hooks.sh" "$TARGET_DIR"
     fi
 else
-    echo -e "  ${YELLOW}⏭️${NC} install-hooks.sh not found, skipping"
+    log_warn "install-hooks.sh not found, skipping"
 fi
 echo ""
 
-echo -e "${BLUE}📋 Summary${NC}"
-echo -e "  ${GREEN}✓${NC} .agent/ infrastructure created"
-echo -e "  ${GREEN}✓${NC} MAIN.md — Single Source of Truth"
-echo -e "  ${GREEN}✓${NC} Redirects: CLAUDE.md, AGENTS.md, .cursorrules"
-echo -e "  ${GREEN}✓${NC} Git hooks installed"
+log_header "📋 Summary"
+log_pass ".agent/ infrastructure created"
+log_pass "MAIN.md — Single Source of Truth"
+log_pass "Redirects: CLAUDE.md, AGENTS.md, .cursorrules"
+log_pass "Git hooks installed"
 echo ""
 
 if $DRY_RUN; then
