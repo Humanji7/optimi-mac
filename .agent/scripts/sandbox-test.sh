@@ -15,29 +15,13 @@
 
 set -e
 
-# Colors
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-BLUE='\033[0;34m'
-NC='\033[0m' # No Color
+source "$(dirname "$0")/utils.sh"
 
 # Config
 SANDBOX_DIR="/tmp/sandbox-test"
-PROJECTS_DIR="${HOME}/projects"
 MAX_CLAUDE_MD_SIZE=15000  # bytes — больше плохо влезает в контекст
 SMOKE_TIMEOUT=60          # секунд на smoke-тест
 SMOKE_MIN_LENGTH=100      # минимум символов в ответе
-
-# ============================================================================
-# Helpers
-# ============================================================================
-
-log_pass() { echo -e "${GREEN}✅ $1${NC}"; }
-log_fail() { echo -e "${RED}❌ $1${NC}"; }
-log_warn() { echo -e "${YELLOW}⚠️  $1${NC}"; }
-log_info() { echo -e "${BLUE}ℹ️  $1${NC}"; }
-log_header() { echo -e "\n${BLUE}═══ $1 ═══${NC}\n"; }
 
 # ============================================================================
 # Args
@@ -65,12 +49,9 @@ if [[ -z "$PROJECT_NAME" ]]; then
     exit 1
 fi
 
-PROJECT_PATH="$PROJECTS_DIR/$PROJECT_NAME"
+validate_project "$PROJECT_NAME" || exit 1
 
-if [[ ! -d "$PROJECT_PATH" ]]; then
-    log_fail "Проект не найден: $PROJECT_PATH"
-    exit 1
-fi
+PROJECT_PATH="$PROJECTS_DIR/$PROJECT_NAME"
 
 # ============================================================================
 # 1. Копируем в sandbox
