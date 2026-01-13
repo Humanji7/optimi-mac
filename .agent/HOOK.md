@@ -33,12 +33,12 @@ validate_project "name"  # returns 0/1
 
 ## Molecules
 
-### M1: sandbox-test.sh (14KB) ⚪ PENDING
-- [ ] Добавить source utils.sh
-- [ ] Удалить локальные определения цветов
-- [ ] Заменить echo на log_* функции
-- [ ] Использовать validate_project
-- [ ] Тест: `.agent/scripts/sandbox-test.sh optimi-mac`
+### M1: sandbox-test.sh (14KB) ✅ DONE
+- [x] Добавить source utils.sh
+- [x] Удалить локальные определения цветов
+- [x] Заменить echo на log_* функции
+- [x] Использовать validate_project
+- [x] Тест: `.agent/scripts/sandbox-test.sh optimi-mac`
 
 ### M2: setup-ai-infrastructure.sh (12KB) ⚪ PENDING
 - [ ] Добавить source utils.sh
@@ -59,12 +59,12 @@ validate_project "name"  # returns 0/1
 
 | Molecule | Status | Commit |
 |----------|--------|--------|
-| M1 | ⚪ | - |
+| M1 | ✅ | b67fba1 |
 | M2 | ⚪ | - |
 | M3 | ⚪ | - |
 
 ---
 
-_Next: Start with M1_
+_Next: M2 setup-ai-infrastructure.sh_
 
 <!-- Global hooks enabled: 2026-01-13 -->
