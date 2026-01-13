@@ -26,7 +26,7 @@
 
 ---
 
-### M2: Data-атрибуты для тултипов ⬜
+### M2: Data-атрибуты для тултипов ✅
 **Files:** `.agent/dashboard/index.html`
 
 Добавить `data-command` к кнопкам:
@@ -67,4 +67,4 @@ JS для динамических кнопок (Triage в таблицах):
 
 ---
 
-## Current: M2
+## Current: M3
