@@ -66,3 +66,5 @@ validate_project "name"  # returns 0/1
 ---
 
 _Next: Start with M1_
+
+<!-- Global hooks enabled: 2026-01-13 -->
