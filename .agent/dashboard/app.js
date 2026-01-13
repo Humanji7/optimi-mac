@@ -319,7 +319,7 @@ class HealthDashboard {
                 <td><span class="badge working">⚠️ uncommitted</span></td>
                 <td>${getSandboxBadge(project.name)}</td>
                 <td class="actions-cell">
-                    <button class="action-btn triage-btn" data-project="${project.name}" title="Generate surgical prompt">🧠 Triage</button>
+                    <button class="action-btn triage-btn" data-project="${project.name}" title="Generate surgical prompt" data-command="bash generate-triage-prompt.sh ~/projects/${project.name}">🧠 Triage</button>
                 </td>
             </tr>
         `).join('');
@@ -356,8 +356,8 @@ class HealthDashboard {
                 </td>
                 <td>${getSandboxBadge(project.name)}</td>
                 <td class="actions-cell">
-                    <button class="action-btn triage-btn" data-project="${project.name}" title="Generate surgical prompt">🧠 Triage</button>
-                    <button class="action-btn archive-btn" data-project="${project.name}" title="Hide from list">📦</button>
+                    <button class="action-btn triage-btn" data-project="${project.name}" title="Generate surgical prompt" data-command="bash generate-triage-prompt.sh ~/projects/${project.name}">🧠 Triage</button>
+                    <button class="action-btn archive-btn" data-project="${project.name}" title="Hide from list" data-command="archive to localStorage">📦</button>
                 </td>
             </tr>
         `).join('');

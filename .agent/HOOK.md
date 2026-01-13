@@ -43,7 +43,7 @@
 
 ---
 
-### M3: CSS + JS для тултипов ⬜
+### M3: CSS + JS для тултипов ✅
 **Files:** `.agent/dashboard/styles.css`, `.agent/dashboard/app.js`
 
 CSS:
@@ -67,4 +67,4 @@ JS для динамических кнопок (Triage в таблицах):
 
 ---
 
-## Current: M3
+## Current: M4
