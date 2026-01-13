@@ -86,6 +86,59 @@ Object.defineProperty(window, 'OPTIMI_PATH', {
     get: () => getConfig('optimiPath')
 });
 
+// ============================================================================
+// 🧪 Sandbox Results System
+// ============================================================================
+
+/**
+ * Get sandbox test results from localStorage
+ * @returns {Object} Map of project name to result {status, mode, date}
+ */
+function getSandboxResults() {
+    try {
+        return JSON.parse(localStorage.getItem('sandboxResults') || '{}');
+    } catch {
+        return {};
+    }
+}
+
+/**
+ * Save sandbox test result
+ * @param {string} projectName
+ * @param {string} status - 'passed' | 'failed'
+ * @param {string} mode - 'lint' | 'smoke'
+ */
+function saveSandboxResult(projectName, status, mode) {
+    const results = getSandboxResults();
+    results[projectName] = {
+        status,
+        mode,
+        date: new Date().toISOString().split('T')[0]
+    };
+    localStorage.setItem('sandboxResults', JSON.stringify(results));
+}
+
+/**
+ * Generate sandbox status badge HTML
+ * @param {string} projectName
+ * @returns {string} HTML for badge
+ */
+function getSandboxBadge(projectName) {
+    const results = getSandboxResults();
+    const result = results[projectName];
+
+    if (!result) {
+        return '<span class="badge sandbox-none">—</span>';
+    }
+
+    if (result.status === 'passed') {
+        const modeLabel = result.mode === 'smoke' ? 'Smoke' : 'Lint';
+        return `<span class="badge sandbox-passed" title="${result.date}">✅ ${modeLabel}</span>`;
+    }
+
+    return `<span class="badge sandbox-failed" title="${result.date}">❌ Failed</span>`;
+}
+
 class HealthDashboard {
     constructor() {
         this.data = null;
@@ -239,6 +292,7 @@ class HealthDashboard {
                 <td><span class="badge healthy">✅</span></td>
                 <td>${project.hook ? `<span class="badge active">🔴 ACTIVE</span>` : '<span style="color: var(--text-muted)">—</span>'}</td>
                 <td><span class="badge healthy">✅ clean</span></td>
+                <td>${getSandboxBadge(project.name)}</td>
             </tr>
         `).join('');
     }
@@ -263,6 +317,7 @@ class HealthDashboard {
                 <td><strong class="project-link" data-project="${project.name}">${project.name}</strong></td>
                 <td>${project.hook ? `<span class="badge active">🔴 ACTIVE</span>` : '<span style="color: var(--text-muted)">—</span>'}</td>
                 <td><span class="badge working">⚠️ uncommitted</span></td>
+                <td>${getSandboxBadge(project.name)}</td>
                 <td class="actions-cell">
                     <button class="action-btn triage-btn" data-project="${project.name}" title="Generate surgical prompt">🧠 Triage</button>
                 </td>
@@ -299,6 +354,7 @@ class HealthDashboard {
             return `<span class="issue-tag ${isUrgent ? 'urgent' : ''}">${issue}</span>`;
         }).join('')}
                 </td>
+                <td>${getSandboxBadge(project.name)}</td>
                 <td class="actions-cell">
                     <button class="action-btn triage-btn" data-project="${project.name}" title="Generate surgical prompt">🧠 Triage</button>
                     <button class="action-btn archive-btn" data-project="${project.name}" title="Hide from list">📦</button>
