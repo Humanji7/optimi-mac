@@ -25,6 +25,7 @@
 | [projects-health-check.sh](scripts/projects-health-check.sh) | Projects Health Check | 2026-01-11 |
 | [sandbox-test.sh](scripts/sandbox-test.sh) | Sandbox Test — MVP валидация AI-инфраструктуры проекта | 2026-01-13 |
 | [setup-ai-infrastructure.sh](scripts/setup-ai-infrastructure.sh) | setup-ai-infrastructure.sh | 2026-01-12 |
+| [utils.sh](scripts/utils.sh) | Common utilities for .agent scripts | 2026-01-13 |
 
 ## Templates
 
@@ -46,4 +47,4 @@
 
 ---
 
-_Last generated: 2026-01-13 19:59_
+_Last generated: 2026-01-13 20:11_
