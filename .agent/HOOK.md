@@ -60,7 +60,7 @@ validate_project "name"  # returns 0/1
 | Molecule | Status | Commit |
 |----------|--------|--------|
 | M1 | ✅ | b67fba1 |
-| M2 | ✅ | pending |
+| M2 | ✅ | 3c99876 |
 | M3 | ⚪ | - |
 
 ---
