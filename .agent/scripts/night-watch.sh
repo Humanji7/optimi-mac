@@ -1,11 +1,16 @@
 #!/bin/bash
 #
-# 🌙 Night Watch — Safe Overnight Refactoring
+# 🌙 Night Watch — Safe Overnight Refactoring (Smart Delegate Edition)
+#
+# Uses SMART DELEGATE pattern:
+# - Bash script plans (determines files to refactor)
+# - Sonnet executes (does the actual refactoring)
+# - Cost savings: ~60-70% compared to Opus-only
 #
 # Runs code-simplifier subagent on selected "Working" projects
 # All changes go to separate branches for morning review
 #
-# Usage: 
+# Usage:
 #   bash night-watch.sh [--dry-run] [project1 project2 ...]
 #   bash night-watch.sh pointg                    # Single project
 #   bash night-watch.sh --dry-run pointg sphere-777  # Dry run on specific projects
@@ -144,11 +149,13 @@ for PROJECT in $WORKING_PROJECTS; do
         
         echo "   🔧 Simplifying: $FILE" | tee -a "$LOG_FILE"
         
-        # Run claude with strict limits
+        # Run claude with SONNET (Smart Delegate: cheap model for execution)
+        # Opus would cost ~5x more for the same task
         timeout 120 claude -p \
+            --model sonnet \
             --system-prompt "$(cat "$SIMPLIFIER_PROMPT")" \
             --permission-mode acceptEdits \
-            --max-budget-usd 0.50 \
+            --max-budget-usd 0.30 \
             "Simplify ONLY this file: $FILE. Make minimal, safe improvements for readability. Commit when done with message 'refactor(night): simplify $FILE'. Do NOT touch other files." \
             2>&1 | tee -a "$LOG_FILE" || {
                 echo "   ⚠️ Claude timeout or error for $FILE" | tee -a "$LOG_FILE"
