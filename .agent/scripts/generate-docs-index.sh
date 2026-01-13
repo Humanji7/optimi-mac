@@ -1,16 +1,48 @@
 #!/bin/bash
 # generate-docs-index.sh — Auto-generate documentation index for .agent/
-# Usage: bash .agent/scripts/generate-docs-index.sh [--check]
+# Usage: bash .agent/scripts/generate-docs-index.sh [project-name] [--check]
+# project-name: Target project (default: optimi-mac itself)
 # --check: Only verify if index is up-to-date (exit 1 if stale)
 
 set -euo pipefail
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-AGENT_DIR="$(dirname "$SCRIPT_DIR")"
-OUTPUT_FILE="$AGENT_DIR/docs-index.md"
+PROJECTS_DIR="${HOME}/projects"
 CHECK_MODE=false
+PROJECT_NAME=""
 
-[[ "${1:-}" == "--check" ]] && CHECK_MODE=true
+# Parse args
+for arg in "$@"; do
+    case $arg in
+        --check)
+            CHECK_MODE=true
+            ;;
+        *)
+            if [[ -z "$PROJECT_NAME" ]]; then
+                PROJECT_NAME="$arg"
+            fi
+            ;;
+    esac
+done
+
+# Determine target .agent/ directory
+if [[ -n "$PROJECT_NAME" ]]; then
+    PROJECT_PATH="$PROJECTS_DIR/$PROJECT_NAME"
+    if [[ ! -d "$PROJECT_PATH" ]]; then
+        echo "❌ Project not found: $PROJECT_PATH"
+        exit 1
+    fi
+    AGENT_DIR="$PROJECT_PATH/.agent"
+    if [[ ! -d "$AGENT_DIR" ]]; then
+        echo "❌ No .agent/ in project: $PROJECT_NAME"
+        exit 1
+    fi
+else
+    # Default: optimi-mac itself
+    SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    AGENT_DIR="$(dirname "$SCRIPT_DIR")"
+fi
+
+OUTPUT_FILE="$AGENT_DIR/docs-index.md"
 
 # --- Helper functions ---
 

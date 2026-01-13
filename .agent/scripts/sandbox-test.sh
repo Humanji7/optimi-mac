@@ -3,8 +3,8 @@
 # 🧪 Sandbox Test — MVP валидация AI-инфраструктуры проекта
 #
 # Использование:
-#   bash sandbox-test.sh ~/projects/my-project           # только lint
-#   bash sandbox-test.sh ~/projects/my-project --smoke   # lint + smoke-тест
+#   bash sandbox-test.sh <project-name>           # только lint
+#   bash sandbox-test.sh <project-name> --smoke   # lint + smoke-тест
 #
 # Что делает:
 #   1. Копирует проект в sandbox (безопасно)
@@ -24,6 +24,7 @@ NC='\033[0m' # No Color
 
 # Config
 SANDBOX_DIR="/tmp/sandbox-test"
+PROJECTS_DIR="${HOME}/projects"
 MAX_CLAUDE_MD_SIZE=15000  # bytes — больше плохо влезает в контекст
 SMOKE_TIMEOUT=60          # секунд на smoke-тест
 SMOKE_MIN_LENGTH=100      # минимум символов в ответе
@@ -43,7 +44,7 @@ log_header() { echo -e "\n${BLUE}═══ $1 ═══${NC}\n"; }
 # ============================================================================
 
 RUN_SMOKE=false
-PROJECT_PATH=""
+PROJECT_NAME=""
 
 for arg in "$@"; do
     case $arg in
@@ -51,20 +52,20 @@ for arg in "$@"; do
             RUN_SMOKE=true
             ;;
         *)
-            if [[ -z "$PROJECT_PATH" ]]; then
-                PROJECT_PATH="$arg"
+            if [[ -z "$PROJECT_NAME" ]]; then
+                PROJECT_NAME="$arg"
             fi
             ;;
     esac
 done
 
-if [[ -z "$PROJECT_PATH" ]]; then
-    echo "Использование: sandbox-test.sh <путь-к-проекту> [--smoke]"
-    echo "Пример: sandbox-test.sh ~/projects/my-app --smoke"
+if [[ -z "$PROJECT_NAME" ]]; then
+    echo "Использование: sandbox-test.sh <project-name> [--smoke]"
+    echo "Пример: sandbox-test.sh my-app --smoke"
     exit 1
 fi
 
-PROJECT_NAME=$(basename "$PROJECT_PATH")
+PROJECT_PATH="$PROJECTS_DIR/$PROJECT_NAME"
 
 if [[ ! -d "$PROJECT_PATH" ]]; then
     log_fail "Проект не найден: $PROJECT_PATH"
