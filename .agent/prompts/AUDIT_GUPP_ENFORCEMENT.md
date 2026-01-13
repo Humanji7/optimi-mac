@@ -1,3 +1,7 @@
+---
+description: Аудит реализации GUPP enforcement против изначального плана
+---
+
 # AUDIT: GUPP Enforcement Implementation
 
 **Дата:** 2026-01-10  

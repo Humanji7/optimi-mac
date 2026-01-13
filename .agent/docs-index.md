@@ -24,7 +24,7 @@
 | [night-watch.sh](scripts/night-watch.sh) | Night Watch — Safe Overnight Refactoring (Smart Delegate Edition) | 2026-01-13 |
 | [projects-health-check.sh](scripts/projects-health-check.sh) | Projects Health Check | 2026-01-13 |
 | [sandbox-test.sh](scripts/sandbox-test.sh) | Sandbox Test — MVP валидация AI-инфраструктуры проекта | 2026-01-13 |
-| [setup-ai-infrastructure.sh](scripts/setup-ai-infrastructure.sh) | setup-ai-infrastructure.sh | 2026-01-13 |
+| [setup-ai-infrastructure.sh](scripts/setup-ai-infrastructure.sh) | Sets up unified AI agent infrastructure with Single Source of Truth | 2026-01-13 |
 | [utils.sh](scripts/utils.sh) | Common utilities for .agent scripts | 2026-01-13 |
 
 ## Templates
@@ -40,11 +40,11 @@
 
 | File | Description | Updated |
 |------|-------------|---------|
-| [AUDIT_GUPP_ENFORCEMENT.md](prompts/AUDIT_GUPP_ENFORCEMENT.md) |  | 2026-01-10 |
+| [AUDIT_GUPP_ENFORCEMENT.md](prompts/AUDIT_GUPP_ENFORCEMENT.md) | Аудит реализации GUPP enforcement против изначального плана | 2026-01-13 |
 | [TRIAGE_QUICK_START.md](prompts/TRIAGE_QUICK_START.md) |  | 2026-01-11 |
-| [gupp-enforcement-plan.md](prompts/gupp-enforcement-plan.md) |  | 2026-01-10 |
+| [gupp-enforcement-plan.md](prompts/gupp-enforcement-plan.md) | План усиления GUPP enforcement для работы без внешнего оркестратора | 2026-01-13 |
 | [triage-prompts.md](prompts/triage-prompts.md) |  | 2026-01-11 |
 
 ---
 
-_Last generated: 2026-01-13 21:50_
+_Last generated: 2026-01-13 22:04_

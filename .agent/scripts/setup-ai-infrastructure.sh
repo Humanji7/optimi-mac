@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # =============================================================================
-# 🏗️ setup-ai-infrastructure.sh
 # Sets up unified AI agent infrastructure with Single Source of Truth
+# Usage: setup-ai-infrastructure.sh [project-path] [--dry-run] [--force]
 # =============================================================================
 
 set -e
