@@ -8,7 +8,7 @@
 
 set -e
 
-PROJECTS_DIR="${HOME}/projects"
+source "$(dirname "$0")/utils.sh"
 REPORT_FILE="${HOME}/.agent/health-report.md"
 DATE=$(date '+%Y-%m-%d %H:%M')
 
@@ -124,9 +124,11 @@ cat > "$REPORT_FILE" << EOF
 |---------|---------|------|------------|
 EOF
 
-for line in "${healthy_projects[@]}"; do
-    echo "$line" >> "$REPORT_FILE"
-done
+if [[ ${#healthy_projects[@]} -gt 0 ]]; then
+    for line in "${healthy_projects[@]}"; do
+        echo "$line" >> "$REPORT_FILE"
+    done
+fi
 
 cat >> "$REPORT_FILE" << EOF
 
@@ -138,9 +140,11 @@ cat >> "$REPORT_FILE" << EOF
 |---------|------|------------|
 EOF
 
-for line in "${working_projects[@]}"; do
-    echo "$line" >> "$REPORT_FILE"
-done
+if [[ ${#working_projects[@]} -gt 0 ]]; then
+    for line in "${working_projects[@]}"; do
+        echo "$line" >> "$REPORT_FILE"
+    done
+fi
 
 cat >> "$REPORT_FILE" << EOF
 
@@ -152,9 +156,11 @@ cat >> "$REPORT_FILE" << EOF
 |---------|--------|
 EOF
 
-for line in "${attention_projects[@]}"; do
-    echo "$line" >> "$REPORT_FILE"
-done
+if [[ ${#attention_projects[@]} -gt 0 ]]; then
+    for line in "${attention_projects[@]}"; do
+        echo "$line" >> "$REPORT_FILE"
+    done
+fi
 
 cat >> "$REPORT_FILE" << EOF
 
@@ -299,15 +305,15 @@ if [[ -d "$DASHBOARD_DIR" ]]; then
     "recommendations": $recs_json
 }
 JSONEOF
-    
-    echo "📊 Dashboard data: $JSON_FILE"
+
+    log_info "Dashboard data: $JSON_FILE"
 fi
 
 # ============================================================================
 # Output to terminal
 # ============================================================================
 
-echo "✅ Health report generated: $REPORT_FILE"
+log_pass "Health report generated: $REPORT_FILE"
 echo ""
 echo "📊 Summary:"
 echo "   Total: $total | .agent/: $with_agent | HOOKs: $with_hook | Uncommitted: $with_uncommitted"
