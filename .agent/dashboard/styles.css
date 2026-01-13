@@ -486,6 +486,23 @@ td {
     }
 }
 
+/* Sandbox Status Badges */
+.badge.sandbox-passed {
+    background: rgba(20, 184, 166, 0.2);
+    color: #2dd4bf;
+}
+
+.badge.sandbox-failed {
+    background: rgba(239, 68, 68, 0.2);
+    color: var(--status-danger);
+}
+
+.badge.sandbox-none {
+    background: transparent;
+    color: var(--text-muted);
+    padding: 0;
+}
+
 /* Issue Tags */
 .issue-tag {
     display: inline-block;
