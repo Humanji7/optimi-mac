@@ -8,7 +8,7 @@
 set -e
 source "$(dirname "$0")/utils.sh"
 
-PROJECT_NAME="$1"
+PROJECT_NAME="${1:-}"
 PROJECT_PATH="$PROJECTS_DIR/$PROJECT_NAME"
 
 if [[ -z "$PROJECT_NAME" ]]; then
