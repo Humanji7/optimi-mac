@@ -920,6 +920,33 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // 📝 Log Error Button
+    const logErrorBtn = document.getElementById('logErrorBtn');
+    logErrorBtn?.addEventListener('click', () => {
+        const cmd = `bash ${OPTIMI_PATH}/.agent/scripts/log-error.sh`;
+
+        // Fallback copy method for HTTP (clipboard API requires HTTPS)
+        const textarea = document.createElement('textarea');
+        textarea.value = cmd;
+        textarea.style.position = 'fixed';
+        textarea.style.opacity = '0';
+        document.body.appendChild(textarea);
+        textarea.select();
+
+        try {
+            document.execCommand('copy');
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = '📝 Log Error command copied! Paste in terminal.';
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        } catch (err) {
+            alert(`Run in terminal:\n\n${cmd}`);
+        }
+
+        document.body.removeChild(textarea);
+    });
+
     // HOOK Details Modal
     const hookModal = document.getElementById('hookModal');
     const hookModalBody = document.getElementById('hookModalBody');

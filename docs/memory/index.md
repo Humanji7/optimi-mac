@@ -1,6 +1,6 @@
-# 🔬 OPTIMI Memory Lab
+# 🧠 OPTIMI Living Memory
 
-> Personal research laboratory for AI Memory and Context Intelligence
+> Learn from your mistakes with AI agents. Remember patterns. Avoid repeating errors.
 
 ---
 
@@ -8,10 +8,12 @@
 
 ```mermaid
 graph TD
-    INDEX[📚 Lab Index] --> CORE[🎯 Core]
+    INDEX[🧠 Memory Index] --> JOURNAL[📝 Error Journal]
+    INDEX --> CORE[🎯 Core]
     INDEX --> RESEARCH[🔬 Research]
     INDEX --> OPS[⚙️ Operations]
-    INDEX --> TRACK[📊 Tracking]
+    
+    JOURNAL --> ENTRIES[2026-01.md]
     
     CORE --> README[lab-readme.md]
     CORE --> MANIFESTO[lab-manifesto.md]
@@ -22,19 +24,16 @@ graph TD
     RESEARCH --> RELATED[related-work.md]
     RESEARCH --> SURVEY[llm-memory-survey.md]
     
-    OPS --> BACKLOG[experiment-backlog.md]
-    OPS --> ROADMAP[experiment-roadmap.md]
-    OPS --> DISSEM[dissemination-strategy.md]
     OPS --> RESOURCES[lab-resources.md]
-    
-    TRACK --> EXPERIMENTS[experiments.md]
-    TRACK --> PUBS[publications.md]
-    TRACK --> AGENTS[agents.md]
 ```
 
 ---
 
 ## Quick Links
+
+### 📝 Error Journal (NEW)
+- [How to Log](journal/index.md) — Instructions for recording errors
+- [January 2026](journal/2026-01.md) — Current month entries
 
 ### Core
 - [Lab README](core/lab-readme.md) — Entry point
@@ -48,15 +47,22 @@ graph TD
 - [LLM Memory Survey](research/llm-memory-survey.md) — State of the art (Jan 2026)
 
 ### Operations
-- [Experiment Backlog](ops/experiment-backlog.md) — What to explore
-- [Experiment Roadmap](ops/experiment-roadmap.md) — Timeline
-- [Dissemination Strategy](ops/dissemination-strategy.md) — How to share
 - [Lab Resources](ops/lab-resources.md) — Budget & tools
 
-### Tracking
-- [Experiments](tracking/experiments.md) — Lab notebook
-- [Publications](tracking/publications.md) — Published work
-- [Agents](tracking/agents.md) — AI lab assistants
+### Archive
+- [Tracking](tracking/) — Historical experiments & publications
+- [Archive](archive/) — Previous documentation
+
+---
+
+## What is Living Memory?
+
+A practical system for **learning from AI collaboration failures**:
+
+1. **Log errors** when something goes wrong with Claude, Cursor, or any AI agent
+2. **Find patterns** — same mistakes repeat across projects
+3. **Build memory** — create rules and prompts that prevent repetition
+4. **Evolve** — the system grows with your experience
 
 ---
 
@@ -64,10 +70,9 @@ graph TD
 
 | Metric | Target | Cadence |
 |--------|--------|---------|
-| Experiment reports | 2 | /quarter |
-| Blog posts | 4 | /month |
-| OSS tool releases | 1 | /6 months |
-| arXiv papers | 1 | /year |
+| Error entries | 10+ | /month |
+| Patterns discovered | 3+ | /month |
+| Prevention rules created | 1+ | /week |
 
 ---
 

@@ -21,6 +21,7 @@
 | [generate-triage-prompt.sh](scripts/generate-triage-prompt.sh) | Generate Triage Prompt | 2026-01-13 |
 | [install-hooks.sh](scripts/install-hooks.sh) | install-hooks.sh — Install git hooks for .agent/ automation | 2026-01-12 |
 | [install-statusline.sh](scripts/install-statusline.sh) | Smart StatusLine Installer for Claude Code | 2026-01-11 |
+| [log-error.sh](scripts/log-error.sh) | log-error.sh - Quick error logging to OPTIMI Living Memory journal | 2026-01-15 |
 | [night-watch.sh](scripts/night-watch.sh) | Night Watch — Safe Overnight Refactoring (Smart Delegate Edition) | 2026-01-13 |
 | [projects-health-check.sh](scripts/projects-health-check.sh) | Projects Health Check | 2026-01-13 |
 | [sandbox-test.sh](scripts/sandbox-test.sh) | Sandbox Test — MVP валидация AI-инфраструктуры проекта | 2026-01-13 |
@@ -47,4 +48,4 @@
 
 ---
 
-_Last generated: 2026-01-15 20:57_
+_Last generated: 2026-01-15 23:35_
