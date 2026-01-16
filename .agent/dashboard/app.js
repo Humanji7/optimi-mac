@@ -922,30 +922,36 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 📝 Log Error Button
     const logErrorBtn = document.getElementById('logErrorBtn');
-    logErrorBtn?.addEventListener('click', () => {
+    logErrorBtn?.addEventListener('click', async () => {
         const cmd = `bash ${OPTIMI_PATH}/.agent/scripts/log-error.sh`;
 
-        // Fallback copy method for HTTP (clipboard API requires HTTPS)
-        const textarea = document.createElement('textarea');
-        textarea.value = cmd;
-        textarea.style.position = 'fixed';
-        textarea.style.opacity = '0';
-        document.body.appendChild(textarea);
-        textarea.select();
-
-        try {
-            document.execCommand('copy');
-            const toast = document.createElement('div');
-            toast.className = 'toast';
-            toast.textContent = '📝 Log Error command copied! Paste in terminal.';
-            document.body.appendChild(toast);
-            setTimeout(() => toast.remove(), 3000);
-        } catch (err) {
-            alert(`Run in terminal:\n\n${cmd}`);
+        // Try modern Clipboard API first (works on HTTPS)
+        if (navigator.clipboard && window.isSecureContext) {
+            try {
+                await navigator.clipboard.writeText(cmd);
+                showToast('📝 Log Error command copied! Paste in terminal.');
+                return;
+            } catch (err) {
+                // Fall through to fallback
+            }
         }
 
-        document.body.removeChild(textarea);
+        // Fallback: show prompt with pre-selected text (100% reliable)
+        // User can Cmd+C / Ctrl+C to copy
+        window.prompt(
+            '📝 Copy this command (Cmd+C) and paste in terminal:',
+            cmd
+        );
     });
+
+    // Helper function for toast notifications
+    function showToast(message) {
+        const toast = document.createElement('div');
+        toast.className = 'toast';
+        toast.textContent = message;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 3000);
+    }
 
     // HOOK Details Modal
     const hookModal = document.getElementById('hookModal');

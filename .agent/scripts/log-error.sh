@@ -1,6 +1,45 @@
 #!/bin/bash
-# log-error.sh - Quick error logging to OPTIMI Living Memory journal
-# Usage: bash log-error.sh [--project NAME] [--agent NAME] [--title "TITLE"]
+# ============================================================================
+# log-error.sh — Error Journaling for Living Memory System
+# ============================================================================
+#
+# PURPOSE:
+# Captures errors and failures from human-agent collaboration into a 
+# structured journal. Part of the "Living Memory" system — OPTIMI's approach
+# to learning from mistakes and preventing recurring issues.
+#
+# PHILOSOPHY:
+# Every error is a learning opportunity. By systematically documenting:
+# - WHAT happened (symptoms, not just error messages)
+# - WHY it happened (root cause analysis)
+# - WHAT we learned (prevention patterns)
+# We build organizational memory that transcends individual sessions.
+#
+# ERROR CATEGORIES TRACKED:
+# 1. Agent limitations — AI misunderstands context or makes wrong assumptions
+# 2. Human oversight — User provides incomplete/wrong instructions
+# 3. Tooling failures — Infrastructure, deployment, or framework bugs
+# 4. Communication gaps — Misaligned expectations between human and agent
+# 5. Context overflow — Agent "forgot" earlier discussion (LLM memory limit)
+# 6. Hallucination — Agent invented non-existent API/file/feature
+# 7. Regression — Fix broke something that previously worked
+# 8. Scope creep — Asked for X, agent did X + Y + Z unasked
+# 9. Silent failure — No error shown but result is wrong
+#
+# JOURNAL FORMAT:
+# Creates structured Markdown entries in docs/memory/journal/YYYY-MM.md
+# with auto-incrementing ERR-XXX identifiers for easy reference.
+#
+# USAGE:
+#   Interactive:   bash log-error.sh
+#   With params:   bash log-error.sh --project "point-g" --agent "Claude Code" --title "DB migration failed"
+#
+# INTEGRATION:
+# - Dashboard button "📝 Log Error" copies this command to clipboard
+# - Can be called from any terminal session
+# - Entries are git-tracked and searchable
+#
+# ============================================================================
 
 set -e
 
@@ -73,6 +112,32 @@ if [[ -z "$AGENT" ]]; then
     esac
 fi
 
+# Error type selection
+echo ""
+echo "Error type:"
+echo "  1) Agent limitations    — AI misunderstood context"
+echo "  2) Human oversight       — Incomplete instructions"
+echo "  3) Tooling failures      — Infra/framework bug"
+echo "  4) Communication gaps    — Misaligned expectations"
+echo "  5) Context overflow      — Agent forgot earlier context"
+echo "  6) Hallucination         — Agent invented something"
+echo "  7) Regression            — Fix broke other things"
+echo "  8) Scope creep           — Agent did too much"
+echo "  9) Silent failure        — Wrong result, no error"
+read -p "> " ERROR_TYPE_CHOICE
+case $ERROR_TYPE_CHOICE in
+    1) ERROR_TYPE="Agent limitations" ;;
+    2) ERROR_TYPE="Human oversight" ;;
+    3) ERROR_TYPE="Tooling failures" ;;
+    4) ERROR_TYPE="Communication gaps" ;;
+    5) ERROR_TYPE="Context overflow" ;;
+    6) ERROR_TYPE="Hallucination" ;;
+    7) ERROR_TYPE="Regression" ;;
+    8) ERROR_TYPE="Scope creep" ;;
+    9) ERROR_TYPE="Silent failure" ;;
+    *) ERROR_TYPE="Other" ;;
+esac
+
 echo ""
 echo "What happened? (end with empty line):"
 DESCRIPTION=""
@@ -104,6 +169,7 @@ cat >> "$JOURNAL_FILE" << EOF
 **Date:** $DATE_TODAY
 **Project:** $PROJECT
 **Agent:** $AGENT
+**Type:** $ERROR_TYPE
 
 **Что случилось:**
 $(echo -e "$DESCRIPTION")

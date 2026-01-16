@@ -32,4 +32,4 @@
 
 ---
 
-*See also: [Experiment Backlog](../ops/experiment-backlog.md)*
+*See also: [Error Journal](../journal/index.md)*

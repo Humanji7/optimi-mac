@@ -119,4 +119,4 @@ Points where experiments can vary the architecture:
 
 *Full technical spec: [context_intelligence_engine.md](../../claudedocs/context_intelligence_engine.md)*
 
-*See also: [Related Work](related-work.md) | [Experiment Backlog](../ops/experiment-backlog.md)*
+*See also: [Related Work](related-work.md) | [LLM Memory Survey](llm-memory-survey.md)*

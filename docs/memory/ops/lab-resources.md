@@ -58,4 +58,4 @@
 
 ---
 
-*See also: [Experiment Backlog](experiment-backlog.md) | [Lab FAQ](../core/lab-faq.md)*
+*See also: [Lab FAQ](../core/lab-faq.md) | [Error Journal](../journal/index.md)*

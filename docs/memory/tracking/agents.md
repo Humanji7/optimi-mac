@@ -47,4 +47,4 @@ AI agents are full participants in the lab, not just tools. Each has a role.
 
 ---
 
-*See also: [Lab Manifesto](../core/lab-manifesto.md) | [Experiment Backlog](../ops/experiment-backlog.md)*
+*See also: [Lab Manifesto](../core/lab-manifesto.md) | [Error Journal](../journal/index.md)*

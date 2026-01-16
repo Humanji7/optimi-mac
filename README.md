@@ -55,6 +55,7 @@ npx -y http-server .agent/dashboard -p 8889 -o
 | 🌙 **Night Watch** | Automated batch refactoring with dry-run preview |
 | 🧠 **Triage** | Generates surgical fix prompts for broken projects |
 | 📋 **GUPP** | Anti-crash protocols for reliable AI coding sessions |
+| 📝 **Living Memory** | Error Journal for learning from human-agent collaboration failures |
 
 ---
 
@@ -143,6 +144,7 @@ optimi-mac/
 | `install-statusline.sh` | Install context usage indicator |
 | `night-watch.sh` | Batch refactoring automation |
 | `generate-triage-prompt.sh` | Create surgical fix prompts |
+| `log-error.sh` | Log errors to Living Memory journal |
 
 ---
 
