@@ -25,12 +25,12 @@
 - [x] sphere-777/.mcp.json verified (already configured)
 - [x] Created "My project"/.mcp.json
 
-### M5: Verify dependencies ⬅️ CURRENT
-- [ ] Check npx availability
-- [ ] Check uvx availability
-- [ ] Test MCP packages dry-run
+### M5: Verify dependencies ✅
+- [x] npx 11.6.2, uvx 0.9.18 available
+- [x] Fixed supabase package: supabase-mcp (not @supabase/mcp-server)
+- [x] All packages exist in npm/pypi
 
-### M6: Validation
+### M6: Validation ⬅️ CURRENT
 - [ ] Test MCP loading in sample project
 
 ---
