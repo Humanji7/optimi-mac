@@ -13,11 +13,11 @@
 - [x] Check existing .mcp.json (sphere-777: OK, My project: missing)
 - [x] Collect env vars (most MCP-specific vars missing)
 
-### M2: Create global MCP config ⬅️ CURRENT
-- [ ] Merge/create ~/.claude/settings.json with mcpServers
-- [ ] Validate JSON structure
+### M2: Create global MCP config ✅
+- [x] Added 8 MCP servers to ~/.claude.json via `claude mcp add`
+- [x] Servers: supabase, stripe, postgres, redis, cloudflare, telegram, sqlite
 
-### M3: Setup environment variables
+### M3: Setup environment variables ⬅️ CURRENT
 - [ ] Create ~/.claude/.env with collected credentials
 - [ ] Use ${VAR} syntax (no hardcoded secrets)
 
