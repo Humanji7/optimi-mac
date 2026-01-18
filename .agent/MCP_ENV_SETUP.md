@@ -56,14 +56,23 @@ claude mcp list
 # Серверы со всеми переменными покажут ✓ Connected
 ```
 
-## Статус по проектам
+## Статус MCP серверов
 
-| Проект | MCP | Переменная | Источник |
-|--------|-----|------------|----------|
-| Campaign Inbox | supabase | SUPABASE_ACCESS_TOKEN | supabase.com/dashboard |
-| Parsertang | telegram | TELEGRAM_API_ID, TELEGRAM_API_HASH | my.telegram.org |
-| reelstudio | postgres, redis | DATABASE_URI, REDIS_URL | .env проекта |
-| pointg | stripe | STRIPE_SECRET_KEY | stripe dashboard |
+| Сервер | Статус | Проект |
+|--------|--------|--------|
+| ✅ stripe | Connected | pointg |
+| ✅ telegram | Connected | Parsertang |
+| ✅ cloudflare | Connected | reelstudio |
+| ✅ sqlite | Connected | all |
+| ✅ context7 | Connected | all |
+| ✅ playwright | Connected | all |
+| ✅ github | Connected | all |
+| ✅ sequential-thinking | Connected | all |
+
+## Конфигурация
+
+Все переменные настроены в `~/.claude/settings.json` → `env`.
 
 ---
 Generated: 2026-01-18
+Updated: 2026-01-18 (cleanup completed)
