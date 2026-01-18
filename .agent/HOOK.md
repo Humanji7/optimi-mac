@@ -21,11 +21,11 @@
 - [x] Created .agent/MCP_ENV_SETUP.md with instructions
 - [x] User must add vars to ~/.zshrc manually (security)
 
-### M4: Local Unity MCP configs ⬅️ CURRENT
-- [ ] Verify sphere-777/.mcp.json
-- [ ] Create "My project"/.mcp.json
+### M4: Local Unity MCP configs ✅
+- [x] sphere-777/.mcp.json verified (already configured)
+- [x] Created "My project"/.mcp.json
 
-### M5: Verify dependencies
+### M5: Verify dependencies ⬅️ CURRENT
 - [ ] Check npx availability
 - [ ] Check uvx availability
 - [ ] Test MCP packages dry-run
