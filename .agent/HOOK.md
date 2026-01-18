@@ -17,11 +17,11 @@
 - [x] Added 8 MCP servers to ~/.claude.json via `claude mcp add`
 - [x] Servers: supabase, stripe, postgres, redis, cloudflare, telegram, sqlite
 
-### M3: Setup environment variables ⬅️ CURRENT
-- [ ] Create ~/.claude/.env with collected credentials
-- [ ] Use ${VAR} syntax (no hardcoded secrets)
+### M3: Setup environment variables ✅
+- [x] Created .agent/MCP_ENV_SETUP.md with instructions
+- [x] User must add vars to ~/.zshrc manually (security)
 
-### M4: Local Unity MCP configs
+### M4: Local Unity MCP configs ⬅️ CURRENT
 - [ ] Verify sphere-777/.mcp.json
 - [ ] Create "My project"/.mcp.json
 

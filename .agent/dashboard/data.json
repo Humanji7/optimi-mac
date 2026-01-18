@@ -1,15 +1,15 @@
 {
-    "generated": "2026-01-18 01:15",
+    "generated": "2026-01-18 12:55",
     "scannedPath": "/Users/admin/projects",
     "summary": {
         "total": 9,
         "withAgent": 4,
-        "activeHooks": 1,
+        "activeHooks": 2,
         "uncommitted": 4,
         "noGit": 1
     },
     "healthyProjects": [{"name":"personal-site","agent":true,"hook":false,"gitStatus":"clean"}],
-    "workingProjects": [{"name":"optimi-mac","agent":true,"hook":false,"gitStatus":"uncommitted"},{"name":"pointg","agent":true,"hook":false,"gitStatus":"uncommitted"},{"name":"sphere-777","agent":true,"hook":true,"gitStatus":"uncommitted"}],
+    "workingProjects": [{"name":"optimi-mac","agent":true,"hook":true,"gitStatus":"uncommitted"},{"name":"pointg","agent":true,"hook":false,"gitStatus":"uncommitted"},{"name":"sphere-777","agent":true,"hook":true,"gitStatus":"uncommitted"}],
     "attentionProjects": [{"name":"Campaign Inbox","issues":["No .agent/"]},{"name":"My project","issues":["No .agent/","No git"]},{"name":"Parsertang","issues":["No .agent/"]},{"name":"bip-buddy","issues":["No .agent/"]},{"name":"reelstudio","issues":["No .agent/"]}],
-    "recommendations": [{"text":"Add .agent/ infrastructure to 5 projects","command":"/setup-ai-pipeline"},{"text":"Commit or stash changes in 4 projects","command":null},{"text":"1 active HOOK(s) — continue pending work with GUPP","command":null}]
+    "recommendations": [{"text":"Add .agent/ infrastructure to 5 projects","command":"/setup-ai-pipeline"},{"text":"Commit or stash changes in 4 projects","command":null},{"text":"2 active HOOK(s) — continue pending work with GUPP","command":null}]
 }
