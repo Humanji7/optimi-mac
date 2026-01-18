@@ -1,6 +1,6 @@
 # HOOK: MCP Servers Integration
 
-**Status:** 🔴 ACTIVE
+**Status:** ⚪ IDLE (completed)
 **Created:** 2026-01-18
 **Target:** Global MCP config for 6 projects
 
@@ -30,8 +30,9 @@
 - [x] Fixed supabase package: supabase-mcp (not @supabase/mcp-server)
 - [x] All packages exist in npm/pypi
 
-### M6: Validation ⬅️ CURRENT
-- [ ] Test MCP loading in sample project
+### M6: Validation ✅
+- [x] 6 servers working (context7, playwright, stripe, sqlite, sequential-thinking, github)
+- [x] 5 servers pending env vars (postgres, redis, cloudflare, telegram, supabase)
 
 ---
 
@@ -39,9 +40,9 @@
 
 | Molecule | Status | Commit |
 |----------|--------|--------|
-| M1 | 🔄 in_progress | - |
-| M2 | ⏳ pending | - |
-| M3 | ⏳ pending | - |
-| M4 | ⏳ pending | - |
-| M5 | ⏳ pending | - |
-| M6 | ⏳ pending | - |
+| M1 | ✅ done | 98cad23 |
+| M2 | ✅ done | dd50a79 |
+| M3 | ✅ done | 5064707 |
+| M4 | ✅ done | 7a3b1e1 |
+| M5 | ✅ done | c664e7e |
+| M6 | ✅ done | pending |
