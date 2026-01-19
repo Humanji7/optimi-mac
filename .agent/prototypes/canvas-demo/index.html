@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Canvas API Demo - Animated Circles</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #1a1a2e;
+      color: #eee;
+      font-family: 'Courier New', monospace;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    h1 {
+      margin-bottom: 10px;
+      font-size: 24px;
+      color: #16c79a;
+    }
+
+    #stats {
+      display: flex;
+      gap: 30px;
+      margin-bottom: 20px;
+      font-size: 18px;
+      color: #f5a962;
+    }
+
+    #stats span {
+      background: rgba(22, 199, 154, 0.1);
+      padding: 8px 16px;
+      border-radius: 4px;
+      border: 1px solid rgba(22, 199, 154, 0.3);
+    }
+
+    canvas {
+      border: 2px solid #16c79a;
+      background: #0f0f23;
+      box-shadow: 0 0 20px rgba(22, 199, 154, 0.3);
+      border-radius: 4px;
+    }
+
+    .description {
+      margin-top: 20px;
+      text-align: center;
+      color: #aaa;
+      max-width: 600px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Canvas 2D API - Animated Agents</h1>
+
+  <div id="stats">
+    <span>FPS: <strong id="fps">0</strong></span>
+    <span>Sprites: <strong id="sprites">25</strong></span>
+  </div>
+
+  <canvas id="canvas" width="800" height="600"></canvas>
+
+  <div class="description">
+    <p>Pure Canvas 2D API demo with 25 animated circles simulating agents.</p>
+    <p>Each agent bounces off edges with unique color and pulsing animation.</p>
+  </div>
+
+  <script type="module" src="/main.js"></script>
+</body>
+</html>

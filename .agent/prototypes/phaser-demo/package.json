@@ -1,0 +1,17 @@
+{
+  "name": "phaser-demo",
+  "version": "1.0.0",
+  "description": "Phaser 3 demo with 25 animated sprites",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "phaser": "^3.86.0"
+  },
+  "devDependencies": {
+    "vite": "^5.4.11"
+  }
+}
