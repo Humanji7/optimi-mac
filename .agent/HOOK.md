@@ -1,146 +1,202 @@
-# HOOK: Optimization Session Complete
+# HOOK: Agent Colony Research Phase
 
-**Status:** ⚪ IDLE (handoff для следующей сессии)
+**Status:** 🔴 ACTIVE
 **Created:** 2026-01-19
-**Session:** System-wide Optimization Analysis & Implementation
+**Type:** Research Convoy (3 sessions)
+**Project:** Agent Colony - Multi-Agent Management System
 
 ---
 
-## ✅ Выполнено (4 из 5 оптимизаций)
+## 📋 Convoy Overview
 
-### Opt #1: Global .gitignore for MCP Artifacts ✅
-- Создан `~/.gitignore_global` с MCP паттернами
-- Настроен git: `core.excludesfile`
-- Убрано MCP мусора из 6 проектов
-- **Эффект:** git status чище, 0% риска коммита артефактов
-- **Commit:** `22b855b`
-
-### Opt #3: Remove Unused MCP Servers ✅
-- Удалены из `~/.claude.json`: stripe, cloudflare (0 использований)
-- Оставлены: context7, playwright, sqlite, telegram (реально используются)
-- **Эффект:** ~2-3K токенов экономии на сессию, старт быстрее на 0.5-1 сек
-- **Commit:** `4edb21e`
-
-### Opt #5: Bootstrap .agent/ for 3 Projects ✅
-- Parsertang: .agent/ infrastructure ✓ (3ab8294)
-- bip-buddy: .agent/ infrastructure ✓ (548e9fa)
-- reelstudio: .agent/ infrastructure ✓ (2f872f0)
-- Dashboard: 4/8 → 7/8 projects with .agent/
-- **Эффект:** +75% GUPP coverage, -75% risk потери прогресса
-- **Commits:** `3ab8294`, `548e9fa`, `2f872f0`, `28e5e87`
-
-### Opt #2: Auto-Update Dashboard ✅
-- Модифицирован `install-hooks.sh`
-- Pre-commit hook теперь обновляет dashboard data автоматически
-- Тестирован: работает! (commits f2c0d73)
-- **Эффект:** ~22 ручных коммита/14d → 0, dashboard всегда актуален
-- **Commit:** `6276888`
+**Goal:** Провести comprehensive research для Agent Colony MVP
+**Output:** 3 research reports + working prototypes
+**Sessions:** 3 сессии Claude (2h + 2h + 3h)
 
 ---
 
-## ⏸️ Отложено
+## 🚀 Molecules
 
-### Opt #4: Railway Skills Lazy-Loading
+### M1: Multi-Agent Frameworks Research ⚪ PENDING
 
-**Причина deferral:**
-- Railway legitimately используется (recent deployment work в pointg)
-- 500K load acceptable для активного deployment проекта
-- Edge-case optimization (применяется в ~5% сессий)
+**Goal:** Понять паттерны оркестрации агентов
 
-**Когда revisit:**
-- Railway usage падает (<2 commits/month)
-- pointg session startup становится bottleneck
-- Complaint о медленном старте сессий
+**Tasks:**
+- [ ] Изучить CrewAI (role-based agents)
+- [ ] Изучить Microsoft AutoGen (conversational)
+- [ ] Изучить LangChain Multi-Agent (graph-based)
+- [ ] Изучить BabyAGI (task decomposition)
+- [ ] Ответить на вопросы:
+  - Как передают контекст между агентами?
+  - Паттерны коммуникации (broadcast/direct/queue)?
+  - Error handling strategies?
+  - Визуализация агентов?
+- [ ] Создать сравнительную таблицу
+- [ ] Выделить best practices
+- [ ] Оценить применимость к Agent Colony
 
-**Как реализовать (если нужно):**
-1. Создать `pointg/.agent/skills/railway-agent.md` wrapper (~5K)
-2. Переместить `railway-*` в `skills/railway/modules/`
-3. Lazy load через Skill tool по требованию
-
----
-
-## 📊 Итоговые метрики
-
-| Metric | Before | After | Change |
-|--------|--------|-------|--------|
-| Dashboard .agent/ projects | 4/8 (50%) | 7/8 (87%) | +75% |
-| Dashboard uncommitted | 7/8 | 3/8 | -57% |
-| Global MCP servers | 6 | 4 | -33% |
-| Manual dashboard commits | ~22/14d | 0 | -100% |
-| Projects with GUPP | 4 | 7 | +75% |
-| Git MCP pollution | 6 projects | 0 | -100% |
-
-**Performance Impact:**
-- Token savings: ~2-3K per session (MCP cleanup)
-- Time savings: ~30 sec per session (gitignore + dashboard auto)
-- Startup: ~0.5-1 sec faster (fewer MCP connections)
-
----
-
-## 📝 Коммиты (10 total)
-
-**optimi-mac (7 commits):**
+**Output:**
 ```
-f2c0d73 chore: update dashboard data after optimization session
-5b60398 docs: add optimization report for 2026-01-19 session
-6276888 opt: add auto-update dashboard to pre-commit hook
-28e5e87 opt: bootstrap .agent/ for 3 projects
-4edb21e opt: remove unused MCP servers (stripe, cloudflare)
-22b855b opt: add global .gitignore for MCP artifacts
-e1f02e2 chore: create handoff HOOK for next session
+docs/research/01-multi-agent-frameworks.md
+- Comparison table
+- Best practices
+- Recommendations
 ```
 
-**Запушено:** ✅ `git push` → origin/main
+**Estimated Time:** 2 часа
+**Agent Type:** sc:deep-research
 
-**Other repositories (3 commits):**
+---
+
+### M2: Pixel Game Engines Research ⚪ PENDING
+
+**Goal:** Выбрать оптимальный engine для визуализации
+
+**Phase 1: Research (1h)**
+- [ ] Изучить Phaser.js (full game engine)
+- [ ] Изучить PixiJS (WebGL, lightweight)
+- [ ] Изучить Kaboom.js (minimalist)
+- [ ] Изучить Canvas API (native)
+- [ ] Критерии оценки:
+  - FPS при 20+ анимированных sprites
+  - Bundle size (важно для Electron)
+  - React/Electron интеграция
+  - Community support
+  - Developer experience
+
+**Phase 2: Prototypes (1h)**
+- [ ] Создать mini-demo с Phaser
+- [ ] Создать mini-demo с PixiJS
+- [ ] Создать mini-demo с Canvas API
+- [ ] Benchmark: FPS, memory, bundle size
+- [ ] Оценить DX (developer experience)
+
+**Output:**
 ```
-Parsertang:  3ab8294 feat: add AI infrastructure → pushed
-bip-buddy:   548e9fa feat: add AI infrastructure → pushed
-reelstudio:  2f872f0 feat: add AI infrastructure → pushed
+docs/research/02-pixel-engines-comparison.md
+- Benchmarks (FPS, memory, bundle)
+- Code examples
+- Recommendation для MVP
+
+.agent/prototypes/
+├── phaser-demo/
+├── pixi-demo/
+└── canvas-demo/
+```
+
+**Estimated Time:** 2 часа
+**Agent Type:** sc:deep-research + coding
+
+---
+
+### M3: Process Management + Final Prototypes ⚪ PENDING
+
+**Goal:** Надёжное управление tmux + процессами + финальные прототипы
+
+**Part 1: Research (1.5h)**
+- [ ] Изучить tmux automation (tmux.js, libtmux)
+- [ ] Изучить blessed/blessed-contrib (terminal UI)
+- [ ] Изучить node-pty (pseudo-terminals)
+- [ ] Изучить systeminformation (metrics)
+- [ ] Вопросы:
+  - Как детектировать зависший агент?
+  - Как безопасно парсить stdout/stderr?
+  - Как восстановить сессии после reboot?
+  - Как интегрировать live-терминал в Electron?
+
+**Part 2: Working Prototype (1.5h)**
+- [ ] Создать tmux-manager prototype
+  - spawn-agent.js (запуск Claude Code/Codex)
+  - monitor-metrics.js (парсинг context usage)
+  - recover-sessions.js (восстановление после reboot)
+- [ ] Тестовый сценарий:
+  - Spawn 5 Claude Code сессий
+  - Kill одну → проверить detection
+  - Restart app → recover сессии
+  - Capture stdout → parse context %
+
+**Output:**
+```
+docs/research/03-process-management.md
+- tmux automation best practices
+- Metrics detection strategies
+- Recovery mechanisms
+
+.agent/prototypes/tmux-manager/
+├── spawn-agent.js
+├── monitor-metrics.js
+├── recover-sessions.js
+└── README.md
+```
+
+**Estimated Time:** 3 часа
+**Agent Type:** sc:deep-research + coding
+
+---
+
+## 📊 Progress Tracking
+
+| Molecule | Status | Output Created | Notes |
+|----------|--------|----------------|-------|
+| M1 | ⚪ PENDING | ❌ | Multi-agent frameworks |
+| M2 | ⚪ PENDING | ❌ | Pixel engines + demos |
+| M3 | ⚪ PENDING | ❌ | Process mgmt + prototype |
+
+**Overall:** 0/3 completed (0%)
+
+---
+
+## 🎯 Success Criteria
+
+**Research считается завершённым когда:**
+- [x] Design document написан (✅ done)
+- [ ] Все 3 research reports созданы
+- [ ] Working prototypes работают (demos + tmux-manager)
+- [ ] Есть чёткая рекомендация по tech stack
+- [ ] Можно начинать implementation без блокеров
+
+---
+
+## 🔄 Handoff Notes
+
+**Для следующей сессии:**
+```
+Команда: "Продолжи research с HOOK.md"
+
+Контекст:
+- Design approved: docs/plans/2026-01-19-agent-colony-design.md
+- Current: M1 (Multi-Agent Frameworks Research)
+- Используй sc:deep-research agent
+- Target output: docs/research/01-multi-agent-frameworks.md
 ```
 
 ---
 
-## 🎯 Рекомендации для следующей сессии
+## 📝 Commit Protocol
 
-### Immediate Actions (none required)
-Все оптимизации реализованы, протестированы, задокументированы.
-
-### Monitoring
-1. **Dashboard auto-update:** проверить работает ли в daily use
-2. **MCP cleanup:** убедиться что 4 серверов достаточно
-3. **GUPP coverage:** мониторить активность в 3 новых проектах
-
-### Future Opportunities
-1. **Campaign Inbox:** инициализировать git если проект активизируется
-2. **Railway lazy-load:** revisit если pointg сессии станут медленными
-3. **Quarterly MCP audit:** проверить неиспользуемые серверы через 3 месяца
-
----
-
-## 📚 Документация
-
-- **Полный отчёт:** `.agent/OPTIMIZATION_REPORT_2026_01_19.md`
-- **Global config:** `.agent/GLOBAL_CONFIG.md`
-- **Методология:** orchestrator analysis → pattern mining → measured optimization
-
----
-
-## Resume Point
-
-**Задача выполнена полностью.** Git чистый, всё запушено.
-
-Если потребуется продолжить:
-```
-"Продолжи оптимизацию" → читай этот HOOK + OPTIMIZATION_REPORT
+**После каждой молекулы:**
+```bash
+git add .
+git commit -m "research: complete M[N] - [description]"
 ```
 
-Следующая задача может быть любой — система оптимизирована и готова.
+**Example:**
+```bash
+git commit -m "research: complete M1 - multi-agent frameworks analysis"
+git commit -m "research: complete M2 - pixel engines benchmarks + demos"
+git commit -m "research: complete M3 - process management + tmux prototype"
+```
 
 ---
 
-**Готово к передаче следующему агенту/сессии.**
+## 🚨 Important Notes
 
-*Session: 2026-01-19 03:15-05:45*
-*Token usage: ~104K*
-*Agent: Orchestrator perspective*
+- **Smart Delegate:** Используй Task(model: "sonnet") для coding частей
+- **No bloat:** Только релевантные frameworks/engines (не изучать всё подряд)
+- **Practical focus:** Приоритет на применимость к Agent Colony, не теория
+- **Working code:** Все prototypes должны запускаться (npm start / node script.js)
+
+---
+
+**Last Updated:** 2026-01-19
+**Owner:** Claude Sonnet 4.5
