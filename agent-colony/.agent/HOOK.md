@@ -2,7 +2,7 @@
 
 **Created:** 2026-01-20
 **Status:** 🔴 ACTIVE
-**Current:** M3
+**Current:** M4
 
 ---
 
@@ -69,10 +69,11 @@ Fix Electron dev workflow to enable `pnpm dev` to run vite + compile main proces
 
 ---
 
-### 🔴 M3: Update package.json Scripts
+### ✅ M3: Update package.json Scripts
 **Goal:** Обновить scripts для dev workflow
-**Status:** 🔴 CURRENT
+**Status:** ✅ DONE
 **Files:** `package.json`
+- Commit: 0d99cf5
 
 **New scripts:**
 ```json
@@ -90,9 +91,9 @@ Fix Electron dev workflow to enable `pnpm dev` to run vite + compile main proces
 
 ---
 
-### ⚪ M4: Update vite.config.ts
+### 🔴 M4: Update vite.config.ts
 **Goal:** Добавить explicit root для renderer
-**Status:** ⚪ PENDING
+**Status:** 🔴 CURRENT
 **Files:** `vite.config.ts`
 
 **Changes:**
@@ -117,8 +118,8 @@ Fix Electron dev workflow to enable `pnpm dev` to run vite + compile main proces
 
 ## 📊 Progress
 
-- Completed: 3/6 molecules (50%)
-- Current: M3
+- Completed: 4/6 molecules (66%)
+- Current: M4
 - Remaining: M2, M3, M4, M5
 
 ---
