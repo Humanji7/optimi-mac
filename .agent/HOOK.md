@@ -48,7 +48,7 @@ docs/research/01-multi-agent-frameworks.md
 
 ---
 
-### M2: Pixel Game Engines Research ⚪ PENDING
+### M2: Pixel Game Engines Research 🔵 IN PROGRESS
 
 **Goal:** Выбрать оптимальный engine для визуализации
 
@@ -66,7 +66,7 @@ docs/research/01-multi-agent-frameworks.md
 
 **Phase 2: Prototypes (1h)**
 - [ ] Создать mini-demo с Phaser
-- [ ] Создать mini-demo с PixiJS
+- [x] Создать mini-demo с PixiJS ✅
 - [ ] Создать mini-demo с Canvas API
 - [ ] Benchmark: FPS, memory, bundle size
 - [ ] Оценить DX (developer experience)
