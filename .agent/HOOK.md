@@ -48,16 +48,16 @@ docs/research/01-multi-agent-frameworks.md
 
 ---
 
-### M2: Pixel Game Engines Research 🔵 IN PROGRESS
+### M2: Pixel Game Engines Research ✅ COMPLETED
 
 **Goal:** Выбрать оптимальный engine для визуализации
 
 **Phase 1: Research (1h)**
-- [ ] Изучить Phaser.js (full game engine)
-- [ ] Изучить PixiJS (WebGL, lightweight)
-- [ ] Изучить Kaboom.js (minimalist)
-- [ ] Изучить Canvas API (native)
-- [ ] Критерии оценки:
+- [x] Изучить Phaser.js (full game engine) ✅
+- [x] Изучить PixiJS (WebGL, lightweight) ✅
+- [x] Изучить Kaboom.js (minimalist) ✅ → DEPRECATED
+- [x] Изучить Canvas API (native) ✅
+- [x] Критерии оценки: ✅
   - FPS при 20+ анимированных sprites
   - Bundle size (важно для Electron)
   - React/Electron интеграция
@@ -65,11 +65,11 @@ docs/research/01-multi-agent-frameworks.md
   - Developer experience
 
 **Phase 2: Prototypes (1h)**
-- [ ] Создать mini-demo с Phaser
+- [x] Создать mini-demo с Phaser ✅
 - [x] Создать mini-demo с PixiJS ✅
-- [ ] Создать mini-demo с Canvas API
-- [ ] Benchmark: FPS, memory, bundle size
-- [ ] Оценить DX (developer experience)
+- [x] Создать mini-demo с Canvas API ✅
+- [x] Benchmark: FPS, memory, bundle size ✅
+- [x] Оценить DX (developer experience) ✅
 
 **Output:**
 ```
@@ -139,10 +139,10 @@ docs/research/03-process-management.md
 | Molecule | Status | Output Created | Notes |
 |----------|--------|----------------|-------|
 | M1 | ✅ COMPLETED | ✅ | Multi-agent frameworks |
-| M2 | ⚪ PENDING | ❌ | Pixel engines + demos |
+| M2 | ✅ COMPLETED | ✅ | Pixel engines + 3 demos |
 | M3 | ⚪ PENDING | ❌ | Process mgmt + prototype |
 
-**Overall:** 1/3 completed (33%)
+**Overall:** 2/3 completed (66%)
 
 ---
 
@@ -150,9 +150,9 @@ docs/research/03-process-management.md
 
 **Research считается завершённым когда:**
 - [x] Design document написан (✅ done)
-- [ ] Все 3 research reports созданы
-- [ ] Working prototypes работают (demos + tmux-manager)
-- [ ] Есть чёткая рекомендация по tech stack
+- [ ] Все 3 research reports созданы (2/3 done)
+- [ ] Working prototypes работают (3 demos done, tmux-manager pending)
+- [x] Есть чёткая рекомендация по tech stack (✅ PixiJS v8)
 - [ ] Можно начинать implementation без блокеров
 
 ---
@@ -166,19 +166,28 @@ docs/research/03-process-management.md
 Контекст:
 - Design approved: docs/plans/2026-01-19-agent-colony-design.md
 - M1 COMPLETED: docs/research/01-multi-agent-frameworks.md
-- Current: M2 (Pixel Game Engines Research)
+- M2 COMPLETED: docs/research/02-pixel-engines-comparison.md
+- Current: M3 (Process Management + tmux Prototypes)
 - Используй sc:deep-research + coding для prototypes
 - Target outputs:
-  - docs/research/02-pixel-engines-comparison.md
-  - .agent/prototypes/phaser-demo/
-  - .agent/prototypes/pixi-demo/
-  - .agent/prototypes/canvas-demo/
+  - docs/research/03-process-management.md
+  - .agent/prototypes/tmux-manager/
 ```
 
-**Handoff Note (2026-01-19):**
-M1 завершён успешно. Изучены CrewAI, AutoGen, LangGraph, BabyAGI.
-Главный вывод: native TypeScript оркестратор для Electron.
-Следующий шаг: выбор pixel engine для RTS визуализации.
+**Handoff Note (2026-01-19 #2 - after M2):**
+M2 завершён успешно. Изучены Phaser, PixiJS, Kaboom, Canvas API.
+Главный вывод: **PixiJS v8** - лучший выбор для Agent Colony MVP.
+- 47 FPS @ 10k sprites (benchmark)
+- Отличная React интеграция (@pixi/react v8)
+- Lightweight (~150KB gzip)
+- WebGL + WebGPU ready
+
+Созданы 3 working prototypes:
+- .agent/prototypes/pixi-demo/ (рекомендованный)
+- .agent/prototypes/phaser-demo/ (альтернатива)
+- .agent/prototypes/canvas-demo/ (baseline)
+
+Следующий шаг: M3 - tmux automation для управления агентами.
 
 ---
 
@@ -208,5 +217,5 @@ git commit -m "research: complete M3 - process management + tmux prototype"
 
 ---
 
-**Last Updated:** 2026-01-19 (handoff after M1)
+**Last Updated:** 2026-01-19 (M2 completed)
 **Owner:** Claude Opus 4.5
