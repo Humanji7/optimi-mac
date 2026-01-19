@@ -2,7 +2,7 @@
 
 **Created:** 2026-01-20
 **Status:** 🔴 ACTIVE
-**Current:** M2
+**Current:** M3
 
 ---
 
@@ -39,10 +39,11 @@ Fix Electron dev workflow to enable `pnpm dev` to run vite + compile main proces
 
 ---
 
-### 🔴 M2: Create tsconfig.main.json
+### ✅ M2: Create tsconfig.main.json
 **Goal:** Создать отдельный tsconfig для main process
-**Status:** 🔴 CURRENT
+**Status:** ✅ DONE
 **Files:** `tsconfig.main.json`
+- Commit: 17db15d
 
 **Config:**
 ```json
@@ -68,9 +69,9 @@ Fix Electron dev workflow to enable `pnpm dev` to run vite + compile main proces
 
 ---
 
-### ⚪ M3: Update package.json Scripts
+### 🔴 M3: Update package.json Scripts
 **Goal:** Обновить scripts для dev workflow
-**Status:** ⚪ PENDING
+**Status:** 🔴 CURRENT
 **Files:** `package.json`
 
 **New scripts:**
@@ -116,8 +117,8 @@ Fix Electron dev workflow to enable `pnpm dev` to run vite + compile main proces
 
 ## 📊 Progress
 
-- Completed: 2/6 molecules (33%)
-- Current: M2
+- Completed: 3/6 molecules (50%)
+- Current: M3
 - Remaining: M2, M3, M4, M5
 
 ---
