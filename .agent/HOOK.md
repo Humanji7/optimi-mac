@@ -17,7 +17,7 @@
 
 ## 🚀 Molecules
 
-### M1: Multi-Agent Frameworks Research ⚪ PENDING
+### M1: Multi-Agent Frameworks Research ✅ COMPLETED
 
 **Goal:** Понять паттерны оркестрации агентов
 
@@ -138,11 +138,11 @@ docs/research/03-process-management.md
 
 | Molecule | Status | Output Created | Notes |
 |----------|--------|----------------|-------|
-| M1 | ⚪ PENDING | ❌ | Multi-agent frameworks |
+| M1 | ✅ COMPLETED | ✅ | Multi-agent frameworks |
 | M2 | ⚪ PENDING | ❌ | Pixel engines + demos |
 | M3 | ⚪ PENDING | ❌ | Process mgmt + prototype |
 
-**Overall:** 0/3 completed (0%)
+**Overall:** 1/3 completed (33%)
 
 ---
 
