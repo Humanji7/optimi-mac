@@ -161,14 +161,24 @@ docs/research/03-process-management.md
 
 **Для следующей сессии:**
 ```
-Команда: "Продолжи research с HOOK.md"
+Команда: "Продолжи"
 
 Контекст:
 - Design approved: docs/plans/2026-01-19-agent-colony-design.md
-- Current: M1 (Multi-Agent Frameworks Research)
-- Используй sc:deep-research agent
-- Target output: docs/research/01-multi-agent-frameworks.md
+- M1 COMPLETED: docs/research/01-multi-agent-frameworks.md
+- Current: M2 (Pixel Game Engines Research)
+- Используй sc:deep-research + coding для prototypes
+- Target outputs:
+  - docs/research/02-pixel-engines-comparison.md
+  - .agent/prototypes/phaser-demo/
+  - .agent/prototypes/pixi-demo/
+  - .agent/prototypes/canvas-demo/
 ```
+
+**Handoff Note (2026-01-19):**
+M1 завершён успешно. Изучены CrewAI, AutoGen, LangGraph, BabyAGI.
+Главный вывод: native TypeScript оркестратор для Electron.
+Следующий шаг: выбор pixel engine для RTS визуализации.
 
 ---
 
@@ -198,5 +208,5 @@ git commit -m "research: complete M3 - process management + tmux prototype"
 
 ---
 
-**Last Updated:** 2026-01-19
-**Owner:** Claude Sonnet 4.5
+**Last Updated:** 2026-01-19 (handoff after M1)
+**Owner:** Claude Opus 4.5
