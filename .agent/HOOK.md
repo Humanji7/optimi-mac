@@ -1,206 +1,236 @@
-# HOOK: Agent Colony Research Phase
+# HOOK: Agent Colony Implementation - Phase 1
 
-**Status:** ⚪ IDLE (Research Convoy Complete)
-**Created:** 2026-01-19
-**Type:** Research Convoy (3 sessions)
-**Project:** Agent Colony - Multi-Agent Management System
+**Status:** 🔴 ACTIVE
+**Created:** 2026-01-20
+**Type:** Implementation Convoy
+**Project:** Agent Colony - Core Infrastructure
 
 ---
 
 ## 📋 Convoy Overview
 
-**Goal:** Провести comprehensive research для Agent Colony MVP
-**Output:** 3 research reports + working prototypes
-**Sessions:** 3 сессии Claude (2h + 2h + 3h)
+**Goal:** Создать рабочую инфраструктуру Agent Colony MVP
+**Output:** Electron app + tmux manager + SQLite + agent lifecycle
+**Phase:** 1 of 4 (Core Infrastructure)
+
+**Tech Stack (из research):**
+- Electron + React + TypeScript
+- PixiJS v8 + @pixi/react (Phase 2)
+- node-pty + tmux
+- SQLite (WAL mode)
+- Zustand
 
 ---
 
 ## 🚀 Molecules
 
-### M1: Multi-Agent Frameworks Research ✅ COMPLETED
+### M1: Electron Scaffold ✅ COMPLETED
 
-**Goal:** Понять паттерны оркестрации агентов
+**Goal:** Базовый Electron app с React + TypeScript
 
 **Tasks:**
-- [ ] Изучить CrewAI (role-based agents)
-- [ ] Изучить Microsoft AutoGen (conversational)
-- [ ] Изучить LangChain Multi-Agent (graph-based)
-- [ ] Изучить BabyAGI (task decomposition)
-- [ ] Ответить на вопросы:
-  - Как передают контекст между агентами?
-  - Паттерны коммуникации (broadcast/direct/queue)?
-  - Error handling strategies?
-  - Визуализация агентов?
-- [ ] Создать сравнительную таблицу
-- [ ] Выделить best practices
-- [ ] Оценить применимость к Agent Colony
+- [x] Инициализировать Electron проект (pnpm create)
+- [x] Настроить electron-builder для macOS
+- [x] Создать main process entry point
+- [x] Создать renderer с React
+- [x] Настроить IPC между main/renderer
+- [x] Добавить hot reload для разработки
 
-**Output:**
+**Files:**
 ```
-docs/research/01-multi-agent-frameworks.md
-- Comparison table
-- Best practices
-- Recommendations
-```
-
-**Estimated Time:** 2 часа
-**Agent Type:** sc:deep-research
-
----
-
-### M2: Pixel Game Engines Research ✅ COMPLETED
-
-**Goal:** Выбрать оптимальный engine для визуализации
-
-**Phase 1: Research (1h)**
-- [x] Изучить Phaser.js (full game engine) ✅
-- [x] Изучить PixiJS (WebGL, lightweight) ✅
-- [x] Изучить Kaboom.js (minimalist) ✅ → DEPRECATED
-- [x] Изучить Canvas API (native) ✅
-- [x] Критерии оценки: ✅
-  - FPS при 20+ анимированных sprites
-  - Bundle size (важно для Electron)
-  - React/Electron интеграция
-  - Community support
-  - Developer experience
-
-**Phase 2: Prototypes (1h)**
-- [x] Создать mini-demo с Phaser ✅
-- [x] Создать mini-demo с PixiJS ✅
-- [x] Создать mini-demo с Canvas API ✅
-- [x] Benchmark: FPS, memory, bundle size ✅
-- [x] Оценить DX (developer experience) ✅
-
-**Output:**
-```
-docs/research/02-pixel-engines-comparison.md
-- Benchmarks (FPS, memory, bundle)
-- Code examples
-- Recommendation для MVP
-
-.agent/prototypes/
-├── phaser-demo/
-├── pixi-demo/
-└── canvas-demo/
-```
-
-**Estimated Time:** 2 часа
-**Agent Type:** sc:deep-research + coding
-
----
-
-### M3: Process Management + Final Prototypes ✅ COMPLETED
-
-**Goal:** Надёжное управление tmux + процессами + финальные прототипы
-
-**Part 1: Research (1.5h)**
-- [x] Изучить tmux automation (tmux.js, libtmux) ✅
-- [x] Изучить blessed/blessed-contrib (terminal UI) ✅
-- [x] Изучить node-pty (pseudo-terminals) ✅
-- [x] Изучить systeminformation (metrics) ✅
-- [x] Вопросы: ✅
-  - Как детектировать зависший агент? → heartbeat + metrics
-  - Как безопасно парсить stdout/stderr? → stream buffering
-  - Как восстановить сессии после reboot? → tmux persistence + state file
-  - Как интегрировать live-терминал в Electron? → node-pty + xterm.js
-
-**Part 2: Working Prototype (1.5h)**
-- [x] Создать tmux-manager prototype ✅
-  - spawn-agent.js (запуск Claude Code/Codex) ✅
-  - monitor-metrics.js (парсинг context usage) ✅
-  - recover-sessions.js (восстановление после reboot) ✅
-- [x] Тестовый сценарий: documented in README.md ✅
-
-**Output:**
-```
-docs/research/03-process-management.md
-- tmux automation best practices
-- Metrics detection strategies
-- Recovery mechanisms
-
-.agent/prototypes/tmux-manager/
-├── spawn-agent.js
-├── monitor-metrics.js
-├── recover-sessions.js
+agent-colony/
+├── package.json
+├── electron-builder.yml
+├── src/
+│   ├── main/
+│   │   ├── index.ts          # Main process
+│   │   └── preload.ts        # Preload script
+│   └── renderer/
+│       ├── index.html
+│       ├── index.tsx
+│       ├── App.tsx
+│       └── vite-env.d.ts
+├── tsconfig.json
+├── tsconfig.node.json
+├── vite.config.ts
+├── .gitignore
 └── README.md
 ```
 
-**Estimated Time:** 3 часа
-**Agent Type:** sc:deep-research + coding
+**Acceptance:**
+- [x] Все файлы созданы (12 файлов)
+- [x] package.json с правильными dependencies
+- [x] IPC настроен через contextBridge (безопасно)
+- [x] TypeScript конфигурация для main и renderer
+- [x] Vite настроен для dev и build
+
+---
+
+### M2: tmux Manager Core ⚪ PENDING
+
+**Goal:** Spawn/kill tmux сессий для агентов
+
+**Tasks:**
+- [ ] Создать tmux service (spawn, kill, list)
+- [ ] Реализовать безопасный spawn (execFile, не exec)
+- [ ] Добавить session naming convention
+- [ ] Создать types для tmux операций
+- [ ] Интегрировать с main process
+
+**Files:**
+```
+src/main/
+├── tmux/
+│   ├── index.ts              # Public API
+│   ├── spawn.ts              # Spawn session
+│   ├── kill.ts               # Kill session
+│   ├── list.ts               # List sessions
+│   └── types.ts              # TmuxSession, TmuxError
+```
+
+**Security (из design doc):**
+```typescript
+// ✅ SECURE: execFile with array args
+execFile('tmux', ['new-session', '-s', agentName, '-c', workDir]);
+
+// ❌ VULNERABLE: exec with interpolation
+exec(`tmux new-session -s ${agentName}`);
+```
+
+**Acceptance:**
+- [ ] Можно spawn tmux session
+- [ ] Можно kill session gracefully
+- [ ] Можно list active sessions
+- [ ] No command injection possible
+
+---
+
+### M3: SQLite Persistence ⚪ PENDING
+
+**Goal:** Сохранение состояния агентов в SQLite
+
+**Tasks:**
+- [ ] Настроить better-sqlite3 (sync) или sqlite3 (async)
+- [ ] Включить WAL mode для concurrency
+- [ ] Создать schema (agents, metrics_snapshots)
+- [ ] Реализовать migrations
+- [ ] Добавить retry strategy для locked DB
+
+**Files:**
+```
+src/main/
+├── db/
+│   ├── index.ts              # Database instance
+│   ├── migrations/
+│   │   └── 001_initial.sql
+│   ├── models/
+│   │   ├── agent.ts
+│   │   └── metrics.ts
+│   └── retry.ts              # Retry with backoff
+```
+
+**Schema (из design doc):**
+```sql
+CREATE TABLE agents (
+  id TEXT PRIMARY KEY,
+  role TEXT,
+  status TEXT,
+  project_path TEXT,
+  tmux_session TEXT,
+  created_at INTEGER,
+  last_seen INTEGER
+);
+
+CREATE TABLE metrics_snapshots (
+  id INTEGER PRIMARY KEY,
+  agent_id TEXT,
+  timestamp INTEGER,
+  metrics JSON
+);
+```
+
+**Acceptance:**
+- [ ] DB создаётся при первом запуске
+- [ ] CRUD операции работают
+- [ ] WAL mode включён
+- [ ] Retry при SQLITE_BUSY
+
+---
+
+### M4: Agent Lifecycle ⚪ PENDING
+
+**Goal:** Полный цикл жизни агента (spawn → monitor → kill)
+
+**Tasks:**
+- [ ] Создать AgentManager class
+- [ ] Реализовать spawn agent flow
+- [ ] Добавить periodic health check (10 sec)
+- [ ] Реализовать graceful shutdown
+- [ ] Интегрировать с SQLite persistence
+- [ ] Добавить EventEmitter для UI updates
+
+**Files:**
+```
+src/main/
+├── agents/
+│   ├── manager.ts            # AgentManager class
+│   ├── registry.ts           # In-memory agent map
+│   ├── health.ts             # Health check logic
+│   ├── events.ts             # EventEmitter setup
+│   └── types.ts              # Agent data model
+```
+
+**Agent Data Model (из design doc):**
+```typescript
+interface Agent {
+  id: string;
+  role: 'Architect' | 'Coder' | 'Tester' | 'Reviewer';
+  status: 'idle' | 'working' | 'error' | 'paused';
+  project: { name: string; path: string };
+  process: { tmuxSession: string; pid: number };
+  metrics: { health: string; contextUsage: number | null; uptime: number };
+  position: { x: number; y: number };
+  hookStatus: { active: boolean; currentMolecule: string | null };
+}
+```
+
+**Acceptance:**
+- [ ] Agent появляется в registry после spawn
+- [ ] Health check обновляет status
+- [ ] Graceful shutdown работает
+- [ ] Events доходят до renderer через IPC
 
 ---
 
 ## 📊 Progress Tracking
 
-| Molecule | Status | Output Created | Notes |
-|----------|--------|----------------|-------|
-| M1 | ✅ COMPLETED | ✅ | Multi-agent frameworks |
-| M2 | ✅ COMPLETED | ✅ | Pixel engines + 3 demos |
-| M3 | ✅ COMPLETED | ✅ | Process mgmt + tmux-manager |
+| Molecule | Status | Commit | Notes |
+|----------|--------|--------|-------|
+| M1: Electron Scaffold | ✅ COMPLETED | ✅ | 12 files created |
+| M2: tmux Manager | 🔴 CURRENT | - | Next |
+| M3: SQLite Persistence | ⚪ PENDING | - | |
+| M4: Agent Lifecycle | ⚪ PENDING | - | |
 
-**Overall:** 3/3 completed (100%) 🎉
+**Overall:** 1/4 completed (25%)
 
 ---
 
-## 🎯 Success Criteria
+## 🎯 Phase 1 Success Criteria
 
-**Research считается завершённым когда:**
-- [x] Design document написан (✅ done)
-- [x] Все 3 research reports созданы (✅ 3/3 done)
-- [x] Working prototypes работают (✅ 3 demos + tmux-manager)
-- [x] Есть чёткая рекомендация по tech stack (✅ PixiJS v8 + node-pty)
-- [x] Можно начинать implementation без блокеров (✅ READY)
+**Phase 1 считается завершённой когда:**
+- [ ] Electron app запускается (`pnpm dev`)
+- [ ] Можно spawn tmux session для агента
+- [ ] Агенты сохраняются в SQLite
+- [ ] Health check работает (10 sec interval)
+- [ ] IPC доставляет events в renderer
+- [ ] Graceful shutdown при закрытии app
 
 ---
 
 ## 🔄 Handoff Notes
 
-**🎉 RESEARCH CONVOY COMPLETED**
-
-```
-Следующая команда: "Начни implementation" или конкретная задача
-
-Все research готовы:
-- docs/research/01-multi-agent-frameworks.md
-- docs/research/02-pixel-engines-comparison.md
-- docs/research/03-process-management.md
-
-Все prototypes готовы:
-- .agent/prototypes/pixi-demo/
-- .agent/prototypes/phaser-demo/
-- .agent/prototypes/canvas-demo/
-- .agent/prototypes/tmux-manager/
-```
-
-**Final Handoff Note (2026-01-20 - CONVOY COMPLETE):**
-
-### Research Summary
-
-**M1 - Multi-Agent Frameworks:**
-- Изучены CrewAI, AutoGen, LangGraph, BabyAGI
-- Вывод: Native TypeScript orchestrator для Electron
-
-**M2 - Pixel Game Engines:**
-- Изучены Phaser, PixiJS, Kaboom, Canvas API
-- Вывод: **PixiJS v8** (47 FPS, @pixi/react)
-
-**M3 - Process Management:**
-- Изучены node-pty, tmux, systeminformation
-- Вывод: **node-pty + tmux** для agent management
-
-### Recommended Tech Stack
-
-| Layer | Technology | Notes |
-|-------|------------|-------|
-| Framework | Electron + React | Desktop app |
-| Visualization | PixiJS v8 + @pixi/react | RTS-like view |
-| Process | node-pty + tmux | Agent spawn/recover |
-| Metrics | systeminformation | CPU/memory monitoring |
-| State | Zustand | React state management |
-
-### Ready for Implementation
-
-Все блокеры research сняты. Можно начинать MVP implementation.
+**Starting:** 2026-01-20
+**Current Focus:** M1 - Electron Scaffold
 
 ---
 
@@ -209,26 +239,26 @@ docs/research/03-process-management.md
 **После каждой молекулы:**
 ```bash
 git add .
-git commit -m "research: complete M[N] - [description]"
+git commit -m "impl: complete M[N] - [description]"
 ```
 
-**Example:**
+**Examples:**
 ```bash
-git commit -m "research: complete M1 - multi-agent frameworks analysis"
-git commit -m "research: complete M2 - pixel engines benchmarks + demos"
-git commit -m "research: complete M3 - process management + tmux prototype"
+git commit -m "impl: complete M1 - electron scaffold with React"
+git commit -m "impl: complete M2 - tmux manager core"
+git commit -m "impl: complete M3 - SQLite persistence"
+git commit -m "impl: complete M4 - agent lifecycle"
 ```
 
 ---
 
-## 🚨 Important Notes
+## 🚨 Smart Delegate Reminder
 
-- **Smart Delegate:** Используй Task(model: "sonnet") для coding частей
-- **No bloat:** Только релевантные frameworks/engines (не изучать всё подряд)
-- **Practical focus:** Приоритет на применимость к Agent Colony, не теория
-- **Working code:** Все prototypes должны запускаться (npm start / node script.js)
+**Opus планирует, Sonnet кодирует:**
+- M1-M4: использовать Task(model: "sonnet") для coding
+- Opus: только planning, review, integration
 
 ---
 
-**Last Updated:** 2026-01-20 (CONVOY COMPLETE)
+**Last Updated:** 2026-01-20
 **Owner:** Claude Opus 4.5

@@ -1,0 +1,50 @@
+{
+  "name": "agent-colony",
+  "version": "0.1.0",
+  "description": "AI Agent Colony Visual Management Interface",
+  "main": "dist/main/index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build && electron-builder",
+    "preview": "electron .",
+    "type-check": "tsc --noEmit"
+  },
+  "keywords": [
+    "electron",
+    "react",
+    "typescript",
+    "agent-management"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "electron": "^33.3.1",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.18",
+    "@types/react-dom": "^18.3.5",
+    "@vitejs/plugin-react": "^4.3.4",
+    "electron-builder": "^25.1.8",
+    "typescript": "^5.7.3",
+    "vite": "^6.0.6"
+  },
+  "build": {
+    "appId": "com.agent-colony.app",
+    "mac": {
+      "category": "public.app-category.developer-tools",
+      "target": [
+        "dmg"
+      ]
+    },
+    "files": [
+      "dist/**/*",
+      "package.json"
+    ],
+    "directories": {
+      "output": "release"
+    }
+  }
+}
