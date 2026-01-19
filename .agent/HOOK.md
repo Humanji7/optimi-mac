@@ -105,55 +105,46 @@ exec(`tmux new-session -s ${agentName}`);
 
 ---
 
-### M3: SQLite Persistence ⚪ PENDING
+### M3: SQLite Persistence ✅ COMPLETED
 
 **Goal:** Сохранение состояния агентов в SQLite
 
 **Tasks:**
-- [ ] Настроить better-sqlite3 (sync) или sqlite3 (async)
-- [ ] Включить WAL mode для concurrency
-- [ ] Создать schema (agents, metrics_snapshots)
-- [ ] Реализовать migrations
-- [ ] Добавить retry strategy для locked DB
+- [x] Настроить better-sqlite3 (sync)
+- [x] Включить WAL mode для concurrency
+- [x] Создать schema (agents, metrics_snapshots)
+- [x] Реализовать migrations
+- [x] Добавить retry strategy для locked DB
 
 **Files:**
 ```
 src/main/
 ├── db/
-│   ├── index.ts              # Database instance
+│   ├── index.ts              # Database instance + init
+│   ├── types.ts              # Database types
 │   ├── migrations/
-│   │   └── 001_initial.sql
+│   │   └── 001_initial.ts    # Initial schema
 │   ├── models/
-│   │   ├── agent.ts
-│   │   └── metrics.ts
+│   │   ├── agent.ts          # Agent CRUD
+│   │   └── metrics.ts        # Metrics CRUD
 │   └── retry.ts              # Retry with backoff
 ```
 
-**Schema (из design doc):**
-```sql
-CREATE TABLE agents (
-  id TEXT PRIMARY KEY,
-  role TEXT,
-  status TEXT,
-  project_path TEXT,
-  tmux_session TEXT,
-  created_at INTEGER,
-  last_seen INTEGER
-);
-
-CREATE TABLE metrics_snapshots (
-  id INTEGER PRIMARY KEY,
-  agent_id TEXT,
-  timestamp INTEGER,
-  metrics JSON
-);
-```
+**Implementation:**
+- Database: better-sqlite3 12.6.2 (sync API)
+- WAL mode enabled for concurrency
+- Full typed CRUD operations
+- Exponential backoff retry (max 3, 100-2000ms)
+- Foreign key constraints with CASCADE
+- Indexes on agent_id and timestamp
 
 **Acceptance:**
-- [ ] DB создаётся при первом запуске
-- [ ] CRUD операции работают
-- [ ] WAL mode включён
-- [ ] Retry при SQLITE_BUSY
+- [x] DB создаётся при первом запуске
+- [x] CRUD операции работают
+- [x] WAL mode включён
+- [x] Retry при SQLITE_BUSY
+- [x] TypeScript компиляция без ошибок
+- [x] 6 files, 527 lines
 
 ---
 
@@ -208,10 +199,10 @@ interface Agent {
 |----------|--------|--------|-------|
 | M1: Electron Scaffold | ✅ COMPLETED | ✅ | 12 files created |
 | M2: tmux Manager | ✅ COMPLETED | ✅ | 6 files, 403 lines |
-| M3: SQLite Persistence | ⚪ PENDING | - | Next |
-| M4: Agent Lifecycle | ⚪ PENDING | - | |
+| M3: SQLite Persistence | ✅ COMPLETED | ✅ 7a274e4 | 6 files, 527 lines |
+| M4: Agent Lifecycle | ⚪ PENDING | - | Next |
 
-**Overall:** 2/4 completed (50%)
+**Overall:** 3/4 completed (75%)
 
 ---
 
