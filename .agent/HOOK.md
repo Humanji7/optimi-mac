@@ -66,16 +66,16 @@ agent-colony/
 
 ---
 
-### M2: tmux Manager Core ⚪ PENDING
+### M2: tmux Manager Core ✅ COMPLETED
 
 **Goal:** Spawn/kill tmux сессий для агентов
 
 **Tasks:**
-- [ ] Создать tmux service (spawn, kill, list)
-- [ ] Реализовать безопасный spawn (execFile, не exec)
-- [ ] Добавить session naming convention
-- [ ] Создать types для tmux операций
-- [ ] Интегрировать с main process
+- [x] Создать tmux service (spawn, kill, list)
+- [x] Реализовать безопасный spawn (execFile, не exec)
+- [x] Добавить session naming convention
+- [x] Создать types для tmux операций
+- [x] Интегрировать с main process
 
 **Files:**
 ```
@@ -98,10 +98,10 @@ exec(`tmux new-session -s ${agentName}`);
 ```
 
 **Acceptance:**
-- [ ] Можно spawn tmux session
-- [ ] Можно kill session gracefully
-- [ ] Можно list active sessions
-- [ ] No command injection possible
+- [x] Можно spawn tmux session
+- [x] Можно kill session gracefully
+- [x] Можно list active sessions
+- [x] No command injection possible
 
 ---
 
@@ -207,11 +207,11 @@ interface Agent {
 | Molecule | Status | Commit | Notes |
 |----------|--------|--------|-------|
 | M1: Electron Scaffold | ✅ COMPLETED | ✅ | 12 files created |
-| M2: tmux Manager | 🔴 CURRENT | - | Next |
-| M3: SQLite Persistence | ⚪ PENDING | - | |
+| M2: tmux Manager | ✅ COMPLETED | ✅ | 6 files, 403 lines |
+| M3: SQLite Persistence | ⚪ PENDING | - | Next |
 | M4: Agent Lifecycle | ⚪ PENDING | - | |
 
-**Overall:** 1/4 completed (25%)
+**Overall:** 2/4 completed (50%)
 
 ---
 
