@@ -1,0 +1,24 @@
+{
+  "name": "tmux-manager",
+  "version": "1.0.0",
+  "description": "Prototype for managing Claude/Codex agents in tmux sessions",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "demo": "node demo.js",
+    "test": "echo \"No tests yet\""
+  },
+  "dependencies": {
+    "systeminformation": "^5.23.5"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": [
+    "tmux",
+    "agent",
+    "claude",
+    "codex",
+    "process-management"
+  ]
+}
