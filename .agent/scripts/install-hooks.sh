@@ -26,15 +26,23 @@ echo "📦 Installing git hooks..."
 # Pre-commit hook
 cat > "$HOOKS_DIR/pre-commit" << 'HOOK'
 #!/bin/bash
-# Pre-commit hook: Auto-update docs-index.md when .agent/ changes
+# Pre-commit hook: Auto-update docs-index.md and dashboard when .agent/ changes
 
 AGENT_CHANGES=$(git diff --cached --name-only | grep -E '^\.agent/' || true)
 
 if [[ -n "$AGENT_CHANGES" ]]; then
+    # Update docs-index.md
     if [[ -x ".agent/scripts/generate-docs-index.sh" ]]; then
         bash .agent/scripts/generate-docs-index.sh
         git add .agent/docs-index.md 2>/dev/null || true
         echo "📚 docs-index.md auto-updated"
+    fi
+
+    # Update dashboard data (optimi-mac only)
+    if [[ -x ".agent/scripts/projects-health-check.sh" ]] && [[ -f ".agent/dashboard/data.json" ]]; then
+        bash .agent/scripts/projects-health-check.sh > /dev/null 2>&1
+        git add .agent/dashboard/data.json 2>/dev/null || true
+        echo "📊 dashboard data auto-updated"
     fi
 fi
 
@@ -44,4 +52,4 @@ HOOK
 chmod +x "$HOOKS_DIR/pre-commit"
 
 echo "✅ Hooks installed:"
-echo "   - pre-commit (auto-update docs-index.md)"
+echo "   - pre-commit (auto-update docs-index.md + dashboard)"

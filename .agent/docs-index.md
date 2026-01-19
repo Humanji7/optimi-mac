@@ -19,7 +19,7 @@
 | [check-smart-delegate.sh](scripts/check-smart-delegate.sh) | check-smart-delegate.sh — PreToolUse hook for Task tool | 2026-01-13 |
 | [generate-docs-index.sh](scripts/generate-docs-index.sh) | generate-docs-index.sh — Auto-generate documentation index for .agent/ | 2026-01-13 |
 | [generate-triage-prompt.sh](scripts/generate-triage-prompt.sh) | Generate Triage Prompt | 2026-01-13 |
-| [install-hooks.sh](scripts/install-hooks.sh) | install-hooks.sh — Install git hooks for .agent/ automation | 2026-01-12 |
+| [install-hooks.sh](scripts/install-hooks.sh) | install-hooks.sh — Install git hooks for .agent/ automation | 2026-01-19 |
 | [install-statusline.sh](scripts/install-statusline.sh) | Smart StatusLine Installer for Claude Code | 2026-01-11 |
 | [log-error.sh](scripts/log-error.sh) | log-error.sh — Error Journaling for Living Memory System | 2026-01-16 |
 | [night-watch.sh](scripts/night-watch.sh) | Night Watch — Safe Overnight Refactoring (Smart Delegate Edition) | 2026-01-13 |
@@ -48,4 +48,4 @@
 
 ---
 
-_Last generated: 2026-01-19 12:16_
+_Last generated: 2026-01-19 12:18_
