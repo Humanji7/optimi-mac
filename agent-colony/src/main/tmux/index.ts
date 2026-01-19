@@ -39,7 +39,7 @@ export type { TmuxSession, SpawnOptions, TmuxError } from './types';
 export { SESSION_NAME_REGEX, createTmuxError } from './types';
 
 // Re-export functions
-export { spawnSession } from './spawn';
+export { spawnSession, spawnSession as createSession } from './spawn';
 export { killSession } from './kill';
 export { listSessions, sessionExists } from './list';
 export { sendKeys } from './send';

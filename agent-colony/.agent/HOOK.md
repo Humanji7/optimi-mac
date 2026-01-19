@@ -2,7 +2,7 @@
 
 **Created:** 2026-01-20
 **Status:** 🔴 ACTIVE
-**Current:** M4
+**Current:** M5
 
 ---
 
@@ -91,10 +91,11 @@ Fix Electron dev workflow to enable `pnpm dev` to run vite + compile main proces
 
 ---
 
-### 🔴 M4: Update vite.config.ts
+### ✅ M4: Update vite.config.ts
 **Goal:** Добавить explicit root для renderer
-**Status:** 🔴 CURRENT
+**Status:** ✅ DONE
 **Files:** `vite.config.ts`
+- Commit: c0be61d
 
 **Changes:**
 - Add `root: 'src/renderer'`
@@ -102,9 +103,9 @@ Fix Electron dev workflow to enable `pnpm dev` to run vite + compile main proces
 
 ---
 
-### ⚪ M5: Verify Setup
+### 🔴 M5: Verify Setup
 **Goal:** Проверить что `pnpm dev` работает
-**Status:** ⚪ PENDING
+**Status:** 🔴 CURRENT
 **Files:** N/A (testing)
 
 **Tests:**
@@ -118,8 +119,8 @@ Fix Electron dev workflow to enable `pnpm dev` to run vite + compile main proces
 
 ## 📊 Progress
 
-- Completed: 4/6 molecules (66%)
-- Current: M4
+- Completed: 5/6 molecules (83%)
+- Current: M5
 - Remaining: M2, M3, M4, M5
 
 ---

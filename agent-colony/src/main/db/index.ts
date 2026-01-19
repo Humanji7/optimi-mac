@@ -67,3 +67,6 @@ export function closeDatabase(): void {
     db = null;
   }
 }
+
+// Re-export models
+export { getAllAgents as loadAgents, createAgent, updateAgent as saveAgent } from './models/agent';
