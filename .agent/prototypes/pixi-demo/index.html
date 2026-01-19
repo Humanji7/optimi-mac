@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PixiJS v8 Demo - 25 Animated Agents</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Monaco', 'Courier New', monospace;
+      background: #1a1a2e;
+      color: #fff;
+      overflow: hidden;
+    }
+
+    #app {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      width: 100vw;
+    }
+
+    #stats {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: rgba(0, 0, 0, 0.7);
+      padding: 10px 15px;
+      border-radius: 5px;
+      font-size: 14px;
+      z-index: 100;
+    }
+
+    #stats div {
+      margin: 3px 0;
+    }
+
+    .label {
+      color: #00d4ff;
+      font-weight: bold;
+    }
+
+    canvas {
+      display: block;
+      border: 2px solid #00d4ff;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <div id="stats">
+      <div><span class="label">FPS:</span> <span id="fps">0</span></div>
+      <div><span class="label">Sprites:</span> <span id="sprite-count">0</span></div>
+    </div>
+  </div>
+  <script type="module" src="./main.js"></script>
+</body>
+</html>

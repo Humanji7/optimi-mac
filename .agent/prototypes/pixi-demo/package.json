@@ -1,0 +1,16 @@
+{
+  "name": "pixi-demo",
+  "version": "1.0.0",
+  "description": "PixiJS v8 demo with 25 animated agent sprites",
+  "type": "module",
+  "scripts": {
+    "start": "vite",
+    "build": "vite build"
+  },
+  "dependencies": {
+    "pixi.js": "^8.6.6"
+  },
+  "devDependencies": {
+    "vite": "^6.0.5"
+  }
+}
