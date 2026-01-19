@@ -1,6 +1,6 @@
 # HOOK: Agent Colony Implementation - Phase 1
 
-**Status:** 🔴 ACTIVE
+**Status:** ⚪ IDLE (Phase 1 Complete)
 **Created:** 2026-01-20
 **Type:** Implementation Convoy
 **Project:** Agent Colony - Core Infrastructure
@@ -148,17 +148,17 @@ src/main/
 
 ---
 
-### M4: Agent Lifecycle ⚪ PENDING
+### M4: Agent Lifecycle ✅ COMPLETED
 
 **Goal:** Полный цикл жизни агента (spawn → monitor → kill)
 
 **Tasks:**
-- [ ] Создать AgentManager class
-- [ ] Реализовать spawn agent flow
-- [ ] Добавить periodic health check (10 sec)
-- [ ] Реализовать graceful shutdown
-- [ ] Интегрировать с SQLite persistence
-- [ ] Добавить EventEmitter для UI updates
+- [x] Создать AgentManager class
+- [x] Реализовать spawn agent flow
+- [x] Добавить periodic health check (10 sec)
+- [x] Реализовать graceful shutdown
+- [x] Интегрировать с SQLite persistence
+- [x] Добавить EventEmitter для UI updates
 
 **Files:**
 ```
@@ -186,10 +186,10 @@ interface Agent {
 ```
 
 **Acceptance:**
-- [ ] Agent появляется в registry после spawn
-- [ ] Health check обновляет status
-- [ ] Graceful shutdown работает
-- [ ] Events доходят до renderer через IPC
+- [x] Agent появляется в registry после spawn
+- [x] Health check обновляет status
+- [x] Graceful shutdown работает
+- [x] Events доходят до renderer через IPC
 
 ---
 
@@ -197,31 +197,44 @@ interface Agent {
 
 | Molecule | Status | Commit | Notes |
 |----------|--------|--------|-------|
-| M1: Electron Scaffold | ✅ COMPLETED | ✅ | 12 files created |
-| M2: tmux Manager | ✅ COMPLETED | ✅ | 6 files, 403 lines |
-| M3: SQLite Persistence | ✅ COMPLETED | ✅ 7a274e4 | 6 files, 527 lines |
-| M4: Agent Lifecycle | ⚪ PENDING | - | Next |
+| M1: Electron Scaffold | ✅ COMPLETED | 091eca8 | 12 files created |
+| M2: tmux Manager | ✅ COMPLETED | 8a15c71 | 6 files, 403 lines |
+| M3: SQLite Persistence | ✅ COMPLETED | 7a274e4 | 6 files, 527 lines |
+| M4: Agent Lifecycle | ✅ COMPLETED | b73036c | 6 files + IPC integration |
 
-**Overall:** 3/4 completed (75%)
+**Overall:** 4/4 completed (100%) 🎉
 
 ---
 
 ## 🎯 Phase 1 Success Criteria
 
 **Phase 1 считается завершённой когда:**
-- [ ] Electron app запускается (`pnpm dev`)
-- [ ] Можно spawn tmux session для агента
-- [ ] Агенты сохраняются в SQLite
-- [ ] Health check работает (10 sec interval)
-- [ ] IPC доставляет events в renderer
-- [ ] Graceful shutdown при закрытии app
+- [x] Electron app запускается (`pnpm dev`)
+- [x] Можно spawn tmux session для агента
+- [x] Агенты сохраняются в SQLite
+- [x] Health check работает (10 sec interval)
+- [x] IPC доставляет events в renderer
+- [x] Graceful shutdown при закрытии app
+
+✅ **PHASE 1 COMPLETE**
 
 ---
 
 ## 🔄 Handoff Notes
 
-**Starting:** 2026-01-20
-**Current Focus:** M1 - Electron Scaffold
+**Started:** 2026-01-20
+**Completed:** 2026-01-20
+
+**Phase 1 Results:**
+- 30+ files created in `agent-colony/`
+- Core infrastructure fully functional
+- Ready for Phase 2: Visual Layer (PixiJS)
+
+**Next Steps (Phase 2):**
+- M5: PixiJS + React setup
+- M6: Agent sprites + animations
+- M7: Spawn modal UI
+- M8: Detail panel + chat
 
 ---
 
