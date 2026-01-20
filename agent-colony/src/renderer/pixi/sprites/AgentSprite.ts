@@ -28,6 +28,7 @@ export class AgentSprite extends Container {
   private animationTime = 0;
   private isAnimating = false;
   public readonly role: AgentRole;
+  public onClick?: () => void; // Callback для клика
 
   /**
    * @param role - Роль агента
@@ -58,6 +59,13 @@ export class AgentSprite extends Container {
     // Включаем интерактивность
     this.eventMode = 'static';
     this.cursor = 'pointer';
+
+    // Обработка клика
+    this.on('pointertap', () => {
+      if (this.onClick) {
+        this.onClick();
+      }
+    });
 
     console.log(`[AgentSprite] Created sprite for ${role}`, {
       originalSize: { width: texture.width, height: texture.height },

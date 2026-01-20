@@ -23,6 +23,7 @@ interface AgentData {
 export class AgentLayer extends Container {
   private agents = new Map<string, AgentSprite>();
   private ticker: Ticker | null = null;
+  public onAgentClick?: (id: string) => void; // Callback для клика по агенту
 
   constructor() {
     super();
@@ -75,6 +76,13 @@ export class AgentLayer extends Container {
     // Создаём sprite
     const sprite = new AgentSprite(data.role, texture);
     sprite.position.set(data.position.x, data.position.y);
+
+    // Устанавливаем onClick callback
+    sprite.onClick = () => {
+      if (this.onAgentClick) {
+        this.onAgentClick(data.id);
+      }
+    };
 
     // Добавляем в layer
     this.addChild(sprite);

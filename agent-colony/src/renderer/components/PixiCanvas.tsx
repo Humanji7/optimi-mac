@@ -17,9 +17,10 @@ import { AgentLayer } from '../pixi/AgentLayer';
 
 interface PixiCanvasProps {
   onAppReady?: (app: Application) => void;
+  onAgentClick?: (id: string) => void;
 }
 
-export function PixiCanvas({ onAppReady }: PixiCanvasProps) {
+export function PixiCanvas({ onAppReady, onAgentClick }: PixiCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const appRef = useRef<Application | null>(null);
   const agentLayerRef = useRef<AgentLayer | null>(null);
@@ -61,6 +62,11 @@ export function PixiCanvas({ onAppReady }: PixiCanvasProps) {
         agentLayer.attachTicker(app.ticker);
         app.stage.addChild(agentLayer);
         agentLayerRef.current = agentLayer;
+
+        // Устанавливаем callback для кликов по агентам
+        if (onAgentClick) {
+          agentLayer.onAgentClick = onAgentClick;
+        }
 
         console.log('[PixiCanvas] AgentLayer created and attached');
 

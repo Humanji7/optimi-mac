@@ -4,14 +4,17 @@
  * Purpose: Главный компонент приложения с PixiJS canvas для Agent Colony
  */
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { PixiCanvas } from './components/PixiCanvas';
 import { SpawnModal } from './components/SpawnModal';
+import { DetailPanel, type Agent } from './components/DetailPanel';
 import type { Application } from 'pixi.js';
 import type { AgentRole } from './pixi/types';
 
 function App() {
   const [showSpawnModal, setShowSpawnModal] = useState(false);
+  const [selectedAgent, setSelectedAgent] = useState<Agent | null>(null);
+  const [agents, setAgents] = useState<Map<string, Agent>>(new Map());
 
   const handleAppReady = (app: Application) => {
     console.log('[App] PixiJS ready:', {
@@ -41,6 +44,122 @@ function App() {
     }
   };
 
+  const handleAgentClick = (id: string) => {
+    console.log('[App] Agent clicked:', id);
+
+    const agent = agents.get(id);
+    if (agent) {
+      setSelectedAgent(agent);
+    } else {
+      console.warn('[App] Agent not found in agents map:', id);
+    }
+  };
+
+  const handleClosePanel = () => {
+    setSelectedAgent(null);
+  };
+
+  const handleKillAgent = async (id: string) => {
+    console.log('[App] Killing agent:', id);
+
+    try {
+      await window.electronAPI.killAgent(id);
+      console.log('[App] Agent killed successfully:', id);
+
+      // Закрыть панель если убитый агент был выбран
+      if (selectedAgent?.id === id) {
+        setSelectedAgent(null);
+      }
+
+      // Удалить из локального состояния
+      setAgents((prev) => {
+        const newMap = new Map(prev);
+        newMap.delete(id);
+        return newMap;
+      });
+    } catch (error) {
+      console.error('[App] Failed to kill agent:', error);
+      alert(`Failed to kill agent: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+  };
+
+  const handleSendCommand = async (id: string, command: string) => {
+    console.log('[App] Sending command to agent:', { id, command });
+
+    try {
+      await window.electronAPI.sendCommand(id, command);
+      console.log('[App] Command sent successfully');
+    } catch (error) {
+      console.error('[App] Failed to send command:', error);
+      alert(`Failed to send command: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+  };
+
+  // Слушаем события agent:spawned для обновления state
+  useEffect(() => {
+    const handleAgentSpawned = (agentData: unknown) => {
+      console.log('[App] Agent spawned event:', agentData);
+
+      // Парсим данные агента
+      const agent = agentData as Agent;
+
+      // Добавляем в локальный state
+      setAgents((prev) => {
+        const newMap = new Map(prev);
+        newMap.set(agent.id, agent);
+        return newMap;
+      });
+    };
+
+    window.electronAPI.onAgentSpawned(handleAgentSpawned);
+  }, []);
+
+  // Слушаем события agent:killed для обновления state
+  useEffect(() => {
+    const handleAgentKilled = (data: unknown) => {
+      console.log('[App] Agent killed event:', data);
+
+      const { id } = data as { id: string };
+
+      // Удаляем из state
+      setAgents((prev) => {
+        const newMap = new Map(prev);
+        newMap.delete(id);
+        return newMap;
+      });
+
+      // Закрыть панель если убитый агент был выбран
+      if (selectedAgent?.id === id) {
+        setSelectedAgent(null);
+      }
+    };
+
+    window.electronAPI.onAgentKilled(handleAgentKilled);
+  }, [selectedAgent]);
+
+  // Слушаем события agent:updated для обновления state
+  useEffect(() => {
+    const handleAgentUpdated = (data: unknown) => {
+      console.log('[App] Agent updated event:', data);
+
+      const agent = data as Agent;
+
+      // Обновляем в state
+      setAgents((prev) => {
+        const newMap = new Map(prev);
+        newMap.set(agent.id, agent);
+        return newMap;
+      });
+
+      // Обновить selected agent если он был изменён
+      if (selectedAgent?.id === agent.id) {
+        setSelectedAgent(agent);
+      }
+    };
+
+    window.electronAPI.onAgentUpdated(handleAgentUpdated);
+  }, [selectedAgent]);
+
   return (
     <div style={styles.container}>
       {/* Header */}
@@ -51,8 +170,18 @@ function App() {
         </button>
       </div>
 
-      {/* Canvas */}
-      <PixiCanvas onAppReady={handleAppReady} />
+      {/* Canvas - с учетом ширины панели если открыта */}
+      <div style={selectedAgent ? styles.canvasContainerWithPanel : styles.canvasContainer}>
+        <PixiCanvas onAppReady={handleAppReady} onAgentClick={handleAgentClick} />
+      </div>
+
+      {/* Detail Panel */}
+      <DetailPanel
+        agent={selectedAgent}
+        onClose={handleClosePanel}
+        onKill={handleKillAgent}
+        onSendCommand={handleSendCommand}
+      />
 
       {/* Spawn Modal */}
       <SpawnModal
@@ -96,6 +225,17 @@ const styles: Record<string, React.CSSProperties> = {
     border: 'none',
     borderRadius: '4px',
     cursor: 'pointer',
+  },
+  canvasContainer: {
+    flex: 1,
+    position: 'relative',
+    overflow: 'hidden',
+  },
+  canvasContainerWithPanel: {
+    flex: 1,
+    position: 'relative',
+    overflow: 'hidden',
+    marginRight: '280px', // Ширина панели
   },
 };
 
