@@ -13,4 +13,6 @@ export default defineConfig({
   server: {
     port: 5173,
   },
+  // Убедимся что PixiJS assets загружаются правильно
+  assetsInclude: ['**/*.png', '**/*.jpg', '**/*.jpeg', '**/*.svg'],
 });
