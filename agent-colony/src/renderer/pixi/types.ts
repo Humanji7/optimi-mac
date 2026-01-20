@@ -16,3 +16,7 @@ export interface PixiConfig {
 export interface PixiContextValue {
   app: Application | null;
 }
+
+// Re-export types from submodules
+export type { AgentRole } from './sprites/SpriteLoader';
+export type { AgentStatus } from './animations/states';
