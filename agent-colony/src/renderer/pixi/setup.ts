@@ -37,6 +37,8 @@ export async function createPixiApp(
     resolution: finalConfig.resolution,
     // resizeTo контейнер, а не window (иначе перекрывает header)
     resizeTo: container,
+    // Force WebGL to avoid WebGPU shader issues
+    preference: 'webgl',
   });
 
   return app;

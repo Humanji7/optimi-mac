@@ -44,9 +44,9 @@
 ### BUG-001: Spawn Agent не работает
 - **Status:** FIXED ✅
 - **Severity:** Critical
-- **Fix:** Removed Graphics (statusIndicator) from AgentSprite.ts
-- **Root cause:** PixiJS 8.x Graphics shader compilation fails
-- **TODO:** Add PNG-based status indicator later
+- **Root cause:** React.StrictMode + PixiJS = WebGL context corruption
+- **Fix:** Disabled StrictMode in index.tsx (known pixi-react issue #602)
+- **Also fixed:** Added index.css, z-index bump, webgl preference
 
 ---
 

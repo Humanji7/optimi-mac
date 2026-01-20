@@ -226,7 +226,7 @@ const styles: Record<string, React.CSSProperties> = {
     alignItems: 'center',
     padding: '12px 20px',
     position: 'relative',
-    zIndex: 10,
+    zIndex: 1000,
     backgroundColor: '#2d2d2d',
     borderBottom: '1px solid #444444',
   },
@@ -245,6 +245,7 @@ const styles: Record<string, React.CSSProperties> = {
     border: 'none',
     borderRadius: '4px',
     cursor: 'pointer',
+    pointerEvents: 'auto' as const,
   },
   canvasContainer: {
     flex: 1,
