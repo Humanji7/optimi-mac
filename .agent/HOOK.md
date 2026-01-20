@@ -71,7 +71,7 @@
 
 **Commits:**
 - `31dc594` - fix: UI click issues + event listener cleanup + folder picker
-- Pending: fix: BUG-001 spawn agent + PixiJS 8.x Graphics API
+- `1a122d0` - fix: BUG-001 spawn agent - PixiJS 8.x Graphics API
 
 ---
 
