@@ -56,31 +56,41 @@ src/renderer/
 
 ---
 
-### M6: Agent Sprites + Animations ⬅️ CURRENT
+### M6: Agent Sprites + Animations ✅ COMPLETE
 
 **Goal:** Отображение агентов как существ на canvas
 
 **Tasks:**
-- [ ] Создать AgentSprite class
-- [ ] Загрузка спрайтов по роли
-- [ ] Базовые анимации (idle, working, error)
-- [ ] Позиционирование агентов
-- [ ] Интеграция с AgentManager events
+- [x] Создать AgentSprite class
+- [x] Загрузка спрайтов по роли
+- [x] Базовые анимации (idle, working, error)
+- [x] Позиционирование агентов
+- [x] Status indicator с цветами
 
 **Files:**
 ```
 src/renderer/pixi/
 ├── sprites/
-│   ├── AgentSprite.ts        # Agent sprite class
-│   └── SpriteLoader.ts       # Asset loading
+│   ├── AgentSprite.ts        # Agent sprite class (Container + Sprite + Graphics)
+│   └── SpriteLoader.ts       # Asset loading via PixiJS Assets
 ├── animations/
-│   └── states.ts             # Animation states
-└── AgentLayer.tsx            # React component for agents
+│   └── states.ts             # Animation states + constants
+├── AgentLayer.ts             # Layer управляет всеми агентами
+└── index.ts                  # Public exports
 ```
+
+**Acceptance:**
+- [x] Спрайт Architect виден на canvas
+- [x] Status indicator под спрайтом
+- [x] `pnpm type-check` без ошибок
+- [x] `pnpm dev` работает
+- [x] Idle анимация (покачивание)
+
+**Commit:** `37f557e`
 
 ---
 
-### M7: Spawn Modal UI
+### M7: Spawn Modal UI ⬅️ CURRENT
 
 **Goal:** UI для создания новых агентов
 
@@ -111,11 +121,11 @@ src/renderer/pixi/
 | Molecule | Status | Commit | Notes |
 |----------|--------|--------|-------|
 | M5: PixiJS Setup | ✅ COMPLETE | fb9c8da | Canvas working |
-| M6: Agent Sprites | 🔴 IN PROGRESS | - | Current |
-| M7: Spawn Modal | ⚪ PENDING | - | - |
+| M6: Agent Sprites | ✅ COMPLETE | 37f557e | Sprites + animations ready |
+| M7: Spawn Modal | 🔴 IN PROGRESS | - | Current |
 | M8: Detail Panel | ⚪ PENDING | - | - |
 
-**Overall:** 1/4 completed (25%)
+**Overall:** 2/4 completed (50%)
 
 ---
 
