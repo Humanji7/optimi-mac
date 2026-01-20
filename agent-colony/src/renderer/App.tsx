@@ -4,7 +4,7 @@
  * Purpose: Главный компонент приложения с PixiJS canvas для Agent Colony
  */
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { PixiCanvas } from './components/PixiCanvas';
 import { SpawnModal } from './components/SpawnModal';
 import { DetailPanel, type Agent } from './components/DetailPanel';
@@ -14,14 +14,17 @@ import type { AgentRole } from './pixi/types';
 function App() {
   const [showSpawnModal, setShowSpawnModal] = useState(false);
   const [selectedAgent, setSelectedAgent] = useState<Agent | null>(null);
-  const [agents, setAgents] = useState<Map<string, Agent>>(new Map());
+  // _agents используется через setAgents с functional update для доступа к актуальному состоянию
+  const [_agents, setAgents] = useState<Map<string, Agent>>(new Map());
 
-  const handleAppReady = (app: Application) => {
+  // useCallback чтобы функция не создавалась заново при каждом рендере
+  // Это предотвращает пересоздание PixiJS при открытии модала
+  const handleAppReady = useCallback((app: Application) => {
     console.log('[App] PixiJS ready:', {
       width: app.screen.width,
       height: app.screen.height,
     });
-  };
+  }, []);
 
   const handleSpawn = async (role: AgentRole, projectPath: string) => {
     console.log('[App] Spawning agent:', { role, projectPath });
@@ -44,16 +47,20 @@ function App() {
     }
   };
 
-  const handleAgentClick = (id: string) => {
+  // useCallback для стабильной ссылки - не вызывает пересоздание PixiJS
+  const handleAgentClick = useCallback((id: string) => {
     console.log('[App] Agent clicked:', id);
 
-    const agent = agents.get(id);
-    if (agent) {
-      setSelectedAgent(agent);
-    } else {
-      console.warn('[App] Agent not found in agents map:', id);
-    }
-  };
+    setAgents((currentAgents) => {
+      const agent = currentAgents.get(id);
+      if (agent) {
+        setSelectedAgent(agent);
+      } else {
+        console.warn('[App] Agent not found in agents map:', id);
+      }
+      return currentAgents;
+    });
+  }, []);
 
   const handleClosePanel = () => {
     setSelectedAgent(null);
@@ -165,7 +172,15 @@ function App() {
       {/* Header */}
       <div style={styles.header}>
         <h1 style={styles.title}>Agent Colony</h1>
-        <button onClick={() => setShowSpawnModal(true)} style={styles.spawnButton}>
+        <button
+          onMouseEnter={() => console.log('[App] Mouse entered button area')}
+          onMouseDown={() => console.log('[App] Mouse DOWN on button')}
+          onClick={() => {
+            console.log('[App] Spawn button clicked!');
+            setShowSpawnModal(true);
+          }}
+          style={styles.spawnButton}
+        >
           + Spawn Agent
         </button>
       </div>
@@ -207,6 +222,8 @@ const styles: Record<string, React.CSSProperties> = {
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: '12px 20px',
+    position: 'relative',
+    zIndex: 10,
     backgroundColor: '#2d2d2d',
     borderBottom: '1px solid #444444',
   },
