@@ -64,22 +64,6 @@ export function PixiCanvas({ onAppReady }: PixiCanvasProps) {
 
         console.log('[PixiCanvas] AgentLayer created and attached');
 
-        // Добавляем тестового агента в центр экрана для проверки
-        const centerX = app.screen.width / 2;
-        const centerY = app.screen.height / 2;
-
-        const testAgent = agentLayer.addAgent({
-          id: 'test-agent-1',
-          role: 'Architect',
-          position: { x: centerX, y: centerY },
-        });
-
-        testAgent.setStatus('idle');
-
-        console.log('[PixiCanvas] Test agent added at center', {
-          position: { x: centerX, y: centerY },
-        });
-
         onAppReady?.(app);
       } catch (err) {
         console.error('[PixiCanvas] Failed to initialize PixiJS:', err);
@@ -108,6 +92,49 @@ export function PixiCanvas({ onAppReady }: PixiCanvasProps) {
       }
     };
   }, [onAppReady]);
+
+  // Слушаем события agent:spawned из main process
+  useEffect(() => {
+    const handleAgentSpawned = (agent: unknown) => {
+      console.log('[PixiCanvas] Agent spawned event received:', agent);
+
+      if (!agentLayerRef.current || !appRef.current) {
+        console.warn('[PixiCanvas] AgentLayer or App not ready, skipping agent spawn');
+        return;
+      }
+
+      // Парсим данные агента (тип может быть разным в зависимости от AgentManager)
+      const agentData = agent as { id: string; role: string; projectPath: string };
+
+      // Генерируем случайную позицию на canvas
+      const padding = 100;
+      const x = padding + Math.random() * (appRef.current.screen.width - padding * 2);
+      const y = padding + Math.random() * (appRef.current.screen.height - padding * 2);
+
+      try {
+        const sprite = agentLayerRef.current.addAgent({
+          id: agentData.id,
+          role: agentData.role as 'Architect' | 'Coder' | 'Tester' | 'Reviewer',
+          position: { x, y },
+        });
+
+        sprite.setStatus('idle');
+
+        console.log('[PixiCanvas] Agent sprite added to canvas:', {
+          id: agentData.id,
+          role: agentData.role,
+          position: { x, y },
+        });
+      } catch (err) {
+        console.error('[PixiCanvas] Failed to add agent sprite:', err);
+      }
+    };
+
+    // Подписываемся на событие
+    window.electronAPI.onAgentSpawned(handleAgentSpawned);
+
+    console.log('[PixiCanvas] Subscribed to agent:spawned events');
+  }, []);
 
   // Обработка resize
   useEffect(() => {
@@ -153,11 +180,8 @@ export function PixiCanvas({ onAppReady }: PixiCanvasProps) {
     <canvas
       ref={canvasRef}
       style={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
         width: '100%',
-        height: '100%',
+        flex: 1,
         display: 'block',
       }}
     />
