@@ -147,11 +147,11 @@ export function DetailPanel({ agent, onClose, onKill, onSendCommand }: DetailPan
           <div style={styles.metricsGrid}>
             <div>
               <div style={styles.metricLabel}>Uptime</div>
-              <div style={styles.metricValue}>{formatUptime(agent.metrics.uptime)}</div>
+              <div style={styles.metricValue}>{formatUptime(agent.metrics?.uptime ?? 0)}</div>
             </div>
             <div>
               <div style={styles.metricLabel}>Health</div>
-              <div style={styles.metricValue}>{agent.metrics.health}</div>
+              <div style={styles.metricValue}>{agent.metrics?.health ?? 'N/A'}</div>
             </div>
           </div>
         </div>
@@ -159,8 +159,8 @@ export function DetailPanel({ agent, onClose, onKill, onSendCommand }: DetailPan
         {/* Проект */}
         <div style={styles.section}>
           <div style={styles.label}>Project</div>
-          <div style={styles.projectName}>{agent.project.name}</div>
-          <div style={styles.projectPath}>{agent.project.path}</div>
+          <div style={styles.projectName}>{agent.project?.name ?? 'Unknown'}</div>
+          <div style={styles.projectPath}>{agent.project?.path ?? 'N/A'}</div>
         </div>
 
         {/* Кнопка Kill */}

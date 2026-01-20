@@ -148,6 +148,33 @@ export function PixiCanvas({ onAppReady, onAgentClick }: PixiCanvasProps) {
     };
   }, []);
 
+  // Слушаем события agent:killed из main process
+  useEffect(() => {
+    const handleAgentKilled = (data: unknown) => {
+      console.log('[PixiCanvas] Agent killed event received:', data);
+
+      if (!agentLayerRef.current) {
+        console.warn('[PixiCanvas] AgentLayer not ready, skipping agent removal');
+        return;
+      }
+
+      const { id } = data as { id: string };
+      const removed = agentLayerRef.current.removeAgent(id);
+
+      if (removed) {
+        console.log('[PixiCanvas] Agent sprite removed from canvas:', id);
+      }
+    };
+
+    const unsubscribe = window.electronAPI.onAgentKilled(handleAgentKilled);
+    console.log('[PixiCanvas] Subscribed to agent:killed events');
+
+    return () => {
+      console.log('[PixiCanvas] Unsubscribing from agent:killed events');
+      unsubscribe();
+    };
+  }, []);
+
   // Обработка resize
   useEffect(() => {
     const handleResize = () => {

@@ -151,19 +151,22 @@ function App() {
     const handleAgentUpdated = (data: unknown) => {
       console.log('[App] Agent updated event:', data);
 
-      const agent = data as Agent;
+      const update = data as Partial<Agent> & { id: string };
 
-      // Обновляем в state
+      // Мёржим с существующими данными
       setAgents((prev) => {
         const newMap = new Map(prev);
-        newMap.set(agent.id, agent);
+        const existing = prev.get(update.id);
+        const merged = existing ? { ...existing, ...update } : (update as Agent);
+        newMap.set(update.id, merged);
+
+        // Обновить selected agent если он был изменён
+        if (selectedAgent?.id === update.id) {
+          setSelectedAgent(merged);
+        }
+
         return newMap;
       });
-
-      // Обновить selected agent если он был изменён
-      if (selectedAgent?.id === agent.id) {
-        setSelectedAgent(agent);
-      }
     };
 
     const unsubscribe = window.electronAPI.onAgentUpdated(handleAgentUpdated);
