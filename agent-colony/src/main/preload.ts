@@ -34,6 +34,9 @@ export interface ElectronAPI {
 
   // Legacy
   onAgentUpdate: (callback: (data: unknown) => void) => void;
+
+  // Debug
+  debugLog: (level: string, ...args: unknown[]) => void;
 }
 
 // Expose safe API to renderer
@@ -101,5 +104,10 @@ contextBridge.exposeInMainWorld('electronAPI', {
     ipcRenderer.on('agent:update', (_event, data) => {
       callback(data);
     });
+  },
+
+  // Debug logging to main process
+  debugLog: (level: string, ...args: unknown[]): void => {
+    ipcRenderer.send('debug:log', level, ...args);
   },
 } satisfies ElectronAPI);

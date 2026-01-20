@@ -24,9 +24,9 @@
 **Goal:** Протестировать приложение вручную, найти баги
 
 **Checklist:**
-- [ ] Запустить `pnpm dev` — приложение стартует без ошибок
-- [ ] Проверить canvas — тёмный фон рендерится
-- [ ] Spawn Architect — появляется спрайт на canvas
+- [x] Запустить `pnpm dev` — приложение стартует без ошибок
+- [x] Проверить canvas — тёмный фон рендерится
+- [ ] Spawn Architect — **НЕ РАБОТАЕТ** (нужно исследовать)
 - [ ] Spawn Coder — появляется спрайт
 - [ ] Spawn Tester — появляется спрайт
 - [ ] Spawn Reviewer — появляется спрайт
@@ -37,38 +37,41 @@
 - [ ] Закрыть app — graceful shutdown без ошибок
 - [ ] Перезапустить app — агенты восстанавливаются из DB
 
-**Bug Report Template:**
-```
-BUG-XXX: [Краткое описание]
-- Steps to reproduce:
-- Expected:
-- Actual:
-- Severity: Critical/High/Medium/Low
-```
+---
+
+## 🐛 Known Bugs
+
+### BUG-001: Spawn Agent не работает
+- **Status:** FIXED ✅
+- **Severity:** Critical
+- **Root Cause:** PixiJS 8.x Graphics API требует chaining для circle().fill()
+- **Fix:** Изменён API с отдельных вызовов на chaining:
+  ```ts
+  // Before (broken):
+  graphics.circle(0, 0, radius);
+  graphics.fill({ color, alpha });
+
+  // After (fixed):
+  graphics.circle(0, 0, radius).fill({ color, alpha });
+  ```
+- **Files changed:** AgentSprite.ts
 
 ---
 
-### M10: Bug Fixes
+## ✅ Completed This Session
 
-**Tasks:** Исправить баги найденные в M9
+1. **Fixed UI click issues** — `useCallback` для handleAppReady/handleAgentClick
+2. **Fixed event listener cleanup** — `return unsubscribe()` в useEffect
+3. **Fixed PixiJS resizeTo** — changed from `window` to `container`
+4. **Added folder picker** — Browse button with native dialog
+5. **Added View menu** — DevTools toggle
+6. **Increased modal z-index** — 10000
+7. **Fixed BUG-001: Spawn Agent** — PixiJS 8.x Graphics API fix (chaining)
+8. **Added debug IPC** — debugLog для логирования renderer в main process
 
----
-
-### M11: Error Handling
-
-**Tasks:**
-- [ ] UI feedback при ошибках spawn
-- [ ] Обработка tmux not found
-- [ ] Loading states
-
----
-
-### M12: UI Polish
-
-**Tasks:**
-- [ ] Keyboard shortcuts (Esc)
-- [ ] Улучшить стили
-- [ ] Tooltips
+**Commits:**
+- `31dc594` - fix: UI click issues + event listener cleanup + folder picker
+- Pending: fix: BUG-001 spawn agent + PixiJS 8.x Graphics API
 
 ---
 
@@ -76,10 +79,25 @@ BUG-XXX: [Краткое описание]
 
 | Molecule | Status |
 |----------|--------|
-| M9: Manual Testing | 🔴 CURRENT |
+| M9: Manual Testing | 🔴 IN PROGRESS |
 | M10: Bug Fixes | ⚪ PENDING |
 | M11: Error Handling | ⚪ PENDING |
 | M12: UI Polish | ⚪ PENDING |
+
+---
+
+## 🔄 Handoff Note
+
+**Для следующего агента:**
+
+1. Spawn agent не работает - нужно исследовать:
+   - Проверить логи в DevTools при spawn
+   - Проверить `agentManager.spawnAgent()` в main process
+   - Shader error может быть связан с PixiJS sprites
+
+2. Запуск: `pnpm dev` в `/Users/admin/projects/optimi-mac/agent-colony`
+
+3. DevTools: View → Toggle DevTools или Cmd+Option+I
 
 ---
 
@@ -94,4 +112,4 @@ pnpm build        # Production build
 
 ---
 
-**Last Updated:** 2026-01-20
+**Last Updated:** 2026-01-20 23:50

@@ -48,8 +48,10 @@ export class AgentSprite extends Container {
     this.sprite.scale.set(scale);
 
     // Создаём статус-индикатор (круг снизу)
-    this.statusIndicator = new Graphics();
-    this.updateStatusIndicator();
+    // Using PixiJS 8.x chaining API for Graphics
+    this.statusIndicator = new Graphics()
+      .circle(0, 0, STATUS_INDICATOR.radius)
+      .fill({ color: STATUS_COLORS[this.currentStatus], alpha: 0.9 });
     this.statusIndicator.position.set(0, STATUS_INDICATOR.offsetY);
 
     // Добавляем в контейнер
@@ -66,12 +68,6 @@ export class AgentSprite extends Container {
         this.onClick();
       }
     });
-
-    console.log(`[AgentSprite] Created sprite for ${role}`, {
-      originalSize: { width: texture.width, height: texture.height },
-      scaledSize: { width: this.sprite.width, height: this.sprite.height },
-      scale,
-    });
   }
 
   /**
@@ -84,8 +80,6 @@ export class AgentSprite extends Container {
 
     this.currentStatus = status;
     this.updateStatusIndicator();
-
-    console.log(`[AgentSprite] Status changed to ${status} for ${this.role}`);
 
     // Запускаем/останавливаем анимацию в зависимости от статуса
     if (status === 'idle') {
@@ -104,13 +98,16 @@ export class AgentSprite extends Container {
 
   /**
    * Обновляет цвет статус-индикатора
+   * Uses PixiJS 8.x chaining API for Graphics
    */
   private updateStatusIndicator(): void {
     const color = STATUS_COLORS[this.currentStatus];
 
+    // PixiJS 8.x: clear(), then rebuild with chaining
     this.statusIndicator.clear();
-    this.statusIndicator.circle(0, 0, STATUS_INDICATOR.radius);
-    this.statusIndicator.fill({ color, alpha: 0.9 });
+    this.statusIndicator
+      .circle(0, 0, STATUS_INDICATOR.radius)
+      .fill({ color, alpha: 0.9 });
   }
 
   /**

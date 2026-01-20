@@ -128,6 +128,11 @@ ipcMain.handle('agent:send-command', async (_, id, command) => {
   return await agentManager.sendCommand(id, command);
 });
 
+// Handler: debug log from renderer
+ipcMain.on('debug:log', (_, level, ...args) => {
+  console.log(`[Renderer:${level}]`, ...args);
+});
+
 /**
  * App Lifecycle
  */
