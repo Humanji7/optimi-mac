@@ -11,6 +11,9 @@ import { contextBridge, ipcRenderer } from 'electron';
 export interface ElectronAPI {
   getAppInfo: () => Promise<{ version: string; name: string; platform: string }>;
 
+  // Dialog
+  selectFolder: () => Promise<string | null>;
+
   // Agent management
   spawnAgent: (options: {
     role: string;
@@ -22,12 +25,12 @@ export interface ElectronAPI {
   listAgents: () => Promise<unknown[]>;
   sendCommand: (id: string, command: string) => Promise<void>;
 
-  // Agent event listeners
-  onAgentSpawned: (callback: (agent: unknown) => void) => void;
-  onAgentUpdated: (callback: (data: unknown) => void) => void;
-  onAgentKilled: (callback: (data: unknown) => void) => void;
-  onAgentError: (callback: (data: unknown) => void) => void;
-  onHealthChecked: (callback: (data: unknown) => void) => void;
+  // Agent event listeners - возвращают функцию отписки
+  onAgentSpawned: (callback: (agent: unknown) => void) => () => void;
+  onAgentUpdated: (callback: (data: unknown) => void) => () => void;
+  onAgentKilled: (callback: (data: unknown) => void) => () => void;
+  onAgentError: (callback: (data: unknown) => void) => () => void;
+  onHealthChecked: (callback: (data: unknown) => void) => () => void;
 
   // Legacy
   onAgentUpdate: (callback: (data: unknown) => void) => void;
@@ -38,6 +41,11 @@ contextBridge.exposeInMainWorld('electronAPI', {
   // Get app info from main process
   getAppInfo: (): Promise<{ version: string; name: string; platform: string }> => {
     return ipcRenderer.invoke('app:ready');
+  },
+
+  // Dialog - выбор папки
+  selectFolder: (): Promise<string | null> => {
+    return ipcRenderer.invoke('dialog:selectFolder');
   },
 
   // Agent management
@@ -57,35 +65,35 @@ contextBridge.exposeInMainWorld('electronAPI', {
     return ipcRenderer.invoke('agent:send-command', id, command);
   },
 
-  // Agent event listeners
-  onAgentSpawned: (callback: (agent: unknown) => void): void => {
-    ipcRenderer.on('agent:spawned', (_event, agent) => {
-      callback(agent);
-    });
+  // Agent event listeners - возвращают функцию отписки
+  onAgentSpawned: (callback: (agent: unknown) => void): (() => void) => {
+    const handler = (_event: Electron.IpcRendererEvent, agent: unknown) => callback(agent);
+    ipcRenderer.on('agent:spawned', handler);
+    return () => ipcRenderer.removeListener('agent:spawned', handler);
   },
 
-  onAgentUpdated: (callback: (data: unknown) => void): void => {
-    ipcRenderer.on('agent:updated', (_event, data) => {
-      callback(data);
-    });
+  onAgentUpdated: (callback: (data: unknown) => void): (() => void) => {
+    const handler = (_event: Electron.IpcRendererEvent, data: unknown) => callback(data);
+    ipcRenderer.on('agent:updated', handler);
+    return () => ipcRenderer.removeListener('agent:updated', handler);
   },
 
-  onAgentKilled: (callback: (data: unknown) => void): void => {
-    ipcRenderer.on('agent:killed', (_event, data) => {
-      callback(data);
-    });
+  onAgentKilled: (callback: (data: unknown) => void): (() => void) => {
+    const handler = (_event: Electron.IpcRendererEvent, data: unknown) => callback(data);
+    ipcRenderer.on('agent:killed', handler);
+    return () => ipcRenderer.removeListener('agent:killed', handler);
   },
 
-  onAgentError: (callback: (data: unknown) => void): void => {
-    ipcRenderer.on('agent:error', (_event, data) => {
-      callback(data);
-    });
+  onAgentError: (callback: (data: unknown) => void): (() => void) => {
+    const handler = (_event: Electron.IpcRendererEvent, data: unknown) => callback(data);
+    ipcRenderer.on('agent:error', handler);
+    return () => ipcRenderer.removeListener('agent:error', handler);
   },
 
-  onHealthChecked: (callback: (data: unknown) => void): void => {
-    ipcRenderer.on('health:checked', (_event, data) => {
-      callback(data);
-    });
+  onHealthChecked: (callback: (data: unknown) => void): (() => void) => {
+    const handler = (_event: Electron.IpcRendererEvent, data: unknown) => callback(data);
+    ipcRenderer.on('health:checked', handler);
+    return () => ipcRenderer.removeListener('health:checked', handler);
   },
 
   // Legacy - Subscribe to agent updates

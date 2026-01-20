@@ -21,6 +21,7 @@ interface PixiCanvasProps {
 }
 
 export function PixiCanvas({ onAppReady, onAgentClick }: PixiCanvasProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const appRef = useRef<Application | null>(null);
   const agentLayerRef = useRef<AgentLayer | null>(null);
@@ -28,8 +29,9 @@ export function PixiCanvas({ onAppReady, onAgentClick }: PixiCanvasProps) {
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    if (!canvas) {
-      setError('Canvas element not found');
+    const container = containerRef.current;
+    if (!canvas || !container) {
+      setError('Canvas or container element not found');
       return;
     }
 
@@ -38,8 +40,8 @@ export function PixiCanvas({ onAppReady, onAgentClick }: PixiCanvasProps) {
     // Инициализация PixiJS и загрузка спрайтов
     const initializePixi = async () => {
       try {
-        // Создаём PixiJS app
-        const app = await createPixiApp(canvas);
+        // Создаём PixiJS app с привязкой к контейнеру (не window!)
+        const app = await createPixiApp(canvas, container);
 
         if (!mounted) {
           destroyPixiApp(app);
@@ -137,9 +139,13 @@ export function PixiCanvas({ onAppReady, onAgentClick }: PixiCanvasProps) {
     };
 
     // Подписываемся на событие
-    window.electronAPI.onAgentSpawned(handleAgentSpawned);
-
+    const unsubscribe = window.electronAPI.onAgentSpawned(handleAgentSpawned);
     console.log('[PixiCanvas] Subscribed to agent:spawned events');
+
+    return () => {
+      console.log('[PixiCanvas] Unsubscribing from agent:spawned events');
+      unsubscribe();
+    };
   }, []);
 
   // Обработка resize
@@ -161,9 +167,7 @@ export function PixiCanvas({ onAppReady, onAgentClick }: PixiCanvasProps) {
     return (
       <div
         style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
+          position: 'relative', // НЕ fixed - чтобы не перекрывать модалы
           width: '100%',
           height: '100%',
           display: 'flex',
@@ -183,13 +187,20 @@ export function PixiCanvas({ onAppReady, onAgentClick }: PixiCanvasProps) {
   }
 
   return (
-    <canvas
-      ref={canvasRef}
+    <div
+      ref={containerRef}
       style={{
         width: '100%',
-        flex: 1,
-        display: 'block',
+        height: '100%',
+        position: 'relative',
       }}
-    />
+    >
+      <canvas
+        ref={canvasRef}
+        style={{
+          display: 'block',
+        }}
+      />
+    </div>
   );
 }

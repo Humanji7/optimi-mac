@@ -118,7 +118,8 @@ function App() {
       });
     };
 
-    window.electronAPI.onAgentSpawned(handleAgentSpawned);
+    const unsubscribe = window.electronAPI.onAgentSpawned(handleAgentSpawned);
+    return () => unsubscribe(); // Cleanup при unmount
   }, []);
 
   // Слушаем события agent:killed для обновления state
@@ -141,7 +142,8 @@ function App() {
       }
     };
 
-    window.electronAPI.onAgentKilled(handleAgentKilled);
+    const unsubscribe = window.electronAPI.onAgentKilled(handleAgentKilled);
+    return () => unsubscribe();
   }, [selectedAgent]);
 
   // Слушаем события agent:updated для обновления state
@@ -164,7 +166,8 @@ function App() {
       }
     };
 
-    window.electronAPI.onAgentUpdated(handleAgentUpdated);
+    const unsubscribe = window.electronAPI.onAgentUpdated(handleAgentUpdated);
+    return () => unsubscribe();
   }, [selectedAgent]);
 
   return (

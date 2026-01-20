@@ -5,7 +5,7 @@
  * Dependencies: electron, path, agents
  */
 
-import { app, BrowserWindow, ipcMain } from 'electron';
+import { app, BrowserWindow, ipcMain, globalShortcut, Menu, dialog } from 'electron';
 import path from 'node:path';
 import { agentManager, agentEvents } from './agents';
 
@@ -29,7 +29,23 @@ function createWindow(): void {
   // Development: load from vite dev server
   if (process.env.VITE_DEV_SERVER_URL) {
     mainWindow.loadURL(process.env.VITE_DEV_SERVER_URL);
-    mainWindow.webContents.openDevTools();
+    mainWindow.webContents.openDevTools({ mode: 'detach' }); // Отдельное окно
+
+    // Меню с DevTools
+    const menu = Menu.buildFromTemplate([
+      {
+        label: 'View',
+        submenu: [
+          { role: 'reload' },
+          { role: 'toggleDevTools' },
+          { type: 'separator' },
+          { role: 'resetZoom' },
+          { role: 'zoomIn' },
+          { role: 'zoomOut' },
+        ],
+      },
+    ]);
+    Menu.setApplicationMenu(menu);
   } else {
     // Production: load from built files
     mainWindow.loadFile(path.join(__dirname, '../renderer/index.html'));
@@ -76,6 +92,20 @@ ipcMain.handle('app:ready', async () => {
     name: app.getName(),
     platform: process.platform,
   };
+});
+
+// Handler: select folder dialog
+ipcMain.handle('dialog:selectFolder', async () => {
+  const result = await dialog.showOpenDialog(mainWindow!, {
+    properties: ['openDirectory'],
+    title: 'Select Project Folder',
+  });
+
+  if (result.canceled || result.filePaths.length === 0) {
+    return null;
+  }
+
+  return result.filePaths[0];
 });
 
 // Handler: spawn agent

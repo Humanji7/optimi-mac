@@ -29,6 +29,15 @@ export function SpawnModal({ isOpen, onClose, onSpawn }: SpawnModalProps) {
     return null;
   }
 
+  // Диагностика: что находится по центру экрана
+  setTimeout(() => {
+    const centerX = window.innerWidth / 2;
+    const centerY = window.innerHeight / 2;
+    const el = document.elementFromPoint(centerX, centerY);
+    console.log('[SpawnModal] Element at center:', el?.tagName, el?.className, el);
+    console.log('[SpawnModal] Modal rendered, checking z-index...');
+  }, 100);
+
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -79,15 +88,26 @@ export function SpawnModal({ isOpen, onClose, onSpawn }: SpawnModalProps) {
             <label htmlFor="projectPath" style={styles.label}>
               Project Path:
             </label>
-            <input
-              id="projectPath"
-              type="text"
-              placeholder="/path/to/project"
-              value={projectPath}
-              onChange={(e) => setProjectPath(e.target.value)}
-              style={styles.input}
-              autoFocus
-            />
+            <div style={styles.pathInputRow}>
+              <input
+                id="projectPath"
+                type="text"
+                placeholder="/path/to/project"
+                value={projectPath}
+                onChange={(e) => setProjectPath(e.target.value)}
+                style={styles.pathInput}
+              />
+              <button
+                type="button"
+                onClick={async () => {
+                  const path = await window.electronAPI.selectFolder();
+                  if (path) setProjectPath(path);
+                }}
+                style={styles.browseButton}
+              >
+                Browse
+              </button>
+            </div>
           </div>
 
           <div style={styles.buttonGroup}>
@@ -116,7 +136,8 @@ const styles: Record<string, React.CSSProperties> = {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    zIndex: 1000,
+    zIndex: 10000, // Выше всех других элементов
+    pointerEvents: 'auto',
   },
   modal: {
     backgroundColor: '#1e1e1e',
@@ -124,6 +145,8 @@ const styles: Record<string, React.CSSProperties> = {
     borderRadius: '8px',
     minWidth: '400px',
     boxShadow: '0 4px 20px rgba(0, 0, 0, 0.5)',
+    pointerEvents: 'auto',
+    position: 'relative', // Создаём stacking context
   },
   title: {
     margin: '0 0 20px 0',
@@ -159,6 +182,28 @@ const styles: Record<string, React.CSSProperties> = {
     color: '#ffffff',
     border: '1px solid #444444',
     borderRadius: '4px',
+  },
+  pathInputRow: {
+    display: 'flex',
+    gap: '8px',
+  },
+  pathInput: {
+    flex: 1,
+    padding: '10px 12px',
+    fontSize: '14px',
+    backgroundColor: '#2d2d2d',
+    color: '#ffffff',
+    border: '1px solid #444444',
+    borderRadius: '4px',
+  },
+  browseButton: {
+    padding: '10px 16px',
+    fontSize: '14px',
+    backgroundColor: '#444444',
+    color: '#ffffff',
+    border: 'none',
+    borderRadius: '4px',
+    cursor: 'pointer',
     boxSizing: 'border-box',
   },
   buttonGroup: {

@@ -16,9 +16,13 @@ const DEFAULT_CONFIG: PixiConfig = {
 
 /**
  * Создаёт и конфигурирует PixiJS Application
+ * @param canvas - HTML canvas element
+ * @param container - Parent container for resizeTo (optional)
+ * @param config - PixiJS config overrides
  */
 export async function createPixiApp(
   canvas: HTMLCanvasElement,
+  container?: HTMLElement,
   config: Partial<PixiConfig> = {}
 ): Promise<Application> {
   const finalConfig = { ...DEFAULT_CONFIG, ...config };
@@ -31,7 +35,8 @@ export async function createPixiApp(
     antialias: finalConfig.antialias,
     autoDensity: finalConfig.autoDensity,
     resolution: finalConfig.resolution,
-    resizeTo: window,
+    // resizeTo контейнер, а не window (иначе перекрывает header)
+    resizeTo: container,
   });
 
   return app;
