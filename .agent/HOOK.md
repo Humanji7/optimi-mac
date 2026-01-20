@@ -89,16 +89,31 @@
 **Для следующего агента:**
 
 ### Контекст
-BUG-001 FIXED ✅ - Убран Graphics из AgentSprite.ts.
+Phase 3 Testing почти завершён. Все основные функции работают.
 
-### Следующие шаги
-1. Протестировать spawn всех ролей (Architect, Coder, Tester, Reviewer)
-2. Добавить PNG-based статус индикатор (опционально)
-3. Продолжить M9: Manual Testing
+### Что исправлено в этой сессии
+1. **BUG-001:** React.StrictMode ломал PixiJS WebGL → убрали StrictMode
+2. **BUG-002:** Kill не удалял спрайт → добавили listener в PixiCanvas
+3. **BUG-003:** Send command crash → optional chaining + merge updates
+
+### Что работает ✅
+- Spawn всех ролей (Architect, Coder, Tester, Reviewer)
+- Клик на агента → Detail Panel с данными
+- Kill agent → удаляется спрайт и панель
+- Send command → команда отправляется без crash
+
+### Осталось проверить
+1. **Graceful shutdown** — закрыть app, проверить логи на ошибки
+2. **Restore from DB** — перезапустить app, агенты должны восстановиться
+
+### Важно для dev
+- `dist/main/package.json` нужен с `{"type":"commonjs"}` для ESM/CJS совместимости
+- Создаётся автоматически в build, но в dev нужно вручную или добавить в скрипт
 
 ### Запуск
 ```bash
 cd /Users/admin/projects/optimi-mac/agent-colony
+mkdir -p dist/main && echo '{"type":"commonjs"}' > dist/main/package.json
 pnpm dev
 ```
 DevTools: View → Toggle DevTools или Cmd+Option+I
@@ -116,4 +131,4 @@ pnpm build        # Production build
 
 ---
 
-**Last Updated:** 2026-01-21 01:00
+**Last Updated:** 2026-01-21 01:30
