@@ -90,20 +90,39 @@ src/renderer/pixi/
 
 ---
 
-### M7: Spawn Modal UI ⬅️ CURRENT
+### M7: Spawn Modal UI ✅ COMPLETE
 
 **Goal:** UI для создания новых агентов
 
 **Tasks:**
-- [ ] Модальное окно spawn
-- [ ] Выбор роли (4 типа)
-- [ ] Ввод project path
-- [ ] Кнопка spawn → IPC → main
-- [ ] Валидация формы
+- [x] Модальное окно spawn
+- [x] Выбор роли (4 типа)
+- [x] Ввод project path
+- [x] Кнопка spawn → IPC → main
+- [x] Валидация формы
+
+**Files:**
+```
+src/renderer/
+├── components/
+│   └── SpawnModal.tsx        # Modal component with form
+├── App.tsx                   # Header + modal integration
+└── PixiCanvas.tsx            # IPC events listener
+```
+
+**Acceptance:**
+- [x] Модал открывается по кнопке
+- [x] Можно выбрать роль
+- [x] Можно ввести path
+- [x] Spawn вызывает IPC
+- [x] Модал закрывается после spawn
+- [x] `pnpm type-check` без ошибок
+
+**Commit:** `cb12d0e`
 
 ---
 
-### M8: Detail Panel + Interaction
+### M8: Detail Panel + Interaction ⬅️ CURRENT
 
 **Goal:** Панель деталей агента при клике
 
@@ -122,10 +141,10 @@ src/renderer/pixi/
 |----------|--------|--------|-------|
 | M5: PixiJS Setup | ✅ COMPLETE | fb9c8da | Canvas working |
 | M6: Agent Sprites | ✅ COMPLETE | 37f557e | Sprites + animations ready |
-| M7: Spawn Modal | 🔴 IN PROGRESS | - | Current |
-| M8: Detail Panel | ⚪ PENDING | - | - |
+| M7: Spawn Modal | ✅ COMPLETE | cb12d0e | Modal + IPC working |
+| M8: Detail Panel | 🔴 IN PROGRESS | - | Current |
 
-**Overall:** 2/4 completed (50%)
+**Overall:** 3/4 completed (75%)
 
 ---
 
