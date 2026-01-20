@@ -26,14 +26,14 @@
 **Checklist:**
 - [x] Запустить `pnpm dev` — приложение стартует без ошибок
 - [x] Проверить canvas — тёмный фон рендерится
-- [ ] Spawn Architect — **НЕ РАБОТАЕТ** (нужно исследовать)
-- [ ] Spawn Coder — появляется спрайт
-- [ ] Spawn Tester — появляется спрайт
-- [ ] Spawn Reviewer — появляется спрайт
-- [ ] Клик на агента — открывается Detail Panel
-- [ ] Detail Panel показывает корректные данные
-- [ ] Kill agent — агент удаляется с canvas
-- [ ] Send command — команда отправляется (проверить logs)
+- [x] Spawn Architect — работает ✅
+- [x] Spawn Coder — появляется спрайт ✅
+- [x] Spawn Tester — появляется спрайт ✅
+- [x] Spawn Reviewer — появляется спрайт ✅
+- [x] Клик на агента — открывается Detail Panel ✅
+- [x] Detail Panel показывает корректные данные ✅
+- [x] Kill agent — агент удаляется с canvas ✅
+- [x] Send command — команда отправляется ✅
 - [ ] Закрыть app — graceful shutdown без ошибок
 - [ ] Перезапустить app — агенты восстанавливаются из DB
 
@@ -43,10 +43,16 @@
 
 ### BUG-001: Spawn Agent не работает
 - **Status:** FIXED ✅
-- **Severity:** Critical
 - **Root cause:** React.StrictMode + PixiJS = WebGL context corruption
-- **Fix:** Disabled StrictMode in index.tsx (known pixi-react issue #602)
-- **Also fixed:** Added index.css, z-index bump, webgl preference
+- **Fix:** Disabled StrictMode in index.tsx (pixi-react issue #602)
+
+### BUG-002: Kill не удаляет спрайт
+- **Status:** FIXED ✅
+- **Fix:** Added agent:killed listener in PixiCanvas.tsx
+
+### BUG-003: Send command crash (undefined properties)
+- **Status:** FIXED ✅
+- **Fix:** Optional chaining + merge updates with existing data
 
 ---
 
