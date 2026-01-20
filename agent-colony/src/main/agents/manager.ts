@@ -11,11 +11,65 @@
 
 import { v4 as uuidv4 } from 'uuid';
 import * as tmux from '../tmux';
-import * as db from '../db';
+import { createAgent as dbCreateAgent, updateAgent as dbUpdateAgent, getAllAgents as dbGetAllAgents } from '../db/models/agent';
+import { initDatabase as initDb } from '../db';
 import * as registry from './registry';
 import { agentEvents } from './events';
 import { checkHealth } from './health';
 import { Agent, SpawnAgentOptions, AgentStatus } from './types';
+import { AgentRecord } from '../db/types';
+
+/**
+ * Convert AgentRecord (db) to Agent (manager)
+ */
+function recordToAgent(record: AgentRecord): Agent {
+  return {
+    id: record.id,
+    role: record.role as Agent['role'],
+    status: record.status as Agent['status'],
+    project: {
+      name: record.project_name,
+      path: record.project_path,
+    },
+    process: {
+      tmuxSession: record.tmux_session || '',
+      pid: null,
+    },
+    metrics: {
+      health: 'unknown',
+      contextUsage: null,
+      uptime: Math.floor((Date.now() - record.created_at) / 1000),
+      lastActivity: record.last_seen,
+    },
+    position: {
+      x: record.position_x,
+      y: record.position_y,
+    },
+    hookStatus: {
+      active: false,
+      currentMolecule: null,
+      totalMolecules: null,
+      hookPath: null,
+    },
+    createdAt: record.created_at,
+  };
+}
+
+/**
+ * Convert Agent (manager) to partial AgentRecord (db)
+ */
+function agentToRecord(agent: Agent): Omit<AgentRecord, 'created_at' | 'last_seen'> {
+  return {
+    id: agent.id,
+    role: agent.role,
+    status: agent.status,
+    project_name: agent.project.name,
+    project_path: agent.project.path,
+    tmux_session: agent.process.tmuxSession || null,
+    position_x: agent.position.x,
+    position_y: agent.position.y,
+  };
+}
 
 const HEALTH_CHECK_INTERVAL = 10000; // 10 seconds
 const GRACEFUL_EXIT_TIMEOUT = 5000; // 5 seconds
@@ -31,11 +85,15 @@ export class AgentManager {
   async init(): Promise<void> {
     console.log('[AgentManager] Initializing...');
 
-    // Load agents from SQLite into registry
-    const savedAgents = await db.loadAgents();
-    console.log(`[AgentManager] Loaded ${savedAgents.length} agents from database`);
+    // Initialize database first
+    initDb();
 
-    for (const agent of savedAgents) {
+    // Load agents from SQLite into registry
+    const savedRecords = dbGetAllAgents();
+    console.log(`[AgentManager] Loaded ${savedRecords.length} agents from database`);
+
+    for (const record of savedRecords) {
+      const agent = recordToAgent(record);
       registry.setAgent(agent);
     }
 
@@ -64,7 +122,11 @@ export class AgentManager {
     console.log(`[AgentManager] Spawning agent ${id} (${options.role}) for ${options.projectName}`);
 
     // Create tmux session
-    await tmux.createSession(sessionName, options.projectPath, command);
+    await tmux.spawnSession({
+      sessionName,
+      workDir: options.projectPath,
+      command,
+    });
 
     const now = Date.now();
 
@@ -101,7 +163,7 @@ export class AgentManager {
     };
 
     // Save to SQLite
-    await db.saveAgent(agent);
+    dbCreateAgent(agentToRecord(agent));
 
     // Add to registry
     registry.setAgent(agent);
@@ -143,15 +205,10 @@ export class AgentManager {
     }
 
     // Update SQLite
-    const updatedAgent: Agent = {
-      ...agent,
+    dbUpdateAgent(id, {
       status: 'idle',
-      metrics: {
-        ...agent.metrics,
-        lastActivity: Date.now(),
-      },
-    };
-    await db.saveAgent(updatedAgent);
+      last_seen: Date.now(),
+    });
 
     // Remove from registry
     registry.removeAgent(id);
@@ -176,7 +233,7 @@ export class AgentManager {
       throw new Error(`Failed to update agent ${id}`);
     }
 
-    await db.saveAgent(updatedAgent);
+    dbUpdateAgent(id, { status, last_seen: Date.now() });
 
     agentEvents.emit('agent:updated', { id, changes: { status } });
   }
@@ -204,7 +261,7 @@ export class AgentManager {
     });
 
     if (updatedAgent) {
-      await db.saveAgent(updatedAgent);
+      dbUpdateAgent(id, { last_seen: now });
       agentEvents.emit('agent:updated', {
         id,
         changes: { metrics: updatedAgent.metrics },
@@ -239,8 +296,8 @@ export class AgentManager {
         });
 
         if (updatedAgent) {
-          // Save metrics snapshot to SQLite
-          await db.saveAgent(updatedAgent);
+          // Update last_seen in SQLite
+          dbUpdateAgent(agent.id, { last_seen: Date.now() });
         }
       } catch (error) {
         console.error(`[AgentManager] Health check failed for ${agent.id}:`, error);
@@ -294,7 +351,10 @@ export class AgentManager {
 
     for (const agent of agents) {
       try {
-        await db.saveAgent(agent);
+        dbUpdateAgent(agent.id, {
+          status: agent.status,
+          last_seen: Date.now(),
+        });
       } catch (error) {
         console.error(`[AgentManager] Failed to save agent ${agent.id}:`, error);
       }
