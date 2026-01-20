@@ -9,9 +9,9 @@
  * - Управление состоянием (idle/working/error/paused)
  */
 
-import { Container, Sprite, Graphics, Texture } from 'pixi.js';
+import { Container, Sprite, Texture } from 'pixi.js';
 import type { AgentStatus } from '../animations/states';
-import { STATUS_COLORS, IDLE_ANIMATION, STATUS_INDICATOR } from '../animations/states';
+import { IDLE_ANIMATION } from '../animations/states';
 import type { AgentRole } from './SpriteLoader';
 
 /**
@@ -23,7 +23,6 @@ const SPRITE_SIZE = 120;
 
 export class AgentSprite extends Container {
   private sprite: Sprite;
-  private statusIndicator: Graphics;
   private currentStatus: AgentStatus = 'idle';
   private animationTime = 0;
   private isAnimating = false;
@@ -47,16 +46,9 @@ export class AgentSprite extends Container {
     const scale = SPRITE_SIZE / Math.max(this.sprite.width, this.sprite.height);
     this.sprite.scale.set(scale);
 
-    // Создаём статус-индикатор (круг снизу)
-    // Using PixiJS 8.x chaining API for Graphics
-    this.statusIndicator = new Graphics()
-      .circle(0, 0, STATUS_INDICATOR.radius)
-      .fill({ color: STATUS_COLORS[this.currentStatus], alpha: 0.9 });
-    this.statusIndicator.position.set(0, STATUS_INDICATOR.offsetY);
-
     // Добавляем в контейнер
     this.addChild(this.sprite);
-    this.addChild(this.statusIndicator);
+    // TODO: Добавить PNG-based статус индикатор вместо Graphics (shader issue)
 
     // Включаем интерактивность
     this.eventMode = 'static';
@@ -79,7 +71,6 @@ export class AgentSprite extends Container {
     }
 
     this.currentStatus = status;
-    this.updateStatusIndicator();
 
     // Запускаем/останавливаем анимацию в зависимости от статуса
     if (status === 'idle') {
@@ -94,20 +85,6 @@ export class AgentSprite extends Container {
    */
   getStatus(): AgentStatus {
     return this.currentStatus;
-  }
-
-  /**
-   * Обновляет цвет статус-индикатора
-   * Uses PixiJS 8.x chaining API for Graphics
-   */
-  private updateStatusIndicator(): void {
-    const color = STATUS_COLORS[this.currentStatus];
-
-    // PixiJS 8.x: clear(), then rebuild with chaining
-    this.statusIndicator.clear();
-    this.statusIndicator
-      .circle(0, 0, STATUS_INDICATOR.radius)
-      .fill({ color, alpha: 0.9 });
   }
 
   /**

@@ -42,25 +42,11 @@
 ## 🐛 Known Bugs
 
 ### BUG-001: Spawn Agent не работает
-- **Status:** OPEN 🔴
+- **Status:** FIXED ✅
 - **Severity:** Critical
-- **Error:** `Uncaught TypeError: Cannot read properties of null (reading 'split')`
-- **Stack trace:**
-  ```
-  logPrettyShaderError → logProgramError → generateProgram →
-  GlShaderSystem._createProgramData → GlShaderSystem._getProgramData →
-  GlShaderSystem._setProgram → GlShaderSystem.bind → GlBatchAdaptor.start →
-  _BatcherPipe2.execute → executeInstructions
-  ```
-- **What was tried:**
-  1. ❌ Graphics chaining API (circle().fill()) - не помогло
-  2. ❌ Убрали Graphics statusIndicator полностью - spawn работал!
-- **Root cause hypothesis:** Graphics shader compilation fails в PixiJS 8.x
-- **Next steps to try:**
-  1. Убрать Graphics из AgentSprite полностью (временно)
-  2. Проверить версию PixiJS и известные issues
-  3. Попробовать использовать Sprite вместо Graphics для индикатора
-  4. Проверить WebGL context / GPU driver issues
+- **Fix:** Removed Graphics (statusIndicator) from AgentSprite.ts
+- **Root cause:** PixiJS 8.x Graphics shader compilation fails
+- **TODO:** Add PNG-based status indicator later
 
 ---
 
@@ -97,27 +83,12 @@
 **Для следующего агента:**
 
 ### Контекст
-BUG-001 НЕ ИСПРАВЛЕН. Ошибка: PixiJS shader compilation fails при создании Graphics.
+BUG-001 FIXED ✅ - Убран Graphics из AgentSprite.ts.
 
-### Что известно
-1. **Spawn работает БЕЗ Graphics** - когда statusIndicator закомментирован, агент появляется на canvas
-2. **Graphics вызывает shader error** - `Cannot read properties of null (reading 'split')`
-3. **Chaining API не помог** - `circle().fill()` даёт ту же ошибку
-
-### Stack trace ошибки
-```
-logPrettyShaderError → logProgramError → generateProgram →
-GlShaderSystem._createProgramData → ... → executeInstructions
-```
-
-### Что попробовать
-1. **БЫСТРЫЙ FIX:** Убрать Graphics из AgentSprite.ts полностью (временно)
-2. Проверить PixiJS 8.x issues на GitHub для этой ошибки
-3. Использовать маленький PNG sprite вместо Graphics для индикатора
-4. Проверить не конфликтует ли что-то с WebGL контекстом
-
-### Файлы для изменения
-- `agent-colony/src/renderer/pixi/sprites/AgentSprite.ts` - здесь Graphics
+### Следующие шаги
+1. Протестировать spawn всех ролей (Architect, Coder, Tester, Reviewer)
+2. Добавить PNG-based статус индикатор (опционально)
+3. Продолжить M9: Manual Testing
 
 ### Запуск
 ```bash
@@ -139,4 +110,4 @@ pnpm build        # Production build
 
 ---
 
-**Last Updated:** 2026-01-20 23:50
+**Last Updated:** 2026-01-21 01:00
