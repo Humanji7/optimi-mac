@@ -5,6 +5,7 @@
  */
 
 import { useState, useEffect, useCallback } from 'react';
+import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
 import { PixiCanvas } from './components/PixiCanvas';
 import { SpawnModal } from './components/SpawnModal';
 import { DetailPanel, type Agent } from './components/DetailPanel';
@@ -191,18 +192,28 @@ function App() {
         </button>
       </div>
 
-      {/* Canvas - с учетом ширины панели если открыта */}
-      <div style={selectedAgent ? styles.canvasContainerWithPanel : styles.canvasContainer}>
-        <PixiCanvas onAppReady={handleAppReady} onAgentClick={handleAgentClick} />
-      </div>
+      {/* Canvas and Detail Panel with resizable divider */}
+      <PanelGroup direction="horizontal" style={{ flex: 1 }}>
+        <Panel defaultSize={selectedAgent ? 75 : 100} minSize={30}>
+          <div style={styles.canvasContainer}>
+            <PixiCanvas onAppReady={handleAppReady} onAgentClick={handleAgentClick} />
+          </div>
+        </Panel>
 
-      {/* Detail Panel */}
-      <DetailPanel
-        agent={selectedAgent}
-        onClose={handleClosePanel}
-        onKill={handleKillAgent}
-        onSendCommand={handleSendCommand}
-      />
+        {selectedAgent && (
+          <>
+            <PanelResizeHandle style={styles.resizeHandle} />
+            <Panel defaultSize={25} minSize={15} maxSize={50}>
+              <DetailPanel
+                agent={selectedAgent}
+                onClose={handleClosePanel}
+                onKill={handleKillAgent}
+                onSendCommand={handleSendCommand}
+              />
+            </Panel>
+          </>
+        )}
+      </PanelGroup>
 
       {/* Spawn Modal */}
       <SpawnModal
@@ -251,15 +262,16 @@ const styles: Record<string, React.CSSProperties> = {
     pointerEvents: 'auto' as const,
   },
   canvasContainer: {
-    flex: 1,
+    width: '100%',
+    height: '100%',
     position: 'relative',
     overflow: 'hidden',
   },
-  canvasContainerWithPanel: {
-    flex: 1,
-    position: 'relative',
-    overflow: 'hidden',
-    marginRight: '280px', // Ширина панели
+  resizeHandle: {
+    width: '4px',
+    backgroundColor: '#374151',
+    cursor: 'col-resize',
+    transition: 'background-color 0.2s',
   },
 };
 

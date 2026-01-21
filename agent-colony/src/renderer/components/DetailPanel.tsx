@@ -211,11 +211,9 @@ export function DetailPanel({ agent, onClose, onKill, onSendCommand }: DetailPan
 // Inline styles (темная тема)
 const styles: Record<string, React.CSSProperties> = {
   panel: {
-    position: 'fixed',
-    top: 0,
-    right: 0,
-    width: '280px',
-    height: '100vh',
+    position: 'relative',
+    width: '100%',
+    height: '100%',
     backgroundColor: '#1e1e1e',
     borderLeft: '1px solid #444444',
     display: 'flex',
