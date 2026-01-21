@@ -17,9 +17,10 @@ import 'xterm/css/xterm.css';
 interface TerminalPanelProps {
   agentId: string;
   projectPath?: string;
+  tmuxSession?: string;
 }
 
-export function TerminalPanel({ agentId, projectPath }: TerminalPanelProps) {
+export function TerminalPanel({ agentId, projectPath, tmuxSession }: TerminalPanelProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const terminalRef = useRef<Terminal | null>(null);
   const fitAddonRef = useRef<FitAddon | null>(null);
@@ -93,26 +94,39 @@ export function TerminalPanel({ agentId, projectPath }: TerminalPanelProps) {
     });
   }, [agentId]);
 
-  // Спавн PTY
+  // Спавн PTY или attach к tmux session
   const spawnPty = useCallback(async () => {
     if (isSpawnedRef.current) {
       return;
     }
 
     try {
-      const success = await window.electronAPI.terminalSpawn(agentId, projectPath);
+      let success: boolean;
+
+      if (tmuxSession) {
+        // Attach к существующему tmux session
+        console.log(`[TerminalPanel] Attaching to tmux session ${tmuxSession} for agent ${agentId}`);
+        success = await window.electronAPI.terminalAttachTmux(agentId, tmuxSession);
+      } else {
+        // Обычный spawn shell
+        console.log(`[TerminalPanel] Spawning PTY for agent ${agentId}`);
+        success = await window.electronAPI.terminalSpawn(agentId, projectPath);
+      }
 
       if (success) {
         isSpawnedRef.current = true;
-        console.log(`[TerminalPanel] PTY spawned for agent ${agentId}`);
+        console.log(`[TerminalPanel] Terminal ${tmuxSession ? 'attached' : 'spawned'} for agent ${agentId}`);
       } else {
-        terminalRef.current?.writeln('\r\n\x1b[31mFailed to spawn terminal\x1b[0m');
+        const errorMsg = tmuxSession
+          ? `Failed to attach to tmux session ${tmuxSession}`
+          : 'Failed to spawn terminal';
+        terminalRef.current?.writeln(`\r\n\x1b[31m${errorMsg}\x1b[0m`);
       }
     } catch (error) {
-      console.error(`[TerminalPanel] Failed to spawn PTY:`, error);
+      console.error(`[TerminalPanel] Failed to ${tmuxSession ? 'attach' : 'spawn'} PTY:`, error);
       terminalRef.current?.writeln(`\r\n\x1b[31mError: ${error}\x1b[0m`);
     }
-  }, [agentId, projectPath]);
+  }, [agentId, projectPath, tmuxSession]);
 
   // Подписка на данные от PTY
   useEffect(() => {
