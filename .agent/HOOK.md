@@ -28,7 +28,7 @@
 | M8 | HUD + resource meter | Общая статистика + tokens/rate limits | ✅ DONE |
 | M9 | Minimap | Кликабельный, агенты как цветные точки | ✅ DONE |
 | M10 | Activity timeline | Лента событий за последние 15 минут | ✅ DONE |
-| M11 | Error severity levels | blocker/warning/info classification | ⚪ PENDING |
+| M11 | Error severity levels | blocker/warning/info classification | ✅ DONE |
 
 ---
 
@@ -79,6 +79,20 @@
 - Hidden when no events
 - App.tsx: Added ActivityTimeline to canvas container
 - preload.ts: Verified onAgentError exists (already present)
+
+---
+
+## ✅ COMPLETED: M11 — Error Severity Levels
+
+**Commit:** 345a93a
+**Changes:**
+- utils/severity.ts: Classification logic (blocker/warning/info)
+  * getSeverity(): classifies by health/status
+  * classifyErrorMessage(): pattern matching for error text
+  * SEVERITY_COLORS/ICONS constants
+- DetailPanel.tsx: Severity indicator below metrics
+- HudOverlay.tsx: Issues breakdown by severity (replaces health section)
+- ActivityTimeline.tsx: Color-coded error events with severity icons
 
 ---
 
