@@ -10,11 +10,12 @@
  */
 
 import { useEffect, useRef, useState } from 'react';
-import { Application } from 'pixi.js';
+import { Application, Ticker } from 'pixi.js';
 import { createPixiApp, destroyPixiApp } from '../pixi/setup';
 import { loadSprites } from '../pixi/sprites/SpriteLoader';
 import { AgentLayer } from '../pixi/AgentLayer';
 import { TilemapLayer } from '../pixi/layers/TilemapLayer';
+import { MovementSystem } from '../pixi/systems/Movement';
 
 interface PixiCanvasProps {
   onAppReady?: (app: Application) => void;
@@ -27,6 +28,7 @@ export function PixiCanvas({ onAppReady, onAgentClick }: PixiCanvasProps) {
   const appRef = useRef<Application | null>(null);
   const tilemapLayerRef = useRef<TilemapLayer | null>(null);
   const agentLayerRef = useRef<AgentLayer | null>(null);
+  const movementSystemRef = useRef<MovementSystem | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -67,6 +69,17 @@ export function PixiCanvas({ onAppReady, onAgentClick }: PixiCanvasProps) {
         tilemapLayerRef.current = tilemapLayer;
         console.log('[PixiCanvas] TilemapLayer created');
 
+        // Создаём MovementSystem (использует tilemap для pathfinding)
+        const movementSystem = new MovementSystem(tilemapLayer);
+        movementSystemRef.current = movementSystem;
+
+        // Добавляем update loop для MovementSystem
+        const movementUpdate = (ticker: Ticker) => {
+          movementSystem.update(ticker.deltaMS);
+        };
+        app.ticker.add(movementUpdate);
+        console.log('[PixiCanvas] MovementSystem created');
+
         // Создаём AgentLayer (поверх tilemap)
         const agentLayer = new AgentLayer();
         agentLayer.attachTicker(app.ticker);
@@ -94,6 +107,12 @@ export function PixiCanvas({ onAppReady, onAgentClick }: PixiCanvasProps) {
     // Cleanup
     return () => {
       mounted = false;
+
+      if (movementSystemRef.current) {
+        console.log('[PixiCanvas] Destroying MovementSystem');
+        movementSystemRef.current.destroy();
+        movementSystemRef.current = null;
+      }
 
       if (agentLayerRef.current) {
         console.log('[PixiCanvas] Destroying AgentLayer');
@@ -157,13 +176,18 @@ export function PixiCanvas({ onAppReady, onAgentClick }: PixiCanvasProps) {
       }
 
       try {
-        const sprite = agentLayerRef.current.addAgent({
+        const agent = agentLayerRef.current.addAgent({
           id: agentData.id,
           role: agentData.role as 'Architect' | 'Coder' | 'Tester' | 'Reviewer',
           position: { x, y },
         });
 
-        sprite.setStatus('idle');
+        agent.setStatus('idle');
+
+        // Регистрируем в системе движения
+        if (movementSystemRef.current) {
+          movementSystemRef.current.registerAgent(agentData.id, agent);
+        }
 
         console.log('[PixiCanvas] Agent sprite added to canvas:', {
           id: agentData.id,
@@ -196,6 +220,12 @@ export function PixiCanvas({ onAppReady, onAgentClick }: PixiCanvasProps) {
       }
 
       const { id } = data as { id: string };
+
+      // Удаляем из системы движения
+      if (movementSystemRef.current) {
+        movementSystemRef.current.unregisterAgent(id);
+      }
+
       const removed = agentLayerRef.current.removeAgent(id);
 
       if (removed) {
