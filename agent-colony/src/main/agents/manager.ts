@@ -11,7 +11,7 @@
 
 import { v4 as uuidv4 } from 'uuid';
 import * as tmux from '../tmux';
-import { sendEscape } from '../tmux';
+import { sendEscape, sessionExists } from '../tmux';
 import { createAgent as dbCreateAgent, updateAgent as dbUpdateAgent, getAllAgents as dbGetAllAgents } from '../db/models/agent';
 import { initDatabase as initDb } from '../db';
 import * as registry from './registry';
@@ -272,17 +272,29 @@ export class AgentManager {
 
   /**
    * Pause all agents by sending Escape to interrupt Claude
+   * Skips agents with dead tmux sessions and removes them from registry
    */
-  async pauseAll(): Promise<{ paused: number; errors: string[] }> {
+  async pauseAll(): Promise<{ paused: number; skipped: number; errors: string[] }> {
     console.log('[AgentManager] Pausing all agents...');
 
     const agents = registry.getAllAgents();
     const errors: string[] = [];
     let paused = 0;
+    let skipped = 0;
 
     await Promise.allSettled(
       agents.map(async (agent) => {
         try {
+          // Check if tmux session exists before sending Escape
+          const exists = await sessionExists(agent.process.tmuxSession);
+          if (!exists) {
+            console.log(`[AgentManager] Skipping dead agent ${agent.id} (session not found)`);
+            // Remove dead agent from registry
+            registry.removeAgent(agent.id);
+            skipped++;
+            return;
+          }
+
           await sendEscape(agent.process.tmuxSession);
           paused++;
           console.log(`[AgentManager] Paused agent ${agent.id}`);
@@ -294,8 +306,8 @@ export class AgentManager {
       })
     );
 
-    console.log(`[AgentManager] Pause complete: ${paused}/${agents.length} agents paused`);
-    return { paused, errors };
+    console.log(`[AgentManager] Pause complete: ${paused} paused, ${skipped} skipped (dead)`);
+    return { paused, skipped, errors };
   }
 
   /**
