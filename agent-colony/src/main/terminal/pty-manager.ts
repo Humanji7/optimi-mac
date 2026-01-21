@@ -88,7 +88,8 @@ class PtyManager {
 
     try {
       // Spawn PTY с командой attach к tmux session
-      const ptyProcess = pty.spawn('tmux', ['attach', '-t', tmuxSession], {
+      // -d флаг отключает другие клиенты от сессии
+      const ptyProcess = pty.spawn('tmux', ['attach', '-d', '-t', tmuxSession], {
         name: 'xterm-256color',
         cols: DEFAULT_COLS,
         rows: DEFAULT_ROWS,
