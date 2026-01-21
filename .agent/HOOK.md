@@ -1,6 +1,6 @@
 # HOOK: Agent Colony V3 — Phase B: Information Layer
 
-**Status:** 🔴 ACTIVE
+**Status:** ⚪ IDLE (Phase B complete)
 **Created:** 2026-01-21
 **Type:** Feature Implementation Convoy
 **Plan:** V3_PLAN.md
@@ -96,15 +96,22 @@
 
 ---
 
-## 📝 Notes
+## ✅ PHASE B COMPLETE!
 
-- Phase A полностью завершена (M1-M5)
-- M6 = простая молекула (1 файл)
-- Используем PixiJS Text API
+All Information Layer molecules completed:
+- M6: Agent status badge ✅
+- M7: Terminal preview on hover ✅
+- M8: HUD + resource meter ✅
+- M9: Minimap ✅
+- M10: Activity timeline ✅
+- M11: Error severity levels ✅
+
+**Next:** Phase C (Multi-Agent Control) or archive HOOK.md
 
 ---
 
 ## 🔗 Context
 
-**Previous phases:**
+**Completed phases:**
 - Phase A (UX Fixes) ✅ — commits: faa090b, e2f7289, 3818f86, 796ae26, 837d485
+- Phase B (Information Layer) ✅ — commits: 5d6e6d2, 3dffb3c, 665a9f1, c0e6b53, 0184c8a, 345a93a
