@@ -8,6 +8,7 @@
 import { app, BrowserWindow, ipcMain, globalShortcut, Menu, dialog } from 'electron';
 import path from 'node:path';
 import { agentManager, agentEvents } from './agents';
+import { ptyManager } from './terminal/pty-manager';
 
 let mainWindow: BrowserWindow | null = null;
 
@@ -133,6 +134,23 @@ ipcMain.on('debug:log', (_, level, ...args) => {
   console.log(`[Renderer:${level}]`, ...args);
 });
 
+// Terminal IPC Handlers
+ipcMain.handle('terminal:spawn', async (_, agentId: string, cwd?: string) => {
+  return ptyManager.spawn(agentId, cwd);
+});
+
+ipcMain.handle('terminal:write', async (_, agentId: string, data: string) => {
+  return ptyManager.write(agentId, data);
+});
+
+ipcMain.handle('terminal:resize', async (_, agentId: string, cols: number, rows: number) => {
+  return ptyManager.resize(agentId, cols, rows);
+});
+
+ipcMain.handle('terminal:kill', async (_, agentId: string) => {
+  return ptyManager.kill(agentId);
+});
+
 /**
  * App Lifecycle
  */
@@ -147,6 +165,11 @@ app.whenReady().then(async () => {
   // Create window
   createWindow();
 
+  // Set mainWindow for ptyManager
+  if (mainWindow) {
+    ptyManager.setMainWindow(mainWindow);
+  }
+
   app.on('activate', () => {
     // macOS: re-create window when dock icon is clicked
     if (BrowserWindow.getAllWindows().length === 0) {
@@ -158,6 +181,7 @@ app.whenReady().then(async () => {
 // Graceful shutdown
 app.on('before-quit', async (event) => {
   event.preventDefault();
+  ptyManager.killAll();
   await agentManager.shutdown();
   app.exit(0);
 });

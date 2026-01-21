@@ -10,6 +10,7 @@
 
 import { useState, FormEvent } from 'react';
 import type { AgentStatus } from '../pixi/types';
+import { TerminalPanel } from './TerminalPanel';
 
 /**
  * Полный интерфейс агента (зеркало из main/agents/types.ts)
@@ -85,6 +86,7 @@ function getStatusColor(status: AgentStatus): string {
 
 export function DetailPanel({ agent, onClose, onKill, onSendCommand }: DetailPanelProps) {
   const [command, setCommand] = useState('');
+  const [showTerminal, setShowTerminal] = useState(false);
 
   if (!agent) {
     return null;
@@ -184,7 +186,24 @@ export function DetailPanel({ agent, onClose, onKill, onSendCommand }: DetailPan
             </button>
           </form>
         </div>
+
+        {/* Терминал */}
+        <div style={styles.section}>
+          <button
+            onClick={() => setShowTerminal(!showTerminal)}
+            style={styles.terminalToggle}
+          >
+            {showTerminal ? '▼ Hide Terminal' : '▶ Show Terminal'}
+          </button>
+        </div>
       </div>
+
+      {/* Terminal Panel */}
+      {showTerminal && (
+        <div style={styles.terminalContainer}>
+          <TerminalPanel agentId={agent.id} projectPath={agent.project?.path} />
+        </div>
+      )}
     </div>
   );
 }
@@ -316,5 +335,22 @@ const styles: Record<string, React.CSSProperties> = {
     borderRadius: '4px',
     cursor: 'pointer',
     whiteSpace: 'nowrap',
+  },
+  terminalToggle: {
+    width: '100%',
+    padding: '10px',
+    fontSize: '13px',
+    fontWeight: 500,
+    color: '#cccccc',
+    backgroundColor: '#2d2d2d',
+    border: '1px solid #444444',
+    borderRadius: '4px',
+    cursor: 'pointer',
+    textAlign: 'left',
+  },
+  terminalContainer: {
+    height: '300px',
+    borderTop: '1px solid #444444',
+    overflow: 'hidden',
   },
 };

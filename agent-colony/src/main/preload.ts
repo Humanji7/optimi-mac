@@ -32,6 +32,14 @@ export interface ElectronAPI {
   onAgentError: (callback: (data: unknown) => void) => () => void;
   onHealthChecked: (callback: (data: unknown) => void) => () => void;
 
+  // Terminal (PTY)
+  terminalSpawn: (agentId: string, cwd?: string) => Promise<boolean>;
+  terminalWrite: (agentId: string, data: string) => Promise<boolean>;
+  terminalResize: (agentId: string, cols: number, rows: number) => Promise<boolean>;
+  terminalKill: (agentId: string) => Promise<boolean>;
+  onTerminalData: (callback: (data: { agentId: string; data: string }) => void) => () => void;
+  onTerminalExit: (callback: (data: { agentId: string; exitCode: number; signal?: number }) => void) => () => void;
+
   // Legacy
   onAgentUpdate: (callback: (data: unknown) => void) => void;
 
@@ -97,6 +105,35 @@ contextBridge.exposeInMainWorld('electronAPI', {
     const handler = (_event: Electron.IpcRendererEvent, data: unknown) => callback(data);
     ipcRenderer.on('health:checked', handler);
     return () => ipcRenderer.removeListener('health:checked', handler);
+  },
+
+  // Terminal (PTY)
+  terminalSpawn: (agentId: string, cwd?: string): Promise<boolean> => {
+    return ipcRenderer.invoke('terminal:spawn', agentId, cwd);
+  },
+
+  terminalWrite: (agentId: string, data: string): Promise<boolean> => {
+    return ipcRenderer.invoke('terminal:write', agentId, data);
+  },
+
+  terminalResize: (agentId: string, cols: number, rows: number): Promise<boolean> => {
+    return ipcRenderer.invoke('terminal:resize', agentId, cols, rows);
+  },
+
+  terminalKill: (agentId: string): Promise<boolean> => {
+    return ipcRenderer.invoke('terminal:kill', agentId);
+  },
+
+  onTerminalData: (callback: (data: { agentId: string; data: string }) => void): (() => void) => {
+    const handler = (_event: Electron.IpcRendererEvent, data: { agentId: string; data: string }) => callback(data);
+    ipcRenderer.on('terminal:data', handler);
+    return () => ipcRenderer.removeListener('terminal:data', handler);
+  },
+
+  onTerminalExit: (callback: (data: { agentId: string; exitCode: number; signal?: number }) => void): (() => void) => {
+    const handler = (_event: Electron.IpcRendererEvent, data: { agentId: string; exitCode: number; signal?: number }) => callback(data);
+    ipcRenderer.on('terminal:exit', handler);
+    return () => ipcRenderer.removeListener('terminal:exit', handler);
   },
 
   // Legacy - Subscribe to agent updates
