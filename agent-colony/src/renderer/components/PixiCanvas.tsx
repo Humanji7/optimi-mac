@@ -15,6 +15,7 @@ import { createPixiApp, destroyPixiApp } from '../pixi/setup';
 import { loadSprites } from '../pixi/sprites/SpriteLoader';
 import { AgentLayer } from '../pixi/AgentLayer';
 import { TilemapLayer } from '../pixi/layers/TilemapLayer';
+import { BuildingsLayer } from '../pixi/layers/BuildingsLayer';
 import { MovementSystem } from '../pixi/systems/Movement';
 
 interface PixiCanvasProps {
@@ -27,6 +28,7 @@ export function PixiCanvas({ onAppReady, onAgentClick }: PixiCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const appRef = useRef<Application | null>(null);
   const tilemapLayerRef = useRef<TilemapLayer | null>(null);
+  const buildingsLayerRef = useRef<BuildingsLayer | null>(null);
   const agentLayerRef = useRef<AgentLayer | null>(null);
   const movementSystemRef = useRef<MovementSystem | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -69,6 +71,12 @@ export function PixiCanvas({ onAppReady, onAgentClick }: PixiCanvasProps) {
         tilemapLayerRef.current = tilemapLayer;
         console.log('[PixiCanvas] TilemapLayer created');
 
+        // Создаём BuildingsLayer (между tilemap и agents)
+        const buildingsLayer = new BuildingsLayer();
+        app.stage.addChild(buildingsLayer);
+        buildingsLayerRef.current = buildingsLayer;
+        console.log('[PixiCanvas] BuildingsLayer created');
+
         // Создаём MovementSystem (использует tilemap для pathfinding)
         const movementSystem = new MovementSystem(tilemapLayer);
         movementSystemRef.current = movementSystem;
@@ -80,7 +88,7 @@ export function PixiCanvas({ onAppReady, onAgentClick }: PixiCanvasProps) {
         app.ticker.add(movementUpdate);
         console.log('[PixiCanvas] MovementSystem created');
 
-        // Создаём AgentLayer (поверх tilemap)
+        // Создаём AgentLayer (поверх buildings)
         const agentLayer = new AgentLayer();
         agentLayer.attachTicker(app.ticker);
         app.stage.addChild(agentLayer);
@@ -118,6 +126,12 @@ export function PixiCanvas({ onAppReady, onAgentClick }: PixiCanvasProps) {
         console.log('[PixiCanvas] Destroying AgentLayer');
         agentLayerRef.current.destroy();
         agentLayerRef.current = null;
+      }
+
+      if (buildingsLayerRef.current) {
+        console.log('[PixiCanvas] Destroying BuildingsLayer');
+        buildingsLayerRef.current.destroy();
+        buildingsLayerRef.current = null;
       }
 
       if (tilemapLayerRef.current) {

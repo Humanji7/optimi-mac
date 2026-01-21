@@ -18,6 +18,7 @@ export { AnimatedAgent } from './sprites/AnimatedAgent';
 // Layers
 export { AgentLayer } from './AgentLayer';
 export { TilemapLayer } from './layers/TilemapLayer';
+export { BuildingsLayer, type BuildingType } from './layers/BuildingsLayer';
 
 // Systems
 export { MovementSystem } from './systems/Movement';
