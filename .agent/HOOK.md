@@ -1,6 +1,6 @@
 # HOOK: Agent Colony V3 — Phase A: UX Fixes
 
-**Status:** 🔴 ACTIVE
+**Status:** ⚪ IDLE (Phase A complete)
 **Created:** 2026-01-21
 **Type:** Feature Implementation Convoy
 **Plan:** V3_PLAN.md | **Implementation:** PHASE_A_IMPLEMENTATION.md
@@ -27,21 +27,42 @@
 |---|----------|-------------|--------|
 | M3 | Resizable sidebar | Drag для изменения ширины | ✅ DONE |
 | M4 | Hotkeys 1-9 | Быстрый доступ к агентам | ✅ DONE |
-| M1+M2 | Pan + Zoom | Два пальца + pinch | 🔴 CURRENT |
-| M5 | Emergency Pause All | Space bar = pause all agents | ⚪ PENDING |
+| M1+M2 | Pan + Zoom | Два пальца + pinch | ✅ DONE |
+| M5 | Emergency Pause All | Space bar = pause all agents | ✅ DONE |
 
 ---
 
-## 🎯 CURRENT: M1+M2 — Pan + Zoom
+## ✅ PHASE A COMPLETE!
 
-**Goal:** Двухпальцевый pan и pinch-zoom для canvas
+All UX Fixes molecules completed:
+- M3: Resizable sidebar ✅
+- M4: Hotkeys 1-9 ✅
+- M1+M2: Pan + Zoom ✅
+- M5: Emergency Pause All ✅
 
-**Status:** ⚪ PENDING — требует запуск Explore агента
+**Next:** Phase B (Information Display) or archive HOOK.md
 
-**Next Steps:**
-1. Запустить Explore для анализа PixiCanvas.tsx
-2. Изучить pixi-viewport интеграцию
-3. Создать implementation plan для M1+M2
+---
+
+## ✅ COMPLETED: M5 — Emergency Pause All
+
+**Commit:** 796ae26
+**Changes:**
+- tmux/send.ts: добавлен sendEscape()
+- manager.ts: pauseAll() отправляет Escape всем агентам
+- IPC handler + preload API
+- App.tsx: красная кнопка "Pause All" + Space hotkey
+
+---
+
+## ✅ COMPLETED: M1+M2 — Pan + Zoom
+
+**Commit:** 3818f86
+**Changes:**
+- Добавлен pixi-viewport@6.0.3
+- PixiCanvas.tsx: viewport с drag/pinch/wheel
+- Zoom limits: 0.5x - 3x
+- Все слои перенесены в viewport
 
 ---
 
