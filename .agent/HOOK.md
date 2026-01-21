@@ -27,7 +27,7 @@
 | M7 | Terminal preview on hover | Последние N строк при наведении | ✅ DONE |
 | M8 | HUD + resource meter | Общая статистика + tokens/rate limits | ✅ DONE |
 | M9 | Minimap | Кликабельный, агенты как цветные точки | ✅ DONE |
-| M10 | Activity timeline | Лента событий за последние 15 минут | 🔴 IN PROGRESS |
+| M10 | Activity timeline | Лента событий за последние 15 минут | ✅ DONE |
 | M11 | Error severity levels | blocker/warning/info classification | ⚪ PENDING |
 
 ---
@@ -64,6 +64,21 @@
 - PixiCanvas: добавлен callback onAgentLayerReady
 - App.tsx: получение позиций агентов из AgentLayer
 - Auto-refresh viewport rect каждые 100ms
+
+---
+
+## ✅ COMPLETED: M10 — Activity Timeline
+
+**Commit:** 0184c8a
+**Changes:**
+- ActivityTimeline.tsx: Event feed component (bottom-left corner)
+- In-memory storage: max 50 events, 15-min TTL
+- Subscribes to: agent:spawned, agent:killed, agent:updated, agent:error
+- Auto-cleanup old events every 30 seconds
+- Shows last 10 events with icons (+ × ↻ !), messages, relative time
+- Hidden when no events
+- App.tsx: Added ActivityTimeline to canvas container
+- preload.ts: Verified onAgentError exists (already present)
 
 ---
 
