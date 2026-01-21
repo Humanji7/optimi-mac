@@ -74,10 +74,13 @@ function agentToRecord(agent: Agent): Omit<AgentRecord, 'created_at' | 'last_see
 
 const HEALTH_CHECK_INTERVAL = 10000; // 10 seconds
 const GRACEFUL_EXIT_TIMEOUT = 5000; // 5 seconds
+const ACTIVITY_CAPTURE_LINES = 20; // Lines to capture for activity detection
 
 export class AgentManager {
   private healthCheckInterval: NodeJS.Timeout | null = null;
   private isShuttingDown = false;
+  // Store previous pane content hash for activity detection
+  private lastPaneContentHash: Map<string, string> = new Map();
 
   /**
    * Initialize manager
@@ -214,6 +217,9 @@ export class AgentManager {
     // Remove from registry
     registry.removeAgent(id);
 
+    // Clean up activity tracking
+    this.lastPaneContentHash.delete(id);
+
     // Emit event
     agentEvents.emit('agent:killed', { id });
 
@@ -330,6 +336,7 @@ export class AgentManager {
             console.log(`[AgentManager] Skipping dead agent ${agent.id} (session not found)`);
             // Remove dead agent from registry
             registry.removeAgent(agent.id);
+            this.lastPaneContentHash.delete(agent.id);
             skipped++;
             return;
           }
@@ -364,19 +371,48 @@ export class AgentManager {
       try {
         const health = await checkHealth(agent);
         const uptime = Math.floor((now - agent.createdAt) / 1000);
-        const idleTime = (now - agent.metrics.lastActivity) / 1000;
+
+        // Activity detection via tmux capture-pane
+        let activityDetected = false;
+        try {
+          const paneContent = await tmux.capturePane(agent.process.tmuxSession, ACTIVITY_CAPTURE_LINES);
+          const contentHash = paneContent.join('\n');
+          const lastHash = this.lastPaneContentHash.get(agent.id);
+
+          if (lastHash !== undefined && contentHash !== lastHash) {
+            // Content changed — agent is active
+            activityDetected = true;
+          }
+          this.lastPaneContentHash.set(agent.id, contentHash);
+        } catch {
+          // Capture failed — ignore, use existing lastActivity
+        }
+
+        // Update lastActivity if activity detected
+        let updatedLastActivity = agent.metrics.lastActivity;
+        if (activityDetected) {
+          updatedLastActivity = now;
+        }
+
+        const idleTime = (now - updatedLastActivity) / 1000;
 
         const updatedMetrics = {
           ...agent.metrics,
           health,
           uptime,
+          lastActivity: updatedLastActivity,
         };
 
         // Determine status based on activity
-        // Working → Idle if no activity for 10 seconds
         let newStatus = agent.status;
-        const statusChanged = agent.status === 'working' && idleTime > 10;
-        if (statusChanged) {
+        // idle → working if activity detected
+        if (activityDetected && agent.status === 'idle') {
+          newStatus = 'working';
+        }
+        // working → idle if no activity for 10 seconds
+        const statusChanged = (activityDetected && agent.status === 'idle') ||
+                             (agent.status === 'working' && idleTime > 10);
+        if (agent.status === 'working' && idleTime > 10) {
           newStatus = 'idle';
         }
 

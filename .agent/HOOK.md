@@ -1,8 +1,8 @@
-# HOOK: Agent Colony V3 — Phase B: Information Layer
+# HOOK: Agent Colony V3 — Bugfixes
 
-**Status:** ⚪ IDLE (Phase B complete)
+**Status:** ⚪ IDLE (Bugfixes complete)
 **Created:** 2026-01-21
-**Type:** Feature Implementation Convoy
+**Type:** Bugfix Session
 **Plan:** V3_PLAN.md
 
 ---
@@ -128,21 +128,29 @@ All Information Layer molecules completed:
 3. **Terminal visibility fixed** — терминал вверху DetailPanel
 4. **Viewer PTY fixed** — не триггерит activity (isViewer flag)
 
-### Известные проблемы:
-- **Terminal encoding** — буквы "не попадают" (возможно проблема с кириллицей или xterm.js)
-- **Activity detection** — нужно добавить определение активности через tmux capture (viewer PTY не триггерит)
+### ✅ FIXED (2026-01-21):
+
+**BF1: Terminal encoding**
+- Добавлено: `LANG=en_US.UTF-8` и `LC_ALL=en_US.UTF-8` в env node-pty
+- Файл: `src/main/terminal/pty-manager.ts`
+- Исправлено для обоих методов: `spawn()` и `attachToTmux()`
+
+**BF2: Activity detection via tmux capture-pane**
+- Добавлено: хранение hash предыдущего содержимого pane в `lastPaneContentHash` Map
+- Логика: в `runHealthCheck()` сравнивается содержимое с предыдущим состоянием
+- Если контент изменился → `activityDetected = true` → обновляется `lastActivity` и статус
+- Файл: `src/main/agents/manager.ts`
+- Очистка hash при удалении агента (killAgent, pauseAll)
 
 ### Архитектура статуса:
 ```
 Агент работает в tmux session (создан при spawn)
 Viewer PTY (attach к tmux) — только для просмотра, НЕ меняет статус
-Activity detection — TODO: использовать tmux capture-pane в healthCheck
+Activity detection — реализовано через tmux capture-pane в healthCheck ✅
 ```
 
 **Следующие задачи:**
-1. Fix terminal encoding (буквы)
-2. Add activity detection via tmux capture
-3. Phase C: Multi-Agent Control (M12-M15)
+1. Phase C: Multi-Agent Control (M12-M15)
 
 **Команда для продолжения:**
 ```bash

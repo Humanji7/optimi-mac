@@ -61,6 +61,8 @@ class PtyManager {
           ...process.env,
           TERM: 'xterm-256color',
           COLORTERM: 'truecolor',
+          LANG: 'en_US.UTF-8',
+          LC_ALL: 'en_US.UTF-8',
         },
       });
 
@@ -109,6 +111,8 @@ class PtyManager {
           ...process.env,
           TERM: 'xterm-256color',
           COLORTERM: 'truecolor',
+          LANG: 'en_US.UTF-8',
+          LC_ALL: 'en_US.UTF-8',
         },
       });
 
