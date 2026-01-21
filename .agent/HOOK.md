@@ -1,140 +1,51 @@
-# HOOK: Agent Colony V2 - Живая Колония
+# HOOK: Agent Colony V3 — Phase A: UX Fixes
 
-**Status:** ⚪ IDLE (V2 complete, ready for interview)
+**Status:** 🔴 ACTIVE
 **Created:** 2026-01-21
 **Type:** Feature Implementation Convoy
-**Project:** Agent Colony
+**Plan:** See V3_PLAN.md for full roadmap
 
 ---
 
-## 📋 Context Summary
+## 📋 Current Convoy: Phase A (UX Fixes)
+
+| # | Molecule | Description | Status |
+|---|----------|-------------|--------|
+| M1 | Pan карты | Два пальца трекпад | ⚪ PENDING |
+| M2 | Zoom | Pinch gesture | ⚪ PENDING |
+| M3 | Resizable sidebar | Drag для изменения ширины | ⚪ PENDING |
+| M4 | Hotkeys 1-9 | Быстрый доступ к агентам | ⚪ PENDING |
+| M5 | Emergency Pause All | Space bar = pause all agents | ⚪ PENDING |
+
+---
+
+## 🎯 CURRENT: M1 — Pan карты
+
+**Goal:** Реализовать перемещение карты двумя пальцами по трекпаду
+
+**Implementation:**
+- [ ] Найти текущий viewport/camera код в PixiJS
+- [ ] Добавить event listener для wheel (trackpad pan = wheel с deltaX/deltaY)
+- [ ] Обновлять позицию viewport при pan gesture
+- [ ] Ограничить границы карты (нельзя уйти за пределы)
+- [ ] Тест: два пальца двигают карту плавно
+
+---
+
+## 📝 Notes
+
+- Pan на macOS trackpad = `wheel` event с `deltaX` и `deltaY`
+- Zoom (pinch) = `wheel` event с `ctrlKey: true` + `deltaY`
+- Можно реализовать M1 и M2 вместе, так как они используют один event
+
+---
+
+## 🔗 Context
 
 **Предыдущие фазы:**
-- Phase 1 (Core Infrastructure) ✅ — Electron + tmux + SQLite + AgentManager
-- Phase 2 (Visual Layer) ✅ — PixiJS + Sprites + Spawn Modal + Detail Panel
-- Phase 3 (Testing & Polish) ✅ — Manual testing, 3 bugs fixed
+- Phase 1 (Core Infrastructure) ✅
+- Phase 2 (Visual Layer) ✅
+- Phase 3 (Testing & Polish) ✅
+- V2 "Living Colony" ✅
 
-**Текущая задача:** Превратить "чёрный экран с кружками" в живую pixel-арт колонию
-
----
-
-## 🎯 Vision
-
-```
-СЕЙЧАС:                           БУДЕТ:
-┌─────────────────────┐           ┌─────────────────────────────────┐
-│                     │           │ [Tilemap база]    │ Terminal   │
-│   ● ● ●             │    →      │  🧑‍🔬 🐙 🐄 🦅      │ $ claude   │
-│   (кружки)          │           │  ходят, работают  │ > working  │
-│                     │           │  строят блоки     │ > done!    │
-└─────────────────────┘           └─────────────────────────────────┘
-```
-
----
-
-## 🚀 Molecules
-
-### M1: Tilemap и карта ✅ COMPLETED
-**Commit:** d46560b
-
----
-
-### M2: Анимированные спрайты ✅ COMPLETED
-**Commit:** b6faa9f
-
----
-
-### M3: Движение агентов ✅ COMPLETED
-**Commit:** 5ab03fc
-
----
-
-### M4: Терминал (node-pty + xterm.js) ✅ COMPLETED
-**Commit:** ef7134a
-
----
-
-### M5: Блоки прогресса ✅ COMPLETED (базовая версия)
-**Commit:** 0e4248c
-
-**Готово:**
-- BuildingsLayer.ts с 4 типами блоков
-- Анимация появления (easeOutBack)
-- Интеграция в PixiCanvas
-
----
-
-### M6: Автоспавн блоков ✅ COMPLETED
-**Commit:** bf258b0
-
-**Готово:**
-- Блок при спауне агента (test_block для Tester, code_block для остальных)
-- Блок code_block при статусе 'working'
-- Блок doc_block при статусе 'idle' (задача завершена)
-- Блок error_block при ошибках агента
-- Удаление всех блоков агента при его уничтожении
-
-**Опционально (не реализовано):**
-- Таблица buildings в SQLite
-
----
-
-## 📊 Progress
-
-| Molecule | Status |
-|----------|--------|
-| M1: Tilemap | ✅ COMPLETED |
-| M2: Спрайты | ✅ COMPLETED |
-| M3: Движение | ✅ COMPLETED |
-| M4: Терминал | ✅ COMPLETED |
-| M5: Блоки | ✅ COMPLETED |
-| M6: Автоспавн | ✅ COMPLETED |
-
----
-
-## 🔄 Handoff Note
-
-**Статус:** V2 "Живая Колония" ПОЛНОСТЬЮ ЗАВЕРШЕНА ✅
-
-### Для следующего агента: UX/UI Interview
-
-**Задача:** Провести глубинное интервью с пользователем для сбора требований по улучшению игровой механики и UX/UI.
-
-### Что реализовано (V2)
-1. **M1 Tilemap** — sci-fi карта 32x32 с walkable зонами
-2. **M2 Спрайты** — AnimatedAgent с sprite sheet анимациями (4 роли)
-3. **M3 Движение** — случайное блуждание агентов по walkable тайлам
-4. **M4 Терминал** — xterm.js + node-pty в DetailPanel
-5. **M5 Блоки** — BuildingsLayer (4 типа: code, test, error, doc)
-6. **M6 Автоспавн** — блоки появляются при событиях агентов
-
-### Как запустить
-```bash
-cd /Users/admin/projects/optimi-mac/agent-colony
-mkdir -p dist/main && echo '{"type":"commonjs"}' > dist/main/package.json
-pnpm dev
-```
-
-### Коммиты V2
-- `d46560b` M1: Tilemap
-- `b6faa9f` M2: Animated Sprites
-- `5ab03fc` M3: Movement
-- `ef7134a` M4: Terminal
-- `0e4248c` M5: Buildings (base)
-- `2ed2546` fix: tmux macOS error
-- `bf258b0` M6: Auto-spawn buildings
-- `f8dca56` docs: complete V2 convoy
-
----
-
-## 🔧 Quick Commands
-
-```bash
-cd /Users/admin/projects/optimi-mac/agent-colony
-mkdir -p dist/main && echo '{"type":"commonjs"}' > dist/main/package.json
-pnpm dev
-```
-
----
-
-**Last Updated:** 2026-01-21
+**Текущая задача:** V3 Phase A — UX Fixes
