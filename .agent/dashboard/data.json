@@ -1,15 +1,15 @@
 {
-    "generated": "2026-01-20 17:40",
+    "generated": "2026-01-21 17:15",
     "scannedPath": "/Users/admin/projects",
     "summary": {
         "total": 8,
         "withAgent": 7,
         "activeHooks": 3,
-        "uncommitted": 7,
-        "noGit": 0
+        "uncommitted": 6,
+        "noGit": 1
     },
-    "healthyProjects": [],
-    "workingProjects": [{"name":"Parsertang","agent":true,"hook":false,"gitStatus":"uncommitted"},{"name":"bip-buddy","agent":true,"hook":true,"gitStatus":"uncommitted"},{"name":"optimi-mac","agent":true,"hook":true,"gitStatus":"uncommitted"},{"name":"personal-site","agent":true,"hook":false,"gitStatus":"uncommitted"},{"name":"pointg","agent":true,"hook":false,"gitStatus":"uncommitted"},{"name":"reelstudio","agent":true,"hook":false,"gitStatus":"uncommitted"},{"name":"sphere-777","agent":true,"hook":true,"gitStatus":"uncommitted"}],
-    "attentionProjects": [{"name":"Campaign Inbox","issues":["No .agent/"]}],
-    "recommendations": [{"text":"Add .agent/ infrastructure to 1 projects","command":"/setup-ai-pipeline"},{"text":"Commit or stash changes in 7 projects","command":null},{"text":"3 active HOOK(s) — continue pending work with GUPP","command":null}]
+    "healthyProjects": [{"name":"Parsertang","agent":true,"hook":false,"gitStatus":"clean"}],
+    "workingProjects": [{"name":"bip-buddy","agent":true,"hook":true,"gitStatus":"uncommitted"},{"name":"optimi-mac","agent":true,"hook":true,"gitStatus":"uncommitted"},{"name":"personal-site","agent":true,"hook":false,"gitStatus":"uncommitted"},{"name":"pointg","agent":true,"hook":false,"gitStatus":"uncommitted"},{"name":"reelstudio","agent":true,"hook":false,"gitStatus":"uncommitted"},{"name":"sphere-777","agent":true,"hook":true,"gitStatus":"uncommitted"}],
+    "attentionProjects": [{"name":"soloprenuerset","issues":["No .agent/","No git"]}],
+    "recommendations": [{"text":"Add .agent/ infrastructure to 1 projects","command":"/setup-ai-pipeline"},{"text":"Commit or stash changes in 6 projects","command":null},{"text":"3 active HOOK(s) — continue pending work with GUPP","command":null}]
 }
