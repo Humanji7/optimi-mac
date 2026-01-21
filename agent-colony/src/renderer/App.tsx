@@ -10,6 +10,7 @@ import { PixiCanvas } from './components/PixiCanvas';
 import { SpawnModal } from './components/SpawnModal';
 import { DetailPanel, type Agent } from './components/DetailPanel';
 import { TerminalTooltip } from './components/TerminalTooltip';
+import { HudOverlay } from './components/HudOverlay';
 import type { Application } from 'pixi.js';
 import type { AgentRole } from './pixi/types';
 
@@ -248,6 +249,7 @@ function App() {
       {/* Header */}
       <div style={styles.header}>
         <h1 style={styles.title}>Agent Colony</h1>
+        <HudOverlay agents={_agents} />
         <div style={styles.headerButtons}>
           <button
             onClick={handlePauseAll}
