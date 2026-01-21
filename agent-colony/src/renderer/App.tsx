@@ -174,6 +174,43 @@ function App() {
     return () => unsubscribe();
   }, [selectedAgent]);
 
+  // Hotkeys для быстрого доступа к агентам
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Игнорировать если фокус в input/textarea
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
+        return;
+      }
+
+      // ESC — закрыть панель
+      if (e.key === 'Escape') {
+        setSelectedAgent(null);
+        return;
+      }
+
+      // 1-9 — выбрать агента по индексу
+      if (e.key >= '1' && e.key <= '9') {
+        const index = parseInt(e.key) - 1;
+
+        setAgents((currentAgents) => {
+          const agentList = Array.from(currentAgents.values());
+
+          if (index < agentList.length) {
+            setSelectedAgent(agentList[index]);
+            console.log(`[App] Hotkey ${e.key}: selected agent`, agentList[index].id);
+          } else {
+            console.log(`[App] Hotkey ${e.key}: no agent at index ${index}`);
+          }
+
+          return currentAgents;
+        });
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []); // Пустой массив dependencies так как используем functional update
+
   return (
     <div style={styles.container}>
       {/* Header */}
