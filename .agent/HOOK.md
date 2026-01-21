@@ -62,9 +62,20 @@
 - Анимация появления (easeOutBack)
 - Интеграция в PixiCanvas
 
-**WIP (для следующего агента):**
-- Автоспавн блоков при событиях агентов
-- Таблица buildings в SQLite (опционально)
+---
+
+### M6: Автоспавн блоков ✅ COMPLETED
+**Commit:** bf258b0
+
+**Готово:**
+- Блок при спауне агента (test_block для Tester, code_block для остальных)
+- Блок code_block при статусе 'working'
+- Блок doc_block при статусе 'idle' (задача завершена)
+- Блок error_block при ошибках агента
+- Удаление всех блоков агента при его уничтожении
+
+**Опционально (не реализовано):**
+- Таблица buildings в SQLite
 
 ---
 
@@ -76,7 +87,8 @@
 | M2: Спрайты | ✅ COMPLETED |
 | M3: Движение | ✅ COMPLETED |
 | M4: Терминал | ✅ COMPLETED |
-| M5: Блоки | ✅ COMPLETED (base) |
+| M5: Блоки | ✅ COMPLETED |
+| M6: Автоспавн | ✅ COMPLETED |
 
 ---
 
@@ -107,6 +119,8 @@ pnpm dev
 - `5ab03fc` M3: Movement
 - `ef7134a` M4: Terminal
 - `0e4248c` M5: Buildings (base)
+- `2ed2546` fix: tmux macOS error
+- `bf258b0` M6: Auto-spawn buildings
 
 ---
 
