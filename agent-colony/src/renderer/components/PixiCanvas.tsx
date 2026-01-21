@@ -208,6 +208,12 @@ export function PixiCanvas({ onAppReady, onAgentClick }: PixiCanvasProps) {
           role: agentData.role,
           position: { x, y },
         });
+
+        // Добавляем начальный блок около агента
+        if (buildingsLayerRef.current) {
+          const blockType = agentData.role === 'Tester' ? 'test_block' : 'code_block';
+          buildingsLayerRef.current.addBuildingNearAgent(x, y, blockType, agentData.id);
+        }
       } catch (err) {
         console.error('[PixiCanvas] Failed to add agent sprite:', err);
       }
@@ -240,6 +246,11 @@ export function PixiCanvas({ onAppReady, onAgentClick }: PixiCanvasProps) {
         movementSystemRef.current.unregisterAgent(id);
       }
 
+      // Удаляем все блоки этого агента
+      if (buildingsLayerRef.current) {
+        buildingsLayerRef.current.removeBuildingsByAgent(id);
+      }
+
       const removed = agentLayerRef.current.removeAgent(id);
 
       if (removed) {
@@ -252,6 +263,58 @@ export function PixiCanvas({ onAppReady, onAgentClick }: PixiCanvasProps) {
 
     return () => {
       console.log('[PixiCanvas] Unsubscribing from agent:killed events');
+      unsubscribe();
+    };
+  }, []);
+
+  // Слушаем события agent:updated для добавления блоков прогресса
+  useEffect(() => {
+    const handleAgentUpdated = (data: unknown) => {
+      const { id, changes } = data as { id: string; changes: { status?: string } };
+
+      if (!buildingsLayerRef.current || !agentLayerRef.current) return;
+
+      const agent = agentLayerRef.current.getAgent(id);
+      if (!agent) return;
+
+      // Добавляем блок в зависимости от нового статуса
+      if (changes.status === 'working') {
+        buildingsLayerRef.current.addBuildingNearAgent(agent.x, agent.y, 'code_block', id);
+      } else if (changes.status === 'idle') {
+        // При завершении работы добавляем doc_block
+        buildingsLayerRef.current.addBuildingNearAgent(agent.x, agent.y, 'doc_block', id);
+      }
+    };
+
+    const unsubscribe = window.electronAPI.onAgentUpdated(handleAgentUpdated);
+    console.log('[PixiCanvas] Subscribed to agent:updated events');
+
+    return () => {
+      console.log('[PixiCanvas] Unsubscribing from agent:updated events');
+      unsubscribe();
+    };
+  }, []);
+
+  // Слушаем события agent:error для добавления блоков ошибок
+  useEffect(() => {
+    const handleAgentError = (data: unknown) => {
+      const { id } = data as { id: string };
+
+      if (!buildingsLayerRef.current || !agentLayerRef.current) return;
+
+      const agent = agentLayerRef.current.getAgent(id);
+      if (!agent) return;
+
+      // Добавляем красный блок ошибки
+      buildingsLayerRef.current.addBuildingNearAgent(agent.x, agent.y, 'error_block', id);
+      console.log('[PixiCanvas] Error block added for agent:', id);
+    };
+
+    const unsubscribe = window.electronAPI.onAgentError(handleAgentError);
+    console.log('[PixiCanvas] Subscribed to agent:error events');
+
+    return () => {
+      console.log('[PixiCanvas] Unsubscribing from agent:error events');
       unsubscribe();
     };
   }, []);
