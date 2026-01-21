@@ -74,6 +74,7 @@ export function TerminalPanel({ agentId, projectPath, tmuxSession }: TerminalPan
     // Открываем терминал в контейнере
     terminal.open(containerRef.current);
     fitAddon.fit();
+    terminal.focus();
 
     terminalRef.current = terminal;
     fitAddonRef.current = fitAddon;
@@ -180,9 +181,17 @@ export function TerminalPanel({ agentId, projectPath, tmuxSession }: TerminalPan
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  // Фокус терминала при клике
+  const handleClick = useCallback(() => {
+    if (terminalRef.current) {
+      terminalRef.current.focus();
+    }
+  }, []);
+
   return (
     <div
       ref={containerRef}
+      onClick={handleClick}
       style={{
         width: '100%',
         height: '100%',
