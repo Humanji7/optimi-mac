@@ -103,6 +103,21 @@ function App() {
     }
   };
 
+  const handlePauseAll = async () => {
+    console.log('[App] Pausing all agents...');
+
+    try {
+      const result = await window.electronAPI.pauseAll();
+      console.log('[App] Pause result:', result);
+
+      if (result.errors.length > 0) {
+        console.warn('[App] Some agents failed to pause:', result.errors);
+      }
+    } catch (error) {
+      console.error('[App] Failed to pause agents:', error);
+    }
+  };
+
   // Слушаем события agent:spawned для обновления state
   useEffect(() => {
     const handleAgentSpawned = (agentData: unknown) => {
@@ -188,6 +203,13 @@ function App() {
         return;
       }
 
+      // Space — pause all agents
+      if (e.key === ' ') {
+        e.preventDefault(); // Prevent page scroll
+        handlePauseAll();
+        return;
+      }
+
       // 1-9 — выбрать агента по индексу
       if (e.key >= '1' && e.key <= '9') {
         const index = parseInt(e.key) - 1;
@@ -216,17 +238,26 @@ function App() {
       {/* Header */}
       <div style={styles.header}>
         <h1 style={styles.title}>Agent Colony</h1>
-        <button
-          onMouseEnter={() => console.log('[App] Mouse entered button area')}
-          onMouseDown={() => console.log('[App] Mouse DOWN on button')}
-          onClick={() => {
-            console.log('[App] Spawn button clicked!');
-            setShowSpawnModal(true);
-          }}
-          style={styles.spawnButton}
-        >
-          + Spawn Agent
-        </button>
+        <div style={styles.headerButtons}>
+          <button
+            onClick={handlePauseAll}
+            style={styles.pauseButton}
+            title="Pause all agents (Space)"
+          >
+            ⏸ Pause All
+          </button>
+          <button
+            onMouseEnter={() => console.log('[App] Mouse entered button area')}
+            onMouseDown={() => console.log('[App] Mouse DOWN on button')}
+            onClick={() => {
+              console.log('[App] Spawn button clicked!');
+              setShowSpawnModal(true);
+            }}
+            style={styles.spawnButton}
+          >
+            + Spawn Agent
+          </button>
+        </div>
       </div>
 
       {/* Canvas and Detail Panel with resizable divider */}
@@ -286,6 +317,20 @@ const styles: Record<string, React.CSSProperties> = {
     fontSize: '18px',
     fontWeight: 600,
     color: '#ffffff',
+  },
+  headerButtons: {
+    display: 'flex',
+    gap: '8px',
+  },
+  pauseButton: {
+    padding: '8px 16px',
+    fontSize: '14px',
+    fontWeight: 500,
+    color: '#ffffff',
+    backgroundColor: '#ef4444',
+    border: 'none',
+    borderRadius: '4px',
+    cursor: 'pointer',
   },
   spawnButton: {
     padding: '8px 16px',

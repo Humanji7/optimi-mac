@@ -42,4 +42,4 @@ export { SESSION_NAME_REGEX, createTmuxError } from './types';
 export { spawnSession, spawnSession as createSession } from './spawn';
 export { killSession } from './kill';
 export { listSessions, sessionExists } from './list';
-export { sendKeys } from './send';
+export { sendKeys, sendEscape } from './send';

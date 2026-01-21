@@ -24,6 +24,7 @@ export interface ElectronAPI {
   killAgent: (id: string) => Promise<void>;
   listAgents: () => Promise<unknown[]>;
   sendCommand: (id: string, command: string) => Promise<void>;
+  pauseAll: () => Promise<{ paused: number; errors: string[] }>;
 
   // Agent event listeners - возвращают функцию отписки
   onAgentSpawned: (callback: (agent: unknown) => void) => () => void;
@@ -75,6 +76,10 @@ contextBridge.exposeInMainWorld('electronAPI', {
 
   sendCommand: (id: string, command: string): Promise<void> => {
     return ipcRenderer.invoke('agent:send-command', id, command);
+  },
+
+  pauseAll: (): Promise<{ paused: number; errors: string[] }> => {
+    return ipcRenderer.invoke('agent:pause-all');
   },
 
   // Agent event listeners - возвращают функцию отписки

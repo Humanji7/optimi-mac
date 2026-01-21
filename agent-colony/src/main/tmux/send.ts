@@ -43,3 +43,23 @@ export async function sendKeys(sessionName: string, keys: string): Promise<void>
   // Note: 'Enter' is a tmux key name, not literal string
   await execFileAsync('tmux', ['send-keys', '-t', sessionName, keys, 'Enter']);
 }
+
+/**
+ * Send Escape key to tmux session (for interrupting Claude)
+ *
+ * @param sessionName - Target session name
+ * @throws TmuxError with code 'SESSION_NOT_FOUND' if session doesn't exist
+ */
+export async function sendEscape(sessionName: string): Promise<void> {
+  if (!SESSION_NAME_REGEX.test(sessionName)) {
+    throw new Error(`Invalid session name: ${sessionName}. Must match ${SESSION_NAME_REGEX}`);
+  }
+
+  const exists = await sessionExists(sessionName);
+  if (!exists) {
+    throw createTmuxError(`Session not found: ${sessionName}`, 'SESSION_NOT_FOUND');
+  }
+
+  // Send Escape key without Enter
+  await execFileAsync('tmux', ['send-keys', '-t', sessionName, 'Escape']);
+}

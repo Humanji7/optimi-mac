@@ -11,6 +11,7 @@
 
 import { v4 as uuidv4 } from 'uuid';
 import * as tmux from '../tmux';
+import { sendEscape } from '../tmux';
 import { createAgent as dbCreateAgent, updateAgent as dbUpdateAgent, getAllAgents as dbGetAllAgents } from '../db/models/agent';
 import { initDatabase as initDb } from '../db';
 import * as registry from './registry';
@@ -267,6 +268,34 @@ export class AgentManager {
         changes: { metrics: updatedAgent.metrics },
       });
     }
+  }
+
+  /**
+   * Pause all agents by sending Escape to interrupt Claude
+   */
+  async pauseAll(): Promise<{ paused: number; errors: string[] }> {
+    console.log('[AgentManager] Pausing all agents...');
+
+    const agents = registry.getAllAgents();
+    const errors: string[] = [];
+    let paused = 0;
+
+    await Promise.allSettled(
+      agents.map(async (agent) => {
+        try {
+          await sendEscape(agent.process.tmuxSession);
+          paused++;
+          console.log(`[AgentManager] Paused agent ${agent.id}`);
+        } catch (error) {
+          const msg = `Failed to pause ${agent.id}: ${error instanceof Error ? error.message : 'Unknown error'}`;
+          errors.push(msg);
+          console.error(`[AgentManager] ${msg}`);
+        }
+      })
+    );
+
+    console.log(`[AgentManager] Pause complete: ${paused}/${agents.length} agents paused`);
+    return { paused, errors };
   }
 
   /**

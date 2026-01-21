@@ -129,6 +129,11 @@ ipcMain.handle('agent:send-command', async (_, id, command) => {
   return await agentManager.sendCommand(id, command);
 });
 
+// Handler: pause all agents
+ipcMain.handle('agent:pause-all', async () => {
+  return await agentManager.pauseAll();
+});
+
 // Handler: debug log from renderer
 ipcMain.on('debug:log', (_, level, ...args) => {
   console.log(`[Renderer:${level}]`, ...args);
