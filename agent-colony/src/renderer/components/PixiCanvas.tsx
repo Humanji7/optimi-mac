@@ -22,9 +22,10 @@ import { MovementSystem } from '../pixi/systems/Movement';
 interface PixiCanvasProps {
   onAppReady?: (app: Application) => void;
   onAgentClick?: (id: string) => void;
+  onAgentHover?: (id: string | null, screenPos?: { x: number; y: number }) => void;
 }
 
-export function PixiCanvas({ onAppReady, onAgentClick }: PixiCanvasProps) {
+export function PixiCanvas({ onAppReady, onAgentClick, onAgentHover }: PixiCanvasProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const appRef = useRef<Application | null>(null);
@@ -122,6 +123,18 @@ export function PixiCanvas({ onAppReady, onAgentClick }: PixiCanvasProps) {
         // Устанавливаем callback для кликов по агентам
         if (onAgentClick) {
           agentLayer.onAgentClick = onAgentClick;
+        }
+
+        // Устанавливаем callback для hover по агентам
+        if (onAgentHover) {
+          agentLayer.onAgentHover = (id, worldPos) => {
+            if (id && worldPos && viewportRef.current) {
+              const screenPos = viewportRef.current.toScreen(worldPos.x, worldPos.y);
+              onAgentHover(id, { x: screenPos.x, y: screenPos.y });
+            } else {
+              onAgentHover(null);
+            }
+          };
         }
 
         console.log('[PixiCanvas] AgentLayer created and attached');

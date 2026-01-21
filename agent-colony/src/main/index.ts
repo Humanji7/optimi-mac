@@ -9,6 +9,7 @@ import { app, BrowserWindow, ipcMain, globalShortcut, Menu, dialog } from 'elect
 import path from 'node:path';
 import { agentManager, agentEvents } from './agents';
 import { ptyManager } from './terminal/pty-manager';
+import * as tmux from './tmux';
 
 let mainWindow: BrowserWindow | null = null;
 
@@ -158,6 +159,22 @@ ipcMain.handle('terminal:resize', async (_, agentId: string, cols: number, rows:
 
 ipcMain.handle('terminal:kill', async (_, agentId: string) => {
   return ptyManager.kill(agentId);
+});
+
+// Terminal output capture
+ipcMain.handle('terminal:capture', async (_, agentId: string, lines?: number) => {
+  const agent = agentManager.getAgent(agentId);
+  if (!agent) {
+    return [];
+  }
+
+  try {
+    const output = await tmux.capturePane(agent.process.tmuxSession, lines || 10);
+    return output;
+  } catch (error) {
+    console.error(`[Main] Failed to capture terminal for ${agentId}:`, error);
+    return [];
+  }
 });
 
 /**

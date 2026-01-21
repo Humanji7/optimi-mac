@@ -23,8 +23,8 @@
 
 | # | Molecule | Description | Status |
 |---|----------|-------------|--------|
-| M6 | Agent status badge | Статус над спрайтом (idle/working/error/paused) | 🔴 IN PROGRESS |
-| M7 | Terminal preview on hover | Последние N строк при наведении | ⚪ PENDING |
+| M6 | Agent status badge | Статус над спрайтом (idle/working/error/paused) | ✅ DONE |
+| M7 | Terminal preview on hover | Последние N строк при наведении | 🔴 IN PROGRESS |
 | M8 | HUD + resource meter | Общая статистика + tokens/rate limits | ⚪ PENDING |
 | M9 | Minimap | Кликабельный, агенты как цветные точки | ⚪ PENDING |
 | M10 | Activity timeline | Лента событий за последние 15 минут | ⚪ PENDING |
@@ -32,23 +32,33 @@
 
 ---
 
-## 🔴 CURRENT: M6 — Agent Status Badge
+## ✅ COMPLETED: M6 — Agent Status Badge
 
-**Goal:** Показывать статус агента над его спрайтом
+**Commit:** 5d6e6d2
+**Changes:**
+- AnimatedAgent.ts: добавлен Text badge над спрайтом
+- Цвета: idle=серый, working=зелёный, error=красный, paused=жёлтый
+- Обновление в setStatus()
 
-**Implementation:**
-- Файл: `AnimatedAgent.ts`
-- Добавить Text badge в Container
-- Позиция: над спрайтом (y = -50)
-- Цвета по статусу:
-  - idle: серый
-  - working: зелёный
-  - error: красный
-  - paused: жёлтый
-- Обновление в методе `setStatus()`
+---
 
-**Files to modify:**
-1. `agent-colony/src/renderer/pixi/sprites/AnimatedAgent.ts`
+## 🔴 CURRENT: M7 — Terminal Preview on Hover
+
+**Goal:** Показывать последние 10 строк терминала при наведении на агента
+
+**Implementation Plan:**
+
+### Backend (Main Process)
+1. `tmux/capture.ts` — функция capturePane(sessionName, lines)
+2. `main/index.ts` — IPC handler `terminal:capture`
+3. `preload.ts` — API terminalCapture(agentId, lines)
+
+### Frontend (Renderer)
+4. `TerminalTooltip.tsx` — новый компонент
+5. `AnimatedAgent.ts` — onHover callback + pointerover/pointerout events
+6. `AgentLayer.ts` — onAgentHover callback
+7. `PixiCanvas.tsx` — onAgentHover prop, world→screen coords conversion
+8. `App.tsx` — state + handler для hover, render TerminalTooltip
 
 ---
 

@@ -34,6 +34,7 @@ export class AnimatedAgent extends Container {
   private badgeBg: Graphics;
   public readonly role: AgentRole;
   public onClick?: () => void;
+  public onHover?: (isHovering: boolean) => void;
 
   constructor(role: AgentRole) {
     super();
@@ -92,6 +93,14 @@ export class AnimatedAgent extends Container {
 
     this.on('pointertap', () => {
       this.onClick?.();
+    });
+
+    this.on('pointerover', () => {
+      this.onHover?.(true);
+    });
+
+    this.on('pointerout', () => {
+      this.onHover?.(false);
     });
 
     console.log(`[AnimatedAgent] Created ${role} with ${this.getTotalFrameCount()} frames`);

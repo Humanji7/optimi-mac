@@ -39,6 +39,7 @@ export interface ElectronAPI {
   terminalWrite: (agentId: string, data: string) => Promise<boolean>;
   terminalResize: (agentId: string, cols: number, rows: number) => Promise<boolean>;
   terminalKill: (agentId: string) => Promise<boolean>;
+  terminalCapture: (agentId: string, lines?: number) => Promise<string[]>;
   onTerminalData: (callback: (data: { agentId: string; data: string }) => void) => () => void;
   onTerminalExit: (callback: (data: { agentId: string; exitCode: number; signal?: number }) => void) => () => void;
 
@@ -132,6 +133,10 @@ contextBridge.exposeInMainWorld('electronAPI', {
 
   terminalKill: (agentId: string): Promise<boolean> => {
     return ipcRenderer.invoke('terminal:kill', agentId);
+  },
+
+  terminalCapture: (agentId: string, lines?: number): Promise<string[]> => {
+    return ipcRenderer.invoke('terminal:capture', agentId, lines);
   },
 
   onTerminalData: (callback: (data: { agentId: string; data: string }) => void): (() => void) => {

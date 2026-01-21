@@ -43,3 +43,4 @@ export { spawnSession, spawnSession as createSession } from './spawn';
 export { killSession } from './kill';
 export { listSessions, sessionExists } from './list';
 export { sendKeys, sendEscape } from './send';
+export { capturePane } from './capture';

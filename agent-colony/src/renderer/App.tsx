@@ -9,6 +9,7 @@ import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
 import { PixiCanvas } from './components/PixiCanvas';
 import { SpawnModal } from './components/SpawnModal';
 import { DetailPanel, type Agent } from './components/DetailPanel';
+import { TerminalTooltip } from './components/TerminalTooltip';
 import type { Application } from 'pixi.js';
 import type { AgentRole } from './pixi/types';
 
@@ -17,6 +18,7 @@ function App() {
   const [selectedAgent, setSelectedAgent] = useState<Agent | null>(null);
   // _agents используется через setAgents с functional update для доступа к актуальному состоянию
   const [_agents, setAgents] = useState<Map<string, Agent>>(new Map());
+  const [hoveredAgent, setHoveredAgent] = useState<{ id: string; x: number; y: number } | null>(null);
 
   // useCallback чтобы функция не создавалась заново при каждом рендере
   // Это предотвращает пересоздание PixiJS при открытии модала
@@ -61,6 +63,14 @@ function App() {
       }
       return currentAgents;
     });
+  }, []);
+
+  const handleAgentHover = useCallback((id: string | null, position?: { x: number; y: number }) => {
+    if (id && position) {
+      setHoveredAgent({ id, x: position.x, y: position.y });
+    } else {
+      setHoveredAgent(null);
+    }
   }, []);
 
   const handleClosePanel = () => {
@@ -264,7 +274,11 @@ function App() {
       <PanelGroup direction="horizontal" style={{ flex: 1 }}>
         <Panel defaultSize={selectedAgent ? 75 : 100} minSize={30}>
           <div style={styles.canvasContainer}>
-            <PixiCanvas onAppReady={handleAppReady} onAgentClick={handleAgentClick} />
+            <PixiCanvas
+              onAppReady={handleAppReady}
+              onAgentClick={handleAgentClick}
+              onAgentHover={handleAgentHover}
+            />
           </div>
         </Panel>
 
@@ -282,6 +296,15 @@ function App() {
           </>
         )}
       </PanelGroup>
+
+      {/* Terminal Tooltip */}
+      {hoveredAgent && (
+        <TerminalTooltip
+          agentId={hoveredAgent.id}
+          x={hoveredAgent.x}
+          y={hoveredAgent.y}
+        />
+      )}
 
       {/* Spawn Modal */}
       <SpawnModal

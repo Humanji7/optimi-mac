@@ -24,6 +24,7 @@ export class AgentLayer extends Container {
   private agents = new Map<string, AnimatedAgent>();
   private ticker: Ticker | null = null;
   public onAgentClick?: (id: string) => void; // Callback для клика по агенту
+  public onAgentHover?: (id: string | null, position?: { x: number; y: number }) => void;
 
   constructor() {
     super();
@@ -78,6 +79,17 @@ export class AgentLayer extends Container {
     agent.onClick = () => {
       if (this.onAgentClick) {
         this.onAgentClick(data.id);
+      }
+    };
+
+    // Устанавливаем onHover callback
+    agent.onHover = (isHovering: boolean) => {
+      if (this.onAgentHover) {
+        if (isHovering) {
+          this.onAgentHover(data.id, { x: agent.x, y: agent.y });
+        } else {
+          this.onAgentHover(null);
+        }
       }
     };
 
