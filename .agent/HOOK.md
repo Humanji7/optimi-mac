@@ -24,8 +24,8 @@
 | # | Molecule | Description | Status |
 |---|----------|-------------|--------|
 | M6 | Agent status badge | Статус над спрайтом (idle/working/error/paused) | ✅ DONE |
-| M7 | Terminal preview on hover | Последние N строк при наведении | 🔴 IN PROGRESS |
-| M8 | HUD + resource meter | Общая статистика + tokens/rate limits | ⚪ PENDING |
+| M7 | Terminal preview on hover | Последние N строк при наведении | ✅ DONE |
+| M8 | HUD + resource meter | Общая статистика + tokens/rate limits | 🔴 IN PROGRESS |
 | M9 | Minimap | Кликабельный, агенты как цветные точки | ⚪ PENDING |
 | M10 | Activity timeline | Лента событий за последние 15 минут | ⚪ PENDING |
 | M11 | Error severity levels | blocker/warning/info classification | ⚪ PENDING |
@@ -42,23 +42,20 @@
 
 ---
 
-## 🔴 CURRENT: M7 — Terminal Preview on Hover
+## ✅ COMPLETED: M7 — Terminal Preview on Hover
 
-**Goal:** Показывать последние 10 строк терминала при наведении на агента
+**Commit:** 3dffb3c
+**Changes:**
+- Backend: tmux/capture.ts + IPC handler + preload API
+- Frontend: TerminalTooltip component + hover events chain
+- Координаты: world→screen conversion через viewport.toScreen()
+- Tooltip: фиксированная позиция, последние 10 строк терминала
 
-**Implementation Plan:**
+---
 
-### Backend (Main Process)
-1. `tmux/capture.ts` — функция capturePane(sessionName, lines)
-2. `main/index.ts` — IPC handler `terminal:capture`
-3. `preload.ts` — API terminalCapture(agentId, lines)
+## 🔴 CURRENT: M8 — HUD + Resource Meter
 
-### Frontend (Renderer)
-4. `TerminalTooltip.tsx` — новый компонент
-5. `AnimatedAgent.ts` — onHover callback + pointerover/pointerout events
-6. `AgentLayer.ts` — onAgentHover callback
-7. `PixiCanvas.tsx` — onAgentHover prop, world→screen coords conversion
-8. `App.tsx` — state + handler для hover, render TerminalTooltip
+**Goal:** Общая статистика системы + мониторинг токенов/rate limits
 
 ---
 
