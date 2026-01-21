@@ -11,6 +11,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { Application, Ticker } from 'pixi.js';
+import { Viewport } from 'pixi-viewport';
 import { createPixiApp, destroyPixiApp } from '../pixi/setup';
 import { loadSprites } from '../pixi/sprites/SpriteLoader';
 import { AgentLayer } from '../pixi/AgentLayer';
@@ -27,6 +28,7 @@ export function PixiCanvas({ onAppReady, onAgentClick }: PixiCanvasProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const appRef = useRef<Application | null>(null);
+  const viewportRef = useRef<Viewport | null>(null);
   const tilemapLayerRef = useRef<TilemapLayer | null>(null);
   const buildingsLayerRef = useRef<BuildingsLayer | null>(null);
   const agentLayerRef = useRef<AgentLayer | null>(null);
@@ -67,15 +69,38 @@ export function PixiCanvas({ onAppReady, onAgentClick }: PixiCanvasProps) {
 
         // Создаём TilemapLayer (фоновый слой)
         const tilemapLayer = new TilemapLayer();
-        app.stage.addChild(tilemapLayer);
         tilemapLayerRef.current = tilemapLayer;
         console.log('[PixiCanvas] TilemapLayer created');
 
         // Создаём BuildingsLayer (между tilemap и agents)
         const buildingsLayer = new BuildingsLayer();
-        app.stage.addChild(buildingsLayer);
         buildingsLayerRef.current = buildingsLayer;
         console.log('[PixiCanvas] BuildingsLayer created');
+
+        // Создаём Viewport для pan/zoom
+        const mapSize = tilemapLayer.getMapSize();
+        const viewport = new Viewport({
+          screenWidth: app.screen.width,
+          screenHeight: app.screen.height,
+          worldWidth: mapSize.width,
+          worldHeight: mapSize.height,
+          events: app.renderer.events,
+        });
+
+        // Включаем drag (левая кнопка мыши), pinch-zoom и wheel-zoom
+        viewport
+          .drag({ mouseButtons: 'left' })
+          .pinch()
+          .wheel({ smooth: 3 })
+          .clampZoom({ minScale: 0.5, maxScale: 3 });
+
+        app.stage.addChild(viewport);
+        viewportRef.current = viewport;
+        console.log('[PixiCanvas] Viewport created', { worldWidth: mapSize.width, worldHeight: mapSize.height });
+
+        // Добавляем слои в viewport (не в app.stage!)
+        viewport.addChild(tilemapLayer);
+        viewport.addChild(buildingsLayer);
 
         // Создаём MovementSystem (использует tilemap для pathfinding)
         const movementSystem = new MovementSystem(tilemapLayer);
@@ -88,10 +113,10 @@ export function PixiCanvas({ onAppReady, onAgentClick }: PixiCanvasProps) {
         app.ticker.add(movementUpdate);
         console.log('[PixiCanvas] MovementSystem created');
 
-        // Создаём AgentLayer (поверх buildings)
+        // Создаём AgentLayer (поверх buildings) — добавляем в viewport
         const agentLayer = new AgentLayer();
         agentLayer.attachTicker(app.ticker);
-        app.stage.addChild(agentLayer);
+        viewport.addChild(agentLayer);
         agentLayerRef.current = agentLayer;
 
         // Устанавливаем callback для кликов по агентам
@@ -138,6 +163,12 @@ export function PixiCanvas({ onAppReady, onAgentClick }: PixiCanvasProps) {
         console.log('[PixiCanvas] Destroying TilemapLayer');
         tilemapLayerRef.current.destroy();
         tilemapLayerRef.current = null;
+      }
+
+      if (viewportRef.current) {
+        console.log('[PixiCanvas] Destroying Viewport');
+        viewportRef.current.destroy();
+        viewportRef.current = null;
       }
 
       if (appRef.current) {
@@ -319,15 +350,19 @@ export function PixiCanvas({ onAppReady, onAgentClick }: PixiCanvasProps) {
     };
   }, []);
 
-  // Обработка resize
+  // Обработка resize — обновляем viewport
   useEffect(() => {
     const handleResize = () => {
-      if (appRef.current) {
-        console.log('[PixiCanvas] Window resized', {
-          width: window.innerWidth,
-          height: window.innerHeight,
-        });
-      }
+      const container = containerRef.current;
+      if (!container || !appRef.current || !viewportRef.current) return;
+
+      const newWidth = container.clientWidth;
+      const newHeight = container.clientHeight;
+
+      // Обновляем размер viewport
+      viewportRef.current.resize(newWidth, newHeight);
+
+      console.log('[PixiCanvas] Viewport resized', { width: newWidth, height: newHeight });
     };
 
     window.addEventListener('resize', handleResize);
