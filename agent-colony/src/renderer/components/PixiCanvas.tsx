@@ -6,7 +6,7 @@
  * - Инициализация PixiJS Application
  * - Управление lifecycle (mount/unmount)
  * - Обработка resize событий
- * - Управление AgentLayer с агентами
+ * - Управление TilemapLayer (фон) и AgentLayer (агенты)
  */
 
 import { useEffect, useRef, useState } from 'react';
@@ -14,6 +14,7 @@ import { Application } from 'pixi.js';
 import { createPixiApp, destroyPixiApp } from '../pixi/setup';
 import { loadSprites } from '../pixi/sprites/SpriteLoader';
 import { AgentLayer } from '../pixi/AgentLayer';
+import { TilemapLayer } from '../pixi/layers/TilemapLayer';
 
 interface PixiCanvasProps {
   onAppReady?: (app: Application) => void;
@@ -24,6 +25,7 @@ export function PixiCanvas({ onAppReady, onAgentClick }: PixiCanvasProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const appRef = useRef<Application | null>(null);
+  const tilemapLayerRef = useRef<TilemapLayer | null>(null);
   const agentLayerRef = useRef<AgentLayer | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -59,7 +61,13 @@ export function PixiCanvas({ onAppReady, onAgentClick }: PixiCanvasProps) {
         await loadSprites();
         console.log('[PixiCanvas] Sprites loaded');
 
-        // Создаём AgentLayer
+        // Создаём TilemapLayer (фоновый слой)
+        const tilemapLayer = new TilemapLayer();
+        app.stage.addChild(tilemapLayer);
+        tilemapLayerRef.current = tilemapLayer;
+        console.log('[PixiCanvas] TilemapLayer created');
+
+        // Создаём AgentLayer (поверх tilemap)
         const agentLayer = new AgentLayer();
         agentLayer.attachTicker(app.ticker);
         app.stage.addChild(agentLayer);
@@ -93,6 +101,12 @@ export function PixiCanvas({ onAppReady, onAgentClick }: PixiCanvasProps) {
         agentLayerRef.current = null;
       }
 
+      if (tilemapLayerRef.current) {
+        console.log('[PixiCanvas] Destroying TilemapLayer');
+        tilemapLayerRef.current.destroy();
+        tilemapLayerRef.current = null;
+      }
+
       if (appRef.current) {
         console.log('[PixiCanvas] Destroying PixiJS Application');
         destroyPixiApp(appRef.current);
@@ -114,10 +128,33 @@ export function PixiCanvas({ onAppReady, onAgentClick }: PixiCanvasProps) {
       // Парсим данные агента (тип может быть разным в зависимости от AgentManager)
       const agentData = agent as { id: string; role: string; projectPath: string };
 
-      // Генерируем случайную позицию на canvas
-      const padding = 100;
-      const x = padding + Math.random() * (appRef.current.screen.width - padding * 2);
-      const y = padding + Math.random() * (appRef.current.screen.height - padding * 2);
+      // Генерируем позицию на walkable тайлах tilemap
+      let x: number, y: number;
+
+      if (tilemapLayerRef.current) {
+        // Используем tilemap для позиционирования
+        const mapData = tilemapLayerRef.current.getMapData();
+
+        // Ищем случайный walkable тайл (максимум 100 попыток)
+        let attempts = 0;
+        let tileX: number, tileY: number;
+
+        do {
+          tileX = 2 + Math.floor(Math.random() * (mapData.width - 4));
+          tileY = 2 + Math.floor(Math.random() * (mapData.height - 4));
+          attempts++;
+        } while (!tilemapLayerRef.current.isWalkable(tileX, tileY) && attempts < 100);
+
+        // Конвертируем в пиксели (центр тайла)
+        const pos = tilemapLayerRef.current.tileToPixel(tileX, tileY);
+        x = pos.x;
+        y = pos.y;
+      } else {
+        // Fallback на старую логику
+        const padding = 100;
+        x = padding + Math.random() * (appRef.current.screen.width - padding * 2);
+        y = padding + Math.random() * (appRef.current.screen.height - padding * 2);
+      }
 
       try {
         const sprite = agentLayerRef.current.addAgent({

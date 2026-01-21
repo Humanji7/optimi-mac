@@ -14,8 +14,9 @@ export type { PixiConfig, PixiContextValue, AgentRole, AgentStatus } from './typ
 export { loadSprites, getTexture, isLoaded, clearCache } from './sprites/SpriteLoader';
 export { AgentSprite } from './sprites/AgentSprite';
 
-// Agent Layer
+// Layers
 export { AgentLayer } from './AgentLayer';
+export { TilemapLayer } from './layers/TilemapLayer';
 
 // Animation States
 export { STATUS_COLORS, IDLE_ANIMATION, STATUS_INDICATOR } from './animations/states';
