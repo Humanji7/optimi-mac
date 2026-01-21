@@ -323,7 +323,7 @@ export function PixiCanvas({ onAppReady, onAgentClick, onAgentHover, onViewportR
     };
   }, []);
 
-  // Слушаем события agent:updated для добавления блоков прогресса
+  // Слушаем события agent:updated для обновления статуса и добавления блоков
   useEffect(() => {
     const handleAgentUpdated = (data: unknown) => {
       const { id, changes } = data as { id: string; changes: { status?: string } };
@@ -332,6 +332,11 @@ export function PixiCanvas({ onAppReady, onAgentClick, onAgentHover, onViewportR
 
       const agent = agentLayerRef.current.getAgent(id);
       if (!agent) return;
+
+      // Обновляем статус badge на спрайте
+      if (changes.status) {
+        agentLayerRef.current.updateAgentStatus(id, changes.status as 'idle' | 'working' | 'error' | 'paused');
+      }
 
       // Добавляем блок в зависимости от нового статуса
       if (changes.status === 'working') {
