@@ -110,7 +110,7 @@ All Information Layer molecules completed:
 
 ---
 
-## 🔄 HANDOFF NOTE (2026-01-21 22:00)
+## 🔄 HANDOFF NOTE (2026-01-21 23:00)
 
 **Что сделано в этой сессии:**
 
@@ -122,30 +122,51 @@ All Information Layer molecules completed:
 - M10: Activity timeline (левый нижний угол) ✅
 - M11: Error severity levels ✅
 
-### Багфиксы после Phase B:
-- **commit 5226bad**: fix agent status + animation pause (backend)
-- **commit ea4d5d0**: fix badge sprite update (frontend)
-  - Добавлен вызов updateAgentStatus в PixiCanvas при agent:updated
-  - Теперь badge визуально обновляется IDLE ↔ WORKING
+### Багфиксы (commit 4edd15f):
+1. **Buildings spam fixed** — status в changes только при реальном изменении
+2. **Activity timeline spam fixed** — та же причина
+3. **Terminal visibility fixed** — терминал вверху DetailPanel
+4. **Viewer PTY fixed** — не триггерит activity (isViewer flag)
 
-**Статус:**
-- Backend: updateActivity() меняет idle→working при активности PTY
-- Backend: healthCheck каждые 10 сек возвращает working→idle
-- Frontend: PixiCanvas теперь вызывает agentLayer.updateAgentStatus()
-- Frontend: Анимация паузится при выборе агента (setSelectedAgent)
+### Известные проблемы:
+- **Terminal encoding** — буквы "не попадают" (возможно проблема с кириллицей или xterm.js)
+- **Activity detection** — нужно добавить определение активности через tmux capture (viewer PTY не триггерит)
 
-**Что проверить визуально:**
-1. Запустить `pnpm dev`
-2. Запустить активность в терминале агента (claude prompt)
-3. Убедиться что badge меняется IDLE → WORKING
-4. Подождать 10 сек — badge должен вернуться в IDLE
-5. Кликнуть на агента — анимация должна остановиться
+### Архитектура статуса:
+```
+Агент работает в tmux session (создан при spawn)
+Viewer PTY (attach к tmux) — только для просмотра, НЕ меняет статус
+Activity detection — TODO: использовать tmux capture-pane в healthCheck
+```
 
-**Следующие шаги:**
-- Phase C: Multi-Agent Control (M12-M15)
-- План в V3_PLAN.md
+**Следующие задачи:**
+1. Fix terminal encoding (буквы)
+2. Add activity detection via tmux capture
+3. Phase C: Multi-Agent Control (M12-M15)
 
-**Resume:** Скажи `Продолжи работу над Agent Colony V3`
+**Команда для продолжения:**
+```bash
+cd agent-colony && pnpm dev
+```
+
+**Resume prompt для нового агента:**
+```
+Продолжи работу над Agent Colony V3
+
+Текущий статус:
+- Phase B (Information Layer) ✅ завершена
+- Багфиксы: buildings spam, activity spam, terminal visibility — исправлены
+- Терминал виден в DetailPanel
+
+Проблемы для решения:
+1. Terminal encoding — буквы отображаются неправильно (кириллица?)
+2. Activity detection — viewer PTY не триггерит статус working
+   - Нужно: определять активность через tmux capture-pane в healthCheck
+   - Файл: src/main/agents/manager.ts (runHealthCheck)
+   - Сравнивать содержимое pane с предыдущим состоянием
+
+После фиксов — Phase C (Multi-Agent Control)
+```
 
 ---
 
