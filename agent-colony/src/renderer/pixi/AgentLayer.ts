@@ -169,6 +169,26 @@ export class AgentLayer extends Container {
     return this.agents.size;
   }
 
+  private selectedAgentId: string | null = null;
+
+  /**
+   * Устанавливает выбранного агента (останавливает его анимацию)
+   */
+  setSelectedAgent(id: string | null): void {
+    // Resume previous
+    if (this.selectedAgentId) {
+      const prev = this.agents.get(this.selectedAgentId);
+      prev?.resumeAnimation();
+    }
+
+    // Pause new
+    this.selectedAgentId = id;
+    if (id) {
+      const agent = this.agents.get(id);
+      agent?.pauseAnimation();
+    }
+  }
+
   /**
    * Обновление анимаций всех агентов (вызывается ticker'ом)
    */

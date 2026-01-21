@@ -258,6 +258,13 @@ function App() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []); // Пустой массив dependencies так как используем functional update
 
+  // Pause animation of selected agent
+  useEffect(() => {
+    if (agentLayer) {
+      agentLayer.setSelectedAgent(selectedAgent?.id ?? null);
+    }
+  }, [selectedAgent, agentLayer]);
+
   return (
     <div style={styles.container}>
       {/* Header */}

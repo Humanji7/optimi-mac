@@ -210,6 +210,20 @@ export class AnimatedAgent extends Container {
   }
 
   /**
+   * Останавливает анимацию (при выборе агента)
+   */
+  pauseAnimation(): void {
+    this.animatedSprite.stop();
+  }
+
+  /**
+   * Возобновляет анимацию
+   */
+  resumeAnimation(): void {
+    this.animatedSprite.play();
+  }
+
+  /**
    * Для совместимости - анимация управляется AnimatedSprite
    */
   update(_deltaTime: number): void {

@@ -24,6 +24,14 @@ const DEFAULT_ROWS = 24;
 class PtyManager {
   private processes: Map<string, PtyProcess> = new Map();
   private mainWindow: BrowserWindow | null = null;
+  private onActivityCallback: ((agentId: string) => void) | null = null;
+
+  /**
+   * Устанавливает callback для уведомления об активности агента
+   */
+  setOnActivity(callback: (agentId: string) => void): void {
+    this.onActivityCallback = callback;
+  }
 
   /**
    * Устанавливает главное окно для отправки событий
@@ -58,6 +66,8 @@ class PtyManager {
       // Обработка данных от PTY
       ptyProcess.onData((data: string) => {
         this.sendToRenderer('terminal:data', { agentId, data });
+        // Уведомляем об активности
+        this.onActivityCallback?.(agentId);
       });
 
       // Обработка выхода
@@ -104,6 +114,8 @@ class PtyManager {
       // Обработка данных от PTY
       ptyProcess.onData((data: string) => {
         this.sendToRenderer('terminal:data', { agentId, data });
+        // Уведомляем об активности
+        this.onActivityCallback?.(agentId);
       });
 
       // Обработка выхода

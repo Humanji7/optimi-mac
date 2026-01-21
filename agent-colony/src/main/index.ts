@@ -196,6 +196,11 @@ app.whenReady().then(async () => {
     ptyManager.setMainWindow(mainWindow);
   }
 
+  // Connect PTY activity to agent manager
+  ptyManager.setOnActivity((agentId) => {
+    agentManager.updateActivity(agentId);
+  });
+
   app.on('activate', () => {
     // macOS: re-create window when dock icon is clicked
     if (BrowserWindow.getAllWindows().length === 0) {

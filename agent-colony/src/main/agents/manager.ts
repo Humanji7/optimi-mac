@@ -271,6 +271,40 @@ export class AgentManager {
   }
 
   /**
+   * Update agent activity timestamp and status
+   * Called when terminal output is detected
+   */
+  updateActivity(id: string): void {
+    const agent = registry.getAgent(id);
+    if (!agent) return;
+
+    const now = Date.now();
+    const wasIdle = agent.status === 'idle';
+
+    const updates: Partial<Agent> = {
+      metrics: {
+        ...agent.metrics,
+        lastActivity: now,
+      },
+    };
+
+    // Change status to working if was idle
+    if (wasIdle) {
+      updates.status = 'working';
+    }
+
+    const updatedAgent = registry.updateAgent(id, updates);
+
+    if (updatedAgent) {
+      dbUpdateAgent(id, { last_seen: now, status: updatedAgent.status });
+      agentEvents.emit('agent:updated', {
+        id,
+        changes: { metrics: updatedAgent.metrics, status: updatedAgent.status },
+      });
+    }
+  }
+
+  /**
    * Pause all agents by sending Escape to interrupt Claude
    * Skips agents with dead tmux sessions and removes them from registry
    */
@@ -325,6 +359,7 @@ export class AgentManager {
       try {
         const health = await checkHealth(agent);
         const uptime = Math.floor((now - agent.createdAt) / 1000);
+        const idleTime = (now - agent.metrics.lastActivity) / 1000;
 
         const updatedMetrics = {
           ...agent.metrics,
@@ -332,13 +367,27 @@ export class AgentManager {
           uptime,
         };
 
+        // Determine status based on activity
+        // Working → Idle if no activity for 10 seconds
+        let newStatus = agent.status;
+        if (agent.status === 'working' && idleTime > 10) {
+          newStatus = 'idle';
+        }
+
         const updatedAgent = registry.updateAgent(agent.id, {
           metrics: updatedMetrics,
+          status: newStatus,
         });
 
         if (updatedAgent) {
-          // Update last_seen in SQLite
-          dbUpdateAgent(agent.id, { last_seen: Date.now() });
+          // Update in SQLite
+          dbUpdateAgent(agent.id, { last_seen: Date.now(), status: newStatus });
+
+          // Emit update event
+          agentEvents.emit('agent:updated', {
+            id: agent.id,
+            changes: { metrics: updatedMetrics, status: newStatus },
+          });
         }
       } catch (error) {
         console.error(`[AgentManager] Health check failed for ${agent.id}:`, error);
