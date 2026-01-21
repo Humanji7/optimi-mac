@@ -25,30 +25,40 @@
 
 | # | Molecule | Description | Status |
 |---|----------|-------------|--------|
-| M3 | Resizable sidebar | Drag для изменения ширины | ⚪ PENDING |
-| M4 | Hotkeys 1-9 | Быстрый доступ к агентам | ⚪ PENDING |
+| M3 | Resizable sidebar | Drag для изменения ширины | ✅ DONE |
+| M4 | Hotkeys 1-9 | Быстрый доступ к агентам | 🔴 CURRENT |
 | M1+M2 | Pan + Zoom | Два пальца + pinch | ⚪ PENDING |
 | M5 | Emergency Pause All | Space bar = pause all agents | ⚪ PENDING |
 
 ---
 
-## 🎯 CURRENT: M3 — Resizable Sidebar
+## 🎯 CURRENT: M4 — Hotkeys 1-9
 
-**Goal:** Sidebar можно ресайзить drag'ом, терминал читается
+**Goal:** Быстрый доступ к агентам по нажатию клавиш 1-9
 
 **Files:**
-- `agent-colony/package.json` → add `react-resizable-panels@^2.1.0`
-- `agent-colony/src/renderer/App.tsx` (строки 176-214, 258-263)
-- `agent-colony/src/renderer/components/DetailPanel.tsx` (строки 214-217)
+- `agent-colony/src/renderer/App.tsx` → useEffect для hotkeys
+- `agent-colony/src/renderer/components/PixiCanvas.tsx` → expose agents list
 
 **Implementation:**
-- [ ] `pnpm add react-resizable-panels@^2.1.0`
-- [ ] App.tsx: import { Panel, PanelGroup, PanelResizeHandle }
-- [ ] App.tsx: обернуть canvas + panel в PanelGroup
-- [ ] DetailPanel.tsx: убрать width: 280px, position: relative
-- [ ] Тест: drag resize bar, min/max работает, терминал читается
+- [ ] App.tsx: useEffect с addEventListener('keydown')
+- [ ] Hotkeys 1-9 выбирают агента по индексу
+- [ ] ESC закрывает DetailPanel
+- [ ] Тест: нажатие цифры выбирает агента, ESC закрывает
 
 **See:** PHASE_A_IMPLEMENTATION.md для полного кода
+
+---
+
+## ✅ COMPLETED: M3 — Resizable Sidebar
+
+**Commit:** faa090b
+**Changes:**
+- Установлен react-resizable-panels@2.1.9
+- App.tsx: canvas + panel обернуты в PanelGroup
+- DetailPanel: position: relative, width: 100%
+- Resize handle: 4px серая полоса с cursor: col-resize
+- Min/max: 15-50% для панели, 30%+ для canvas
 
 ---
 
