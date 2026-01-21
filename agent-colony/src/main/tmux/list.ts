@@ -49,7 +49,16 @@ export async function listSessions(): Promise<TmuxSession[]> {
       });
   } catch (error: any) {
     // No sessions exist (tmux returns error if no server running)
-    if (error.message?.includes('no server running')) {
+    // Different error messages on different systems:
+    // - "no server running" (Linux)
+    // - "No such file or directory" (macOS - socket doesn't exist yet)
+    // - "error connecting to" (macOS alternative)
+    const msg = error.message || error.stderr || '';
+    if (
+      msg.includes('no server running') ||
+      msg.includes('No such file or directory') ||
+      msg.includes('error connecting to')
+    ) {
       return [];
     }
 
