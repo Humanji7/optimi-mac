@@ -23,9 +23,11 @@ interface PixiCanvasProps {
   onAppReady?: (app: Application) => void;
   onAgentClick?: (id: string) => void;
   onAgentHover?: (id: string | null, screenPos?: { x: number; y: number }) => void;
+  onViewportReady?: (viewport: Viewport) => void;
+  onAgentLayerReady?: (agentLayer: AgentLayer) => void;
 }
 
-export function PixiCanvas({ onAppReady, onAgentClick, onAgentHover }: PixiCanvasProps) {
+export function PixiCanvas({ onAppReady, onAgentClick, onAgentHover, onViewportReady, onAgentLayerReady }: PixiCanvasProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const appRef = useRef<Application | null>(null);
@@ -99,6 +101,11 @@ export function PixiCanvas({ onAppReady, onAgentClick, onAgentHover }: PixiCanva
         viewportRef.current = viewport;
         console.log('[PixiCanvas] Viewport created', { worldWidth: mapSize.width, worldHeight: mapSize.height });
 
+        // Notify parent that viewport is ready
+        if (onViewportReady) {
+          onViewportReady(viewport);
+        }
+
         // Добавляем слои в viewport (не в app.stage!)
         viewport.addChild(tilemapLayer);
         viewport.addChild(buildingsLayer);
@@ -119,6 +126,11 @@ export function PixiCanvas({ onAppReady, onAgentClick, onAgentHover }: PixiCanva
         agentLayer.attachTicker(app.ticker);
         viewport.addChild(agentLayer);
         agentLayerRef.current = agentLayer;
+
+        // Notify parent that agent layer is ready
+        if (onAgentLayerReady) {
+          onAgentLayerReady(agentLayer);
+        }
 
         // Устанавливаем callback для кликов по агентам
         if (onAgentClick) {

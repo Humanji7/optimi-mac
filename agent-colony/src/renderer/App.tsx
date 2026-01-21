@@ -11,7 +11,10 @@ import { SpawnModal } from './components/SpawnModal';
 import { DetailPanel, type Agent } from './components/DetailPanel';
 import { TerminalTooltip } from './components/TerminalTooltip';
 import { HudOverlay } from './components/HudOverlay';
+import { Minimap } from './components/Minimap';
+import { AgentLayer } from './pixi/AgentLayer';
 import type { Application } from 'pixi.js';
+import type { Viewport } from 'pixi-viewport';
 import type { AgentRole } from './pixi/types';
 
 function App() {
@@ -20,6 +23,8 @@ function App() {
   // _agents используется через setAgents с functional update для доступа к актуальному состоянию
   const [_agents, setAgents] = useState<Map<string, Agent>>(new Map());
   const [hoveredAgent, setHoveredAgent] = useState<{ id: string; x: number; y: number } | null>(null);
+  const [viewport, setViewport] = useState<Viewport | null>(null);
+  const [agentLayer, setAgentLayer] = useState<AgentLayer | null>(null);
 
   // useCallback чтобы функция не создавалась заново при каждом рендере
   // Это предотвращает пересоздание PixiJS при открытии модала
@@ -72,6 +77,14 @@ function App() {
     } else {
       setHoveredAgent(null);
     }
+  }, []);
+
+  const handleViewportReady = useCallback((vp: Viewport) => {
+    setViewport(vp);
+  }, []);
+
+  const handleAgentLayerReady = useCallback((layer: AgentLayer) => {
+    setAgentLayer(layer);
   }, []);
 
   const handleClosePanel = () => {
@@ -280,7 +293,25 @@ function App() {
               onAppReady={handleAppReady}
               onAgentClick={handleAgentClick}
               onAgentHover={handleAgentHover}
+              onViewportReady={handleViewportReady}
+              onAgentLayerReady={handleAgentLayerReady}
             />
+
+            {/* Minimap */}
+            {viewport && agentLayer && (
+              <Minimap
+                agents={Array.from(_agents.keys()).map(id => {
+                  const sprite = agentLayer.getAgent(id);
+                  return {
+                    id,
+                    x: sprite?.x ?? 512,
+                    y: sprite?.y ?? 512,
+                    status: _agents.get(id)?.status ?? 'idle',
+                  };
+                })}
+                viewport={viewport}
+              />
+            )}
           </div>
         </Panel>
 
