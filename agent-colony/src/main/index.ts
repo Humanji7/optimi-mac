@@ -139,6 +139,10 @@ ipcMain.handle('terminal:spawn', async (_, agentId: string, cwd?: string) => {
   return ptyManager.spawn(agentId, cwd);
 });
 
+ipcMain.handle('terminal:attach-tmux', async (_, agentId: string, tmuxSession: string) => {
+  return ptyManager.attachToTmux(agentId, tmuxSession);
+});
+
 ipcMain.handle('terminal:write', async (_, agentId: string, data: string) => {
   return ptyManager.write(agentId, data);
 });

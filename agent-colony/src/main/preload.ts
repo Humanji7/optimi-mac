@@ -34,6 +34,7 @@ export interface ElectronAPI {
 
   // Terminal (PTY)
   terminalSpawn: (agentId: string, cwd?: string) => Promise<boolean>;
+  terminalAttachTmux: (agentId: string, tmuxSession: string) => Promise<boolean>;
   terminalWrite: (agentId: string, data: string) => Promise<boolean>;
   terminalResize: (agentId: string, cols: number, rows: number) => Promise<boolean>;
   terminalKill: (agentId: string) => Promise<boolean>;
@@ -110,6 +111,10 @@ contextBridge.exposeInMainWorld('electronAPI', {
   // Terminal (PTY)
   terminalSpawn: (agentId: string, cwd?: string): Promise<boolean> => {
     return ipcRenderer.invoke('terminal:spawn', agentId, cwd);
+  },
+
+  terminalAttachTmux: (agentId: string, tmuxSession: string): Promise<boolean> => {
+    return ipcRenderer.invoke('terminal:attach-tmux', agentId, tmuxSession);
   },
 
   terminalWrite: (agentId: string, data: string): Promise<boolean> => {
