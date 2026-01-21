@@ -297,10 +297,15 @@ export class AgentManager {
 
     if (updatedAgent) {
       dbUpdateAgent(id, { last_seen: now, status: updatedAgent.status });
-      agentEvents.emit('agent:updated', {
-        id,
-        changes: { metrics: updatedAgent.metrics, status: updatedAgent.status },
-      });
+
+      // Emit update - include status ONLY if it changed (idle → working)
+      const changes: { metrics: typeof updatedAgent.metrics; status?: string } = {
+        metrics: updatedAgent.metrics
+      };
+      if (wasIdle) {
+        changes.status = updatedAgent.status;
+      }
+      agentEvents.emit('agent:updated', { id, changes });
     }
   }
 
@@ -370,7 +375,8 @@ export class AgentManager {
         // Determine status based on activity
         // Working → Idle if no activity for 10 seconds
         let newStatus = agent.status;
-        if (agent.status === 'working' && idleTime > 10) {
+        const statusChanged = agent.status === 'working' && idleTime > 10;
+        if (statusChanged) {
           newStatus = 'idle';
         }
 
@@ -383,10 +389,14 @@ export class AgentManager {
           // Update in SQLite
           dbUpdateAgent(agent.id, { last_seen: Date.now(), status: newStatus });
 
-          // Emit update event
+          // Emit update event - include status ONLY if it changed
+          const changes: { metrics: typeof updatedMetrics; status?: string } = { metrics: updatedMetrics };
+          if (statusChanged) {
+            changes.status = newStatus;
+          }
           agentEvents.emit('agent:updated', {
             id: agent.id,
-            changes: { metrics: updatedMetrics, status: newStatus },
+            changes,
           });
         }
       } catch (error) {

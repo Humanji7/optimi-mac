@@ -15,6 +15,7 @@ import * as os from 'os';
 interface PtyProcess {
   pty: pty.IPty;
   agentId: string;
+  isViewer: boolean; // true if this PTY is for viewing only (not agent's main process)
 }
 
 const DEFAULT_SHELL = os.platform() === 'win32' ? 'powershell.exe' : process.env.SHELL || '/bin/zsh';
@@ -77,7 +78,7 @@ class PtyManager {
         this.sendToRenderer('terminal:exit', { agentId, exitCode, signal });
       });
 
-      this.processes.set(agentId, { pty: ptyProcess, agentId });
+      this.processes.set(agentId, { pty: ptyProcess, agentId, isViewer: false });
 
       console.log(`[PtyManager] PTY spawned for agent ${agentId}, shell=${DEFAULT_SHELL}, cwd=${cwd}`);
       return true;
@@ -111,11 +112,10 @@ class PtyManager {
         },
       });
 
-      // Обработка данных от PTY
+      // Обработка данных от PTY (viewer - не триггерим activity)
       ptyProcess.onData((data: string) => {
         this.sendToRenderer('terminal:data', { agentId, data });
-        // Уведомляем об активности
-        this.onActivityCallback?.(agentId);
+        // НЕ уведомляем об активности - это viewer PTY для просмотра
       });
 
       // Обработка выхода
@@ -125,9 +125,9 @@ class PtyManager {
         this.sendToRenderer('terminal:exit', { agentId, exitCode, signal });
       });
 
-      this.processes.set(agentId, { pty: ptyProcess, agentId });
+      this.processes.set(agentId, { pty: ptyProcess, agentId, isViewer: true });
 
-      console.log(`[PtyManager] PTY attached to tmux session ${tmuxSession} for agent ${agentId}`);
+      console.log(`[PtyManager] PTY attached to tmux session ${tmuxSession} for agent ${agentId} (viewer mode)`);
       return true;
     } catch (error) {
       console.error(`[PtyManager] Failed to attach PTY to tmux session ${tmuxSession} for agent ${agentId}:`, error);

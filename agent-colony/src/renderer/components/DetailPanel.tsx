@@ -91,7 +91,7 @@ function getStatusColor(status: AgentStatus): string {
 
 export function DetailPanel({ agent, onClose, onKill, onSendCommand }: DetailPanelProps) {
   const [command, setCommand] = useState('');
-  const [showTerminal, setShowTerminal] = useState(false);
+  const [showTerminal, setShowTerminal] = useState(true); // Show terminal by default
 
   if (!agent) {
     return null;
@@ -123,6 +123,17 @@ export function DetailPanel({ agent, onClose, onKill, onSendCommand }: DetailPan
           ✕
         </button>
       </div>
+
+      {/* Terminal Panel - at top for visibility */}
+      {showTerminal && (
+        <div style={styles.terminalContainer}>
+          <TerminalPanel
+            agentId={agent.id}
+            projectPath={agent.project?.path}
+            tmuxSession={agent.process?.tmuxSession}
+          />
+        </div>
+      )}
 
       {/* Основная информация */}
       <div style={styles.content}>
@@ -217,7 +228,7 @@ export function DetailPanel({ agent, onClose, onKill, onSendCommand }: DetailPan
           </form>
         </div>
 
-        {/* Терминал */}
+        {/* Терминал toggle */}
         <div style={styles.section}>
           <button
             onClick={() => setShowTerminal(!showTerminal)}
@@ -227,17 +238,6 @@ export function DetailPanel({ agent, onClose, onKill, onSendCommand }: DetailPan
           </button>
         </div>
       </div>
-
-      {/* Terminal Panel */}
-      {showTerminal && (
-        <div style={styles.terminalContainer}>
-          <TerminalPanel
-            agentId={agent.id}
-            projectPath={agent.project?.path}
-            tmuxSession={agent.process?.tmuxSession}
-          />
-        </div>
-      )}
     </div>
   );
 }
@@ -384,8 +384,10 @@ const styles: Record<string, React.CSSProperties> = {
     textAlign: 'left',
   },
   terminalContainer: {
-    height: '300px',
-    borderTop: '1px solid #444444',
+    height: '250px',
+    minHeight: '250px',
+    flexShrink: 0,
+    borderBottom: '1px solid #444444',
     overflow: 'hidden',
   },
 };
