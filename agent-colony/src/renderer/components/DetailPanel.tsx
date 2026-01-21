@@ -24,6 +24,10 @@ export interface Agent {
     name: string;
     path: string;
   };
+  process: {
+    tmuxSession: string;
+    pid: number | null;
+  };
   metrics: {
     health: string;
     uptime: number;
@@ -201,7 +205,11 @@ export function DetailPanel({ agent, onClose, onKill, onSendCommand }: DetailPan
       {/* Terminal Panel */}
       {showTerminal && (
         <div style={styles.terminalContainer}>
-          <TerminalPanel agentId={agent.id} projectPath={agent.project?.path} />
+          <TerminalPanel
+            agentId={agent.id}
+            projectPath={agent.project?.path}
+            tmuxSession={agent.process?.tmuxSession}
+          />
         </div>
       )}
     </div>
