@@ -8,7 +8,7 @@
  * - Управление состоянием (idle/working/success/fail)
  */
 
-import { Container, Texture, Rectangle, AnimatedSprite } from 'pixi.js';
+import { Container, Texture, Rectangle, AnimatedSprite, Text, TextStyle, Graphics } from 'pixi.js';
 import type { AgentRole } from './SpriteLoader';
 import { getTexture } from './SpriteLoader';
 import type { AnimationState } from '../animations/frames';
@@ -17,10 +17,21 @@ import { getFrameConfig } from '../animations/frames';
 /** Размер спрайта на экране */
 const DISPLAY_SIZE = 80;
 
+/** Цвета статусов для badge */
+const STATUS_COLORS: Record<string, number> = {
+  idle: 0x888888,    // серый
+  working: 0x22c55e, // зелёный
+  error: 0xef4444,   // красный
+  paused: 0xeab308,  // жёлтый
+};
+
 export class AnimatedAgent extends Container {
   private animatedSprite: AnimatedSprite;
   private frameTextures: Map<AnimationState, Texture[]> = new Map();
   private currentState: AnimationState = 'idle';
+  private statusBadge: Container;
+  private badgeText: Text;
+  private badgeBg: Graphics;
   public readonly role: AgentRole;
   public onClick?: () => void;
 
@@ -51,6 +62,30 @@ export class AnimatedAgent extends Container {
 
     this.addChild(this.animatedSprite);
 
+    // Status badge
+    this.statusBadge = new Container();
+    this.statusBadge.position.set(0, -DISPLAY_SIZE / 2 - 16);
+
+    // Badge background
+    this.badgeBg = new Graphics();
+    this.statusBadge.addChild(this.badgeBg);
+
+    // Badge text
+    const textStyle = new TextStyle({
+      fontSize: 10,
+      fontFamily: 'monospace',
+      fill: '#ffffff',
+      fontWeight: 'bold',
+    });
+    this.badgeText = new Text({ text: 'idle', style: textStyle });
+    this.badgeText.anchor.set(0.5, 0.5);
+    this.statusBadge.addChild(this.badgeText);
+
+    // Initial badge render
+    this.updateBadge('idle');
+
+    this.addChild(this.statusBadge);
+
     // Интерактивность
     this.eventMode = 'static';
     this.cursor = 'pointer';
@@ -60,6 +95,25 @@ export class AnimatedAgent extends Container {
     });
 
     console.log(`[AnimatedAgent] Created ${role} with ${this.getTotalFrameCount()} frames`);
+  }
+
+  /**
+   * Обновляет визуал badge
+   */
+  private updateBadge(status: string): void {
+    const color = STATUS_COLORS[status] || STATUS_COLORS.idle;
+
+    // Update text
+    this.badgeText.text = status.toUpperCase();
+
+    // Redraw background
+    const padding = 4;
+    const width = this.badgeText.width + padding * 2;
+    const height = this.badgeText.height + padding;
+
+    this.badgeBg.clear();
+    this.badgeBg.roundRect(-width / 2, -height / 2, width, height, 4);
+    this.badgeBg.fill({ color, alpha: 0.9 });
   }
 
   /**
@@ -129,6 +183,7 @@ export class AnimatedAgent extends Container {
     };
 
     this.setState(stateMap[status] || 'idle');
+    this.updateBadge(status);
   }
 
   /**
