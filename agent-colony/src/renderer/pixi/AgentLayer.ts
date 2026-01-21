@@ -10,8 +10,8 @@
  */
 
 import { Container, Ticker } from 'pixi.js';
-import { AgentSprite } from './sprites/AgentSprite';
-import { getTexture, type AgentRole } from './sprites/SpriteLoader';
+import { AnimatedAgent } from './sprites/AnimatedAgent';
+import type { AgentRole } from './sprites/SpriteLoader';
 import type { AgentStatus } from './animations/states';
 
 interface AgentData {
@@ -21,7 +21,7 @@ interface AgentData {
 }
 
 export class AgentLayer extends Container {
-  private agents = new Map<string, AgentSprite>();
+  private agents = new Map<string, AnimatedAgent>();
   private ticker: Ticker | null = null;
   public onAgentClick?: (id: string) => void; // Callback для клика по агенту
 
@@ -65,32 +65,29 @@ export class AgentLayer extends Container {
    * @returns Созданный sprite агента
    * @throws {Error} Если агент с таким id уже существует
    */
-  addAgent(data: AgentData): AgentSprite {
+  addAgent(data: AgentData): AnimatedAgent {
     if (this.agents.has(data.id)) {
       throw new Error(`Agent with id "${data.id}" already exists`);
     }
 
-    // Получаем текстуру для роли
-    const texture = getTexture(data.role);
-
-    // Создаём sprite
-    const sprite = new AgentSprite(data.role, texture);
-    sprite.position.set(data.position.x, data.position.y);
+    // Создаём анимированный спрайт (текстура загружается внутри)
+    const agent = new AnimatedAgent(data.role);
+    agent.position.set(data.position.x, data.position.y);
 
     // Устанавливаем onClick callback
-    sprite.onClick = () => {
+    agent.onClick = () => {
       if (this.onAgentClick) {
         this.onAgentClick(data.id);
       }
     };
 
     // Добавляем в layer
-    this.addChild(sprite);
-    this.agents.set(data.id, sprite);
+    this.addChild(agent);
+    this.agents.set(data.id, agent);
 
     console.log(`[AgentLayer] Agent added: ${data.id} (${data.role}) at (${data.position.x}, ${data.position.y})`);
 
-    return sprite;
+    return agent;
   }
 
   /**
@@ -140,7 +137,7 @@ export class AgentLayer extends Container {
    * @param id - ID агента
    * @returns Sprite агента или undefined
    */
-  getAgent(id: string): AgentSprite | undefined {
+  getAgent(id: string): AnimatedAgent | undefined {
     return this.agents.get(id);
   }
 
@@ -149,7 +146,7 @@ export class AgentLayer extends Container {
    *
    * @returns Map всех агентов
    */
-  getAllAgents(): ReadonlyMap<string, AgentSprite> {
+  getAllAgents(): ReadonlyMap<string, AnimatedAgent> {
     return this.agents;
   }
 
