@@ -12,6 +12,7 @@ import { DetailPanel, type Agent } from './components/DetailPanel';
 import { TerminalTooltip } from './components/TerminalTooltip';
 import { HudOverlay } from './components/HudOverlay';
 import { Minimap } from './components/Minimap';
+import { ActivityTimeline } from './components/ActivityTimeline';
 import { AgentLayer } from './pixi/AgentLayer';
 import type { Application } from 'pixi.js';
 import type { Viewport } from 'pixi-viewport';
@@ -312,6 +313,9 @@ function App() {
                 viewport={viewport}
               />
             )}
+
+            {/* Activity Timeline */}
+            <ActivityTimeline />
           </div>
         </Panel>
 
