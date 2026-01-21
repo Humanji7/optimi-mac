@@ -1,8 +1,8 @@
-# HOOK: Agent Colony - Phase 3 Testing & Polish
+# HOOK: Agent Colony V2 - Живая Колония
 
 **Status:** 🔴 ACTIVE
-**Created:** 2026-01-20
-**Type:** Testing & QA Convoy
+**Created:** 2026-01-21
+**Type:** Feature Implementation Convoy
 **Project:** Agent Colony
 
 ---
@@ -12,64 +12,59 @@
 **Предыдущие фазы:**
 - Phase 1 (Core Infrastructure) ✅ — Electron + tmux + SQLite + AgentManager
 - Phase 2 (Visual Layer) ✅ — PixiJS + Sprites + Spawn Modal + Detail Panel
+- Phase 3 (Testing & Polish) ✅ — Manual testing, 3 bugs fixed
 
-**Текущая задача:** Ручное тестирование и исправление багов
+**Текущая задача:** Превратить "чёрный экран с кружками" в живую pixel-арт колонию
+
+---
+
+## 🎯 Vision
+
+```
+СЕЙЧАС:                           БУДЕТ:
+┌─────────────────────┐           ┌─────────────────────────────────┐
+│                     │           │ [Tilemap база]    │ Terminal   │
+│   ● ● ●             │    →      │  🧑‍🔬 🐙 🐄 🦅      │ $ claude   │
+│   (кружки)          │           │  ходят, работают  │ > working  │
+│                     │           │  строят блоки     │ > done!    │
+└─────────────────────┘           └─────────────────────────────────┘
+```
 
 ---
 
 ## 🚀 Molecules
 
-### M9: Manual Testing ✅ COMPLETED
-
-**Goal:** Протестировать приложение вручную, найти баги
-
-**Checklist:**
-- [x] Запустить `pnpm dev` — приложение стартует без ошибок
-- [x] Проверить canvas — тёмный фон рендерится
-- [x] Spawn Architect — работает ✅
-- [x] Spawn Coder — появляется спрайт ✅
-- [x] Spawn Tester — появляется спрайт ✅
-- [x] Spawn Reviewer — появляется спрайт ✅
-- [x] Клик на агента — открывается Detail Panel ✅
-- [x] Detail Panel показывает корректные данные ✅
-- [x] Kill agent — агент удаляется с canvas ✅
-- [x] Send command — команда отправляется ✅
-- [x] Закрыть app — graceful shutdown без ошибок ✅
-- [x] Перезапустить app — агенты восстанавливаются из DB ✅
+### M1: Tilemap и карта ✅ COMPLETED
+**Commit:** d46560b
 
 ---
 
-## 🐛 Known Bugs
-
-### BUG-001: Spawn Agent не работает
-- **Status:** FIXED ✅
-- **Root cause:** React.StrictMode + PixiJS = WebGL context corruption
-- **Fix:** Disabled StrictMode in index.tsx (pixi-react issue #602)
-
-### BUG-002: Kill не удаляет спрайт
-- **Status:** FIXED ✅
-- **Fix:** Added agent:killed listener in PixiCanvas.tsx
-
-### BUG-003: Send command crash (undefined properties)
-- **Status:** FIXED ✅
-- **Fix:** Optional chaining + merge updates with existing data
+### M2: Анимированные спрайты ✅ COMPLETED
+**Commit:** b6faa9f
 
 ---
 
-## ✅ Completed This Session
+### M3: Движение агентов ✅ COMPLETED
+**Commit:** 5ab03fc
 
-1. **Fixed UI click issues** — `useCallback` для handleAppReady/handleAgentClick
-2. **Fixed event listener cleanup** — `return unsubscribe()` в useEffect
-3. **Fixed PixiJS resizeTo** — changed from `window` to `container`
-4. **Added folder picker** — Browse button with native dialog
-5. **Added View menu** — DevTools toggle
-6. **Increased modal z-index** — 10000
-7. **Fixed BUG-001: Spawn Agent** — PixiJS 8.x Graphics API fix (chaining)
-8. **Added debug IPC** — debugLog для логирования renderer в main process
+---
 
-**Commits:**
-- `31dc594` - fix: UI click issues + event listener cleanup + folder picker
-- `1a122d0` - fix: BUG-001 spawn agent - PixiJS 8.x Graphics API
+### M4: Терминал (node-pty + xterm.js) ✅ COMPLETED
+**Commit:** ef7134a
+
+---
+
+### M5: Блоки прогресса ✅ COMPLETED (базовая версия)
+**Commit:** 0e4248c
+
+**Готово:**
+- BuildingsLayer.ts с 4 типами блоков
+- Анимация появления (easeOutBack)
+- Интеграция в PixiCanvas
+
+**WIP (для следующего агента):**
+- Автоспавн блоков при событиях агентов
+- Таблица buildings в SQLite (опционально)
 
 ---
 
@@ -77,10 +72,11 @@
 
 | Molecule | Status |
 |----------|--------|
-| M9: Manual Testing | ✅ COMPLETED |
-| M10: Bug Fixes | ⚪ PENDING (no new bugs) |
-| M11: Error Handling | ⚪ PENDING |
-| M12: UI Polish | ⬅️ NEXT |
+| M1: Tilemap | ✅ COMPLETED |
+| M2: Спрайты | ✅ COMPLETED |
+| M3: Движение | ✅ COMPLETED |
+| M4: Терминал | ✅ COMPLETED |
+| M5: Блоки | ✅ COMPLETED (base) |
 
 ---
 
@@ -88,35 +84,30 @@
 
 **Для следующего агента:**
 
-### Контекст
-**M9 Manual Testing ЗАВЕРШЁН.** Все функции работают, 3 бага исправлены.
+### Что сделано (V2: Живая Колония)
+1. **M1 Tilemap** — sci-fi карта 32x32 с walkable зонами
+2. **M2 Спрайты** — AnimatedAgent с sprite sheet анимациями
+3. **M3 Движение** — случайное блуждание по walkable тайлам
+4. **M4 Терминал** — xterm.js + node-pty в DetailPanel
+5. **M5 Блоки** — BuildingsLayer (базовая структура)
 
-### Тестирование завершено ✅
-- Spawn всех ролей (Architect, Coder, Tester, Reviewer)
-- Клик на агента → Detail Panel с данными
-- Kill agent → удаляется спрайт и панель
-- Send command → команда отправляется без crash
-- **Graceful shutdown** → агенты сохраняются в DB, exit code 0
-- **Restore from DB** → при перезапуске загружаются все агенты
+### Что осталось доделать
+- **M5 Блоки:** автоспавн при событиях агентов (commit, test pass/fail)
+- **Опционально:** таблица buildings в SQLite для persistence
 
-### Исправленные баги
-1. **BUG-001:** React.StrictMode ломал PixiJS WebGL → убрали StrictMode
-2. **BUG-002:** Kill не удалял спрайт → добавили listener в PixiCanvas
-3. **BUG-003:** Send command crash → optional chaining + merge updates
-
-### Следующий шаг
-**M12: UI Polish** — улучшение внешнего вида и UX
-
-### Важно для dev
-- `dist/main/package.json` нужен с `{"type":"commonjs"}` для ESM/CJS совместимости
-
-### Запуск
+### Как запустить
 ```bash
 cd /Users/admin/projects/optimi-mac/agent-colony
 mkdir -p dist/main && echo '{"type":"commonjs"}' > dist/main/package.json
 pnpm dev
 ```
-DevTools: View → Toggle DevTools или Cmd+Option+I
+
+### Коммиты сессии
+- `d46560b` M1: Tilemap
+- `b6faa9f` M2: Animated Sprites
+- `5ab03fc` M3: Movement
+- `ef7134a` M4: Terminal
+- `0e4248c` M5: Buildings (base)
 
 ---
 
@@ -124,11 +115,10 @@ DevTools: View → Toggle DevTools или Cmd+Option+I
 
 ```bash
 cd /Users/admin/projects/optimi-mac/agent-colony
-pnpm dev          # Development
-pnpm type-check   # TypeScript check
-pnpm build        # Production build
+mkdir -p dist/main && echo '{"type":"commonjs"}' > dist/main/package.json
+pnpm dev
 ```
 
 ---
 
-**Last Updated:** 2026-01-21 02:10
+**Last Updated:** 2026-01-21
