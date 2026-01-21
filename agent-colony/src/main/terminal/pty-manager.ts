@@ -78,6 +78,51 @@ class PtyManager {
   }
 
   /**
+   * Подключается к существующему tmux session
+   */
+  attachToTmux(agentId: string, tmuxSession: string): boolean {
+    if (this.processes.has(agentId)) {
+      console.warn(`[PtyManager] PTY already exists for agent: ${agentId}`);
+      return false;
+    }
+
+    try {
+      // Spawn PTY с командой attach к tmux session
+      const ptyProcess = pty.spawn('tmux', ['attach', '-t', tmuxSession], {
+        name: 'xterm-256color',
+        cols: DEFAULT_COLS,
+        rows: DEFAULT_ROWS,
+        cwd: process.env.HOME || '/',
+        env: {
+          ...process.env,
+          TERM: 'xterm-256color',
+          COLORTERM: 'truecolor',
+        },
+      });
+
+      // Обработка данных от PTY
+      ptyProcess.onData((data: string) => {
+        this.sendToRenderer('terminal:data', { agentId, data });
+      });
+
+      // Обработка выхода
+      ptyProcess.onExit(({ exitCode, signal }) => {
+        console.log(`[PtyManager] PTY detached from tmux ${tmuxSession} for agent ${agentId}: code=${exitCode}, signal=${signal}`);
+        this.processes.delete(agentId);
+        this.sendToRenderer('terminal:exit', { agentId, exitCode, signal });
+      });
+
+      this.processes.set(agentId, { pty: ptyProcess, agentId });
+
+      console.log(`[PtyManager] PTY attached to tmux session ${tmuxSession} for agent ${agentId}`);
+      return true;
+    } catch (error) {
+      console.error(`[PtyManager] Failed to attach PTY to tmux session ${tmuxSession} for agent ${agentId}:`, error);
+      return false;
+    }
+  }
+
+  /**
    * Отправляет данные в PTY
    */
   write(agentId: string, data: string): boolean {
