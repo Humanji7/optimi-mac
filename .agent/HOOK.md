@@ -25,9 +25,9 @@
 |---|----------|-------------|--------|
 | M6 | Agent status badge | Статус над спрайтом (idle/working/error/paused) | ✅ DONE |
 | M7 | Terminal preview on hover | Последние N строк при наведении | ✅ DONE |
-| M8 | HUD + resource meter | Общая статистика + tokens/rate limits | 🔴 IN PROGRESS |
-| M9 | Minimap | Кликабельный, агенты как цветные точки | ⚪ PENDING |
-| M10 | Activity timeline | Лента событий за последние 15 минут | ⚪ PENDING |
+| M8 | HUD + resource meter | Общая статистика + tokens/rate limits | ✅ DONE |
+| M9 | Minimap | Кликабельный, агенты как цветные точки | ✅ DONE |
+| M10 | Activity timeline | Лента событий за последние 15 минут | 🔴 IN PROGRESS |
 | M11 | Error severity levels | blocker/warning/info classification | ⚪ PENDING |
 
 ---
@@ -53,9 +53,17 @@
 
 ---
 
-## 🔴 CURRENT: M8 — HUD + Resource Meter
+## ✅ COMPLETED: M9 — Minimap
 
-**Goal:** Общая статистика системы + мониторинг токенов/rate limits
+**Commit:** c0e6b53
+**Changes:**
+- Minimap.tsx: Canvas overlay 150x150px в правом нижнем углу
+- Агенты как цветные точки (цвет по статусу)
+- Viewport rect как белая рамка
+- Клик перемещает камеру (viewport.snap)
+- PixiCanvas: добавлен callback onAgentLayerReady
+- App.tsx: получение позиций агентов из AgentLayer
+- Auto-refresh viewport rect каждые 100ms
 
 ---
 
