@@ -26,27 +26,34 @@
 | # | Molecule | Description | Status |
 |---|----------|-------------|--------|
 | M3 | Resizable sidebar | Drag для изменения ширины | ✅ DONE |
-| M4 | Hotkeys 1-9 | Быстрый доступ к агентам | 🔴 CURRENT |
-| M1+M2 | Pan + Zoom | Два пальца + pinch | ⚪ PENDING |
+| M4 | Hotkeys 1-9 | Быстрый доступ к агентам | ✅ DONE |
+| M1+M2 | Pan + Zoom | Два пальца + pinch | 🔴 CURRENT |
 | M5 | Emergency Pause All | Space bar = pause all agents | ⚪ PENDING |
 
 ---
 
-## 🎯 CURRENT: M4 — Hotkeys 1-9
+## 🎯 CURRENT: M1+M2 — Pan + Zoom
 
-**Goal:** Быстрый доступ к агентам по нажатию клавиш 1-9
+**Goal:** Двухпальцевый pan и pinch-zoom для canvas
 
-**Files:**
-- `agent-colony/src/renderer/App.tsx` → useEffect для hotkeys
-- `agent-colony/src/renderer/components/PixiCanvas.tsx` → expose agents list
+**Status:** ⚪ PENDING — требует запуск Explore агента
 
-**Implementation:**
-- [ ] App.tsx: useEffect с addEventListener('keydown')
-- [ ] Hotkeys 1-9 выбирают агента по индексу
-- [ ] ESC закрывает DetailPanel
-- [ ] Тест: нажатие цифры выбирает агента, ESC закрывает
+**Next Steps:**
+1. Запустить Explore для анализа PixiCanvas.tsx
+2. Изучить pixi-viewport интеграцию
+3. Создать implementation plan для M1+M2
 
-**See:** PHASE_A_IMPLEMENTATION.md для полного кода
+---
+
+## ✅ COMPLETED: M4 — Hotkeys 1-9
+
+**Commit:** e2f7289
+**Changes:**
+- App.tsx: useEffect с keyboard event listener
+- Hotkeys 1-9 для выбора агента по индексу
+- ESC закрывает DetailPanel
+- Игнорирование hotkeys при фокусе в input/textarea
+- Использован functional update для избежания stale closure
 
 ---
 
