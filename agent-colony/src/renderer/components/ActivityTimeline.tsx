@@ -5,6 +5,7 @@
  */
 
 import { useState, useEffect, useCallback } from 'react';
+import { classifyErrorMessage, SEVERITY_COLORS, SEVERITY_ICONS, type ErrorSeverity } from '../utils/severity';
 
 interface TimelineEvent {
   id: string;
@@ -13,6 +14,7 @@ interface TimelineEvent {
   agentId: string;
   agentRole?: string;
   message: string;
+  severity?: ErrorSeverity;
 }
 
 const MAX_AGE_MS = 15 * 60 * 1000; // 15 minutes
@@ -87,6 +89,7 @@ export function ActivityTimeline() {
         type: 'error',
         agentId: id,
         message: error.slice(0, 50),
+        severity: classifyErrorMessage(error),
       });
     };
 
@@ -113,8 +116,8 @@ export function ActivityTimeline() {
       <div style={styles.list}>
         {events.slice(0, 10).map((event) => (
           <div key={event.id} style={styles.item}>
-            <span style={{ ...styles.icon, color: getEventColor(event.type) }}>
-              {getEventIcon(event.type)}
+            <span style={{ ...styles.icon, color: getEventColor(event.type, event.severity) }}>
+              {getEventIcon(event.type, event.severity)}
             </span>
             <span style={styles.message}>{event.message}</span>
             <span style={styles.time}>{formatTime(event.timestamp)}</span>
@@ -125,7 +128,10 @@ export function ActivityTimeline() {
   );
 }
 
-function getEventIcon(type: TimelineEvent['type']): string {
+function getEventIcon(type: TimelineEvent['type'], severity?: ErrorSeverity): string {
+  if (type === 'error' && severity) {
+    return SEVERITY_ICONS[severity];
+  }
   switch (type) {
     case 'spawned': return '+';
     case 'killed': return '×';
@@ -134,7 +140,10 @@ function getEventIcon(type: TimelineEvent['type']): string {
   }
 }
 
-function getEventColor(type: TimelineEvent['type']): string {
+function getEventColor(type: TimelineEvent['type'], severity?: ErrorSeverity): string {
+  if (type === 'error' && severity) {
+    return SEVERITY_COLORS[severity];
+  }
   switch (type) {
     case 'spawned': return '#22c55e';
     case 'killed': return '#888';

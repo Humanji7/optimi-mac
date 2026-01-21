@@ -6,6 +6,7 @@
  */
 
 import type { Agent } from './DetailPanel';
+import { getSeverity } from '../utils/severity';
 
 interface HudOverlayProps {
   agents: Map<string, Agent>;
@@ -32,10 +33,15 @@ export function HudOverlay({ agents }: HudOverlayProps) {
   const errors = agentList.filter((a) => a.status === 'error').length;
   const paused = agentList.filter((a) => a.status === 'paused').length;
 
-  // Health breakdown
-  const healthy = agentList.filter((a) => a.metrics?.health === 'healthy').length;
-  const warning = agentList.filter((a) => a.metrics?.health === 'warning').length;
-  const unhealthy = agentList.filter((a) => a.metrics?.health === 'error').length;
+  // Severity breakdown
+  const severityCounts = agentList.reduce(
+    (acc, agent) => {
+      const severity = getSeverity(agent.metrics?.health, agent.status);
+      if (severity) acc[severity]++;
+      return acc;
+    },
+    { blocker: 0, warning: 0, info: 0 }
+  );
 
   // Total uptime
   const totalUptime = agentList.reduce((sum, a) => sum + (a.metrics?.uptime || 0), 0);
@@ -54,15 +60,23 @@ export function HudOverlay({ agents }: HudOverlayProps) {
         </span>
       </div>
 
-      {/* Health */}
-      <div style={styles.item}>
-        <span style={styles.label}>Health</span>
-        <span style={styles.breakdown}>
-          {healthy > 0 && <span style={styles.healthy}>{healthy} ok</span>}
-          {warning > 0 && <span style={styles.warn}>{warning} warn</span>}
-          {unhealthy > 0 && <span style={styles.error}>{unhealthy} err</span>}
-        </span>
-      </div>
+      {/* Issues by severity */}
+      {(severityCounts.blocker > 0 || severityCounts.warning > 0 || severityCounts.info > 0) && (
+        <div style={styles.item}>
+          <span style={styles.label}>Issues</span>
+          <span style={styles.breakdown}>
+            {severityCounts.blocker > 0 && (
+              <span style={{ color: '#ef4444' }}>{severityCounts.blocker} blocker</span>
+            )}
+            {severityCounts.warning > 0 && (
+              <span style={{ color: '#eab308' }}>{severityCounts.warning} warn</span>
+            )}
+            {severityCounts.info > 0 && (
+              <span style={{ color: '#3b82f6' }}>{severityCounts.info} info</span>
+            )}
+          </span>
+        </div>
+      )}
 
       {/* Uptime */}
       <div style={styles.item}>

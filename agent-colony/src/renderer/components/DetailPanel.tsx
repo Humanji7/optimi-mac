@@ -11,6 +11,7 @@
 import { useState, FormEvent } from 'react';
 import type { AgentStatus } from '../pixi/types';
 import { TerminalPanel } from './TerminalPanel';
+import { getSeverity, SEVERITY_COLORS, SEVERITY_ICONS } from '../utils/severity';
 
 /**
  * Полный интерфейс агента (зеркало из main/agents/types.ts)
@@ -160,6 +161,31 @@ export function DetailPanel({ agent, onClose, onKill, onSendCommand }: DetailPan
               <div style={styles.metricValue}>{agent.metrics?.health ?? 'N/A'}</div>
             </div>
           </div>
+
+          {/* Severity indicator */}
+          {(() => {
+            const severity = getSeverity(agent.metrics?.health, agent.status);
+            if (!severity) return null;
+            return (
+              <div style={{
+                ...styles.metricItem,
+                backgroundColor: `${SEVERITY_COLORS[severity]}20`,
+                border: `1px solid ${SEVERITY_COLORS[severity]}`,
+                borderRadius: 4,
+                padding: '8px 12px',
+                marginTop: 8,
+              }}>
+                <span style={{ color: SEVERITY_COLORS[severity], fontWeight: 600 }}>
+                  {SEVERITY_ICONS[severity]} {severity.toUpperCase()}
+                </span>
+                <span style={{ color: '#ccc', marginLeft: 8, fontSize: 12 }}>
+                  {severity === 'blocker' && 'Critical issue - agent cannot function'}
+                  {severity === 'warning' && 'Temporary issue - monitoring'}
+                  {severity === 'info' && 'Unknown state - needs attention'}
+                </span>
+              </div>
+            );
+          })()}
         </div>
 
         {/* Проект */}
@@ -293,6 +319,9 @@ const styles: Record<string, React.CSSProperties> = {
     fontSize: '14px',
     color: '#ffffff',
     fontWeight: 500,
+  },
+  metricItem: {
+    display: 'block',
   },
   projectName: {
     fontSize: '14px',
