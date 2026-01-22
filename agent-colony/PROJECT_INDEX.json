@@ -1,0 +1,129 @@
+{
+  "project": {
+    "name": "agent-colony",
+    "version": "0.1.0",
+    "description": "AI Agent Colony Visual Management Interface",
+    "generated": "2026-01-22",
+    "sourceFiles": 46
+  },
+  "status": {
+    "phaseA": "complete",
+    "phaseB": "complete",
+    "phaseC": "pending",
+    "phaseD": "pending",
+    "phaseE": "pending"
+  },
+  "entryPoints": {
+    "main": "src/main/index.ts",
+    "renderer": "src/renderer/index.tsx",
+    "preload": "src/main/preload.ts"
+  },
+  "modules": {
+    "main": {
+      "agents": {
+        "path": "src/main/agents",
+        "files": ["manager.ts", "registry.ts", "events.ts", "health.ts", "types.ts", "index.ts"],
+        "exports": ["AgentManager", "agentEvents", "Agent", "AgentRole", "AgentStatus"]
+      },
+      "terminal": {
+        "path": "src/main/terminal",
+        "files": ["pty-manager.ts"],
+        "exports": ["ptyManager"]
+      },
+      "tmux": {
+        "path": "src/main/tmux",
+        "files": ["spawn.ts", "kill.ts", "capture.ts", "send.ts", "list.ts", "index.ts"],
+        "exports": ["spawnSession", "killSession", "capturePane", "sendKeys", "listSessions"]
+      },
+      "db": {
+        "path": "src/main/db",
+        "files": ["index.ts", "types.ts", "retry.ts", "models/agent.ts", "models/metrics.ts"],
+        "exports": ["initDatabase", "createAgent", "updateAgent", "getAllAgents"]
+      }
+    },
+    "renderer": {
+      "components": {
+        "path": "src/renderer/components",
+        "files": ["PixiCanvas.tsx", "DetailPanel.tsx", "TerminalPanel.tsx", "SpawnModal.tsx", "HudOverlay.tsx", "Minimap.tsx", "ActivityTimeline.tsx", "TerminalTooltip.tsx"]
+      },
+      "pixi": {
+        "path": "src/renderer/pixi",
+        "files": ["setup.ts", "AgentLayer.ts", "types.ts"],
+        "submodules": {
+          "layers": ["TilemapLayer.ts", "BuildingsLayer.ts"],
+          "sprites": ["SpriteLoader.ts", "AgentSprite.ts", "AnimatedAgent.ts"],
+          "animations": ["frames.ts", "states.ts"],
+          "systems": ["Movement.ts"]
+        }
+      },
+      "utils": {
+        "path": "src/renderer/utils",
+        "files": ["severity.ts"]
+      }
+    }
+  },
+  "types": {
+    "Agent": {
+      "file": "src/main/agents/types.ts",
+      "fields": ["id", "role", "status", "project", "process", "metrics", "position", "hookStatus", "createdAt"]
+    },
+    "AgentRole": {
+      "file": "src/main/agents/types.ts",
+      "values": ["Architect", "Coder", "Tester", "Reviewer"]
+    },
+    "AgentStatus": {
+      "file": "src/main/agents/types.ts",
+      "values": ["idle", "working", "error", "paused"]
+    }
+  },
+  "ipcChannels": {
+    "handlers": [
+      "app:ready",
+      "dialog:selectFolder",
+      "agent:spawn",
+      "agent:kill",
+      "agent:list",
+      "agent:send-command",
+      "agent:pause-all",
+      "terminal:spawn",
+      "terminal:attach-tmux",
+      "terminal:write",
+      "terminal:resize",
+      "terminal:kill",
+      "terminal:capture"
+    ],
+    "events": [
+      "agent:spawned",
+      "agent:updated",
+      "agent:killed",
+      "agent:error",
+      "health:checked",
+      "terminal:data",
+      "terminal:exit"
+    ]
+  },
+  "dependencies": {
+    "runtime": {
+      "electron": "40.0.0",
+      "react": "18.3.1",
+      "pixi.js": "8.15.0",
+      "pixi-viewport": "6.0.3",
+      "better-sqlite3": "12.6.2",
+      "node-pty": "1.1.0",
+      "xterm": "5.3.0",
+      "react-resizable-panels": "2.1.9"
+    }
+  },
+  "quickReference": {
+    "addIpcHandler": { "file": "src/main/index.ts", "section": "IPC Handlers" },
+    "addPreloadApi": { "file": "src/main/preload.ts", "line": 54 },
+    "agentSpawnLogic": { "file": "src/main/agents/manager.ts", "method": "spawnAgent" },
+    "healthCheck": { "file": "src/main/agents/health.ts" },
+    "tmuxCapture": { "file": "src/main/tmux/capture.ts" },
+    "reactState": { "file": "src/renderer/App.tsx", "line": 25 },
+    "pixiSetup": { "file": "src/renderer/pixi/setup.ts" },
+    "agentRendering": { "file": "src/renderer/pixi/AgentLayer.ts" },
+    "terminalUi": { "file": "src/renderer/components/TerminalPanel.tsx" },
+    "severityUtils": { "file": "src/renderer/utils/severity.ts" }
+  }
+}
