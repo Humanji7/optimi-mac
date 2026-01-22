@@ -25,6 +25,8 @@ export function TerminalPanel({ agentId, projectPath, tmuxSession }: TerminalPan
   const terminalRef = useRef<Terminal | null>(null);
   const fitAddonRef = useRef<FitAddon | null>(null);
   const isSpawnedRef = useRef(false);
+  const pendingDataRef = useRef<string[]>([]); // Buffer for data before terminal ready
+  const isReadyRef = useRef(false);
 
   // Инициализация терминала
   const initTerminal = useCallback(() => {
@@ -73,13 +75,35 @@ export function TerminalPanel({ agentId, projectPath, tmuxSession }: TerminalPan
 
     // Открываем терминал в контейнере
     terminal.open(containerRef.current);
-    fitAddon.fit();
+
+    // Fit with retry if dimensions are 0
+    const tryFit = (attempts = 0) => {
+      try {
+        fitAddon.fit();
+        if ((terminal.cols === 0 || terminal.rows === 0) && attempts < 10) {
+          setTimeout(() => tryFit(attempts + 1), 100);
+        }
+      } catch {
+        if (attempts < 10) {
+          setTimeout(() => tryFit(attempts + 1), 100);
+        }
+      }
+    };
+    tryFit();
     terminal.focus();
 
     terminalRef.current = terminal;
     fitAddonRef.current = fitAddon;
 
-    console.log(`[TerminalPanel] Terminal initialized for agent ${agentId}`);
+    // Flush pending data
+    if (pendingDataRef.current.length > 0) {
+      for (const data of pendingDataRef.current) {
+        terminal.write(data);
+      }
+      pendingDataRef.current = [];
+    }
+
+    isReadyRef.current = true;
 
     // Спавним PTY
     spawnPty();
@@ -105,18 +129,13 @@ export function TerminalPanel({ agentId, projectPath, tmuxSession }: TerminalPan
       let success: boolean;
 
       if (tmuxSession) {
-        // Attach к существующему tmux session
-        console.log(`[TerminalPanel] Attaching to tmux session ${tmuxSession} for agent ${agentId}`);
         success = await window.electronAPI.terminalAttachTmux(agentId, tmuxSession);
       } else {
-        // Обычный spawn shell
-        console.log(`[TerminalPanel] Spawning PTY for agent ${agentId}`);
         success = await window.electronAPI.terminalSpawn(agentId, projectPath);
       }
 
       if (success) {
         isSpawnedRef.current = true;
-        console.log(`[TerminalPanel] Terminal ${tmuxSession ? 'attached' : 'spawned'} for agent ${agentId}`);
       } else {
         const errorMsg = tmuxSession
           ? `Failed to attach to tmux session ${tmuxSession}`
@@ -124,7 +143,6 @@ export function TerminalPanel({ agentId, projectPath, tmuxSession }: TerminalPan
         terminalRef.current?.writeln(`\r\n\x1b[31m${errorMsg}\x1b[0m`);
       }
     } catch (error) {
-      console.error(`[TerminalPanel] Failed to ${tmuxSession ? 'attach' : 'spawn'} PTY:`, error);
       terminalRef.current?.writeln(`\r\n\x1b[31mError: ${error}\x1b[0m`);
     }
   }, [agentId, projectPath, tmuxSession]);
@@ -132,8 +150,13 @@ export function TerminalPanel({ agentId, projectPath, tmuxSession }: TerminalPan
   // Подписка на данные от PTY
   useEffect(() => {
     const unsubscribeData = window.electronAPI.onTerminalData((data) => {
-      if (data.agentId === agentId && terminalRef.current) {
-        terminalRef.current.write(data.data);
+      if (data.agentId === agentId) {
+        if (isReadyRef.current && terminalRef.current) {
+          terminalRef.current.write(data.data);
+        } else {
+          // Buffer data until terminal is ready
+          pendingDataRef.current.push(data.data);
+        }
       }
     });
 
@@ -156,6 +179,9 @@ export function TerminalPanel({ agentId, projectPath, tmuxSession }: TerminalPan
 
     return () => {
       // Cleanup
+      isReadyRef.current = false;
+      pendingDataRef.current = [];
+
       if (terminalRef.current) {
         terminalRef.current.dispose();
         terminalRef.current = null;

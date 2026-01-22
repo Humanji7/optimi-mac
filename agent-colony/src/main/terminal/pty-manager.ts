@@ -130,8 +130,6 @@ class PtyManager {
       });
 
       this.processes.set(agentId, { pty: ptyProcess, agentId, isViewer: true });
-
-      console.log(`[PtyManager] PTY attached to tmux session ${tmuxSession} for agent ${agentId} (viewer mode)`);
       return true;
     } catch (error) {
       console.error(`[PtyManager] Failed to attach PTY to tmux session ${tmuxSession} for agent ${agentId}:`, error);
