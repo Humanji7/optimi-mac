@@ -24,7 +24,14 @@ export async function capturePane(sessionName: string, lines: number = 10): Prom
       '-E', '-1'
     ]);
 
-    return stdout.split('\n').slice(0, lines).map(line => line.trimEnd());
+    // Разбиваем на строки, убираем пустые в конце, берём последние N
+    const allLines = stdout.split('\n').map(line => line.trimEnd());
+    // Убираем trailing empty lines
+    while (allLines.length > 0 && allLines[allLines.length - 1] === '') {
+      allLines.pop();
+    }
+    // Возвращаем последние N строк
+    return allLines.slice(-lines);
   } catch (error: any) {
     // Session может не существовать — возвращаем пустой массив
     console.error(`[capturePane] Failed for ${sessionName}:`, error.message);

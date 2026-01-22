@@ -3,9 +3,10 @@
  *
  * Purpose: Управление движением агентов по карте
  * Responsibilities:
- * - Случайное блуждание в idle состоянии
- * - Плавное перемещение к целевой точке
+ * - Плавное перемещение к целевой точке (по команде)
  * - Проверка проходимости через TilemapLayer
+ *
+ * Note: Auto-wander отключён. Используй moveAgentTo() для движения.
  */
 
 import type { TilemapLayer } from '../layers/TilemapLayer';
@@ -69,16 +70,14 @@ export class MovementSystem {
 
   /**
    * Обновление всех агентов (вызывается каждый кадр)
+   * Note: Auto-wander отключён — агенты двигаются только по команде moveAgentTo()
    */
   update(deltaMs: number): void {
-    const now = Date.now();
-
-    for (const [id, state] of this.agents) {
+    for (const [, state] of this.agents) {
       if (state.isMoving) {
         this.updateMovement(state, deltaMs);
-      } else if (now >= state.idleUntil) {
-        this.startWandering(id, state);
       }
+      // Auto-wander disabled — agents stay at spawn position
     }
   }
 
